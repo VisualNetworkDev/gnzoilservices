@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GNZ Admin</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+    body{min-height:100vh;background:#050509;color:#e8ecff;padding:18px;}
+    button,input,select,textarea{font:inherit;}
+    .app{max-width:1280px;margin:0 auto;}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;padding:18px;border-radius:18px;background:rgba(18,18,28,.96);border:1px solid rgba(255,255,255,.09);box-shadow:0 18px 40px rgba(0,0,0,.55);}
+    .brand h1{font-size:22px;letter-spacing:.08em;text-transform:uppercase;color:#fff;}
+    .brand p{font-size:13px;color:#9fb7ff;margin-top:4px;}
+    .btn{border:none;border-radius:12px;padding:11px 14px;font-weight:700;cursor:pointer;transition:.2s;background:#202231;color:#e8ecff;border:1px solid rgba(255,255,255,.08);}
+    .btn:hover{transform:translateY(-1px);background:#292b3d;}
+    .btn.primary{background:linear-gradient(120deg,#0b5ed7,#2563eb);color:#fff;box-shadow:0 12px 26px rgba(11,94,215,.35);}
+    .btn.success{background:#198754;color:#fff;}
+    .btn.warn{background:#f59e0b;color:#111827;}
+    .btn.danger{background:#dc3545;color:#fff;}
+    .btn.info{background:#0d6efd;color:#fff;}
+    .login{max-width:430px;margin:12vh auto 0;padding:24px;border-radius:22px;background:rgba(18,18,28,.98);border:1px solid rgba(255,255,255,.1);box-shadow:0 22px 60px rgba(0,0,0,.65);}
+    .login-icon{width:66px;height:66px;border-radius:22px;background:linear-gradient(145deg,#0b5ed7,#4ea3ff);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px;}
+    .login h2{text-align:center;margin-bottom:8px;}
+    .login p{text-align:center;color:#aebbea;font-size:14px;line-height:1.5;margin-bottom:18px;}
+    .field{position:relative;margin-bottom:13px;}
+    .field i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#7f8bb8;}
+    .field input,.field select,.field textarea{width:100%;border:none;border-radius:12px;background:#181820;color:#e8ecff;padding:12px 12px 12px 38px;outline:none;box-shadow:0 0 0 1px rgba(255,255,255,.04);}
+    .field textarea{min-height:78px;resize:vertical;}
+    .field input:focus,.field select:focus,.field textarea:focus{box-shadow:0 0 0 1px #0b5ed7,0 0 14px rgba(11,94,215,.35);}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:start;}
+    .panel{background:rgba(18,18,28,.96);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:16px;box-shadow:0 18px 40px rgba(0,0,0,.42);}
+    .panel h2{font-size:18px;margin-bottom:14px;color:#fff;}
+    .filters{display:grid;grid-template-columns:1.4fr .75fr .75fr auto;gap:10px;margin-bottom:14px;}
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
+    .stat{padding:12px;border-radius:14px;background:#151722;border:1px solid rgba(255,255,255,.06);}
+    .stat strong{display:block;font-size:20px;color:#fff;}
+    .stat span{font-size:12px;color:#9fb7ff;text-transform:uppercase;letter-spacing:.05em;}
+    .list{display:flex;flex-direction:column;gap:10px;max-height:72vh;overflow:auto;padding-right:4px;}
+    .card{border-radius:15px;background:#12141e;border:1px solid rgba(255,255,255,.07);padding:13px;}
+    .card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px;}
+    .card-title strong{display:block;color:#fff;font-size:15px;}
+    .card-title span{display:block;color:#aebbea;font-size:12px;margin-top:2px;}
+    .badge{padding:6px 9px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap;}
+    .badge.Pendiente{background:#fef3c7;color:#92400e;}
+    .badge.Confirmada{background:#dcfce7;color:#166534;}
+    .badge.Cancelada{background:#fee2e2;color:#991b1b;}
+    .badge.Completada{background:#dbeafe;color:#1d4ed8;}
+    .details{display:grid;grid-template-columns:repeat(2,1fr);gap:7px 10px;color:#c9d3f6;font-size:13px;margin-bottom:10px;}
+    .details span{color:#7f8bb8;}
+    .actions{display:flex;flex-wrap:wrap;gap:8px;}
+    .actions .btn{padding:8px 10px;font-size:12px;border-radius:10px;}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .full{grid-column:1/-1;}
+    .price-box{margin:4px 0 12px;padding:12px;border-radius:14px;background:rgba(10,132,255,.1);border:1px solid rgba(10,132,255,.24);color:#cfe2ff;font-weight:800;}
+    .checkline{display:flex;gap:10px;align-items:flex-start;color:#c9d3f6;font-size:13px;line-height:1.45;margin:8px 0 12px;}
+    .checkline input{margin-top:3px;}
+    .message{margin-top:12px;color:#cfe2ff;font-weight:700;font-size:14px;}
+    .hidden{display:none!important;}
+    .empty{text-align:center;color:#8f9ac5;padding:24px;}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:640px){
+      body{padding:8px;font-size:16px;}
+      .app{max-width:100%;}
+      .login{margin:7vh auto 0;padding:20px;border-radius:18px;}
+      .topbar{position:sticky;top:0;z-index:20;align-items:flex-start;flex-direction:column;padding:14px;border-radius:16px;background:rgba(18,18,28,.98);}
+      .topbar .btn{width:100%;min-height:46px;}
+      .brand h1{font-size:19px;}
+      .brand p{font-size:12px;line-height:1.4;}
+      .grid{gap:12px;}
+      .panel{padding:12px;border-radius:16px;}
+      .panel h2{font-size:17px;}
+      .filters,.form-grid{grid-template-columns:1fr;gap:8px;}
+      .stats{grid-template-columns:1fr 1fr;gap:8px;}
+      .stat{padding:10px;border-radius:12px;}
+      .stat strong{font-size:18px;}
+      .field{margin-bottom:9px;}
+      .field input,.field select,.field textarea{min-height:46px;font-size:16px;padding-top:12px;padding-bottom:12px;}
+      .btn{min-height:44px;}
+      .list{max-height:none;overflow:visible;padding-right:0;}
+      .card{padding:12px;border-radius:14px;}
+      .card-head{flex-direction:column;align-items:stretch;}
+      .badge{width:max-content;}
+      .details{grid-template-columns:1fr;font-size:13px;}
+      .actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+      .actions .btn{width:100%;font-size:12px;padding:10px 8px;}
+      .price-box{font-size:14px;line-height:1.45;}
+      .checkline{font-size:13px;}
+      #saveBtn,#cancelEditBtn{min-height:48px;}
+    }
+  </style>
+</head>
+<body>
+  <div id="loginView" class="login">
+    <div class="login-icon"><i class="fa-solid fa-lock"></i></div>
+    <h2>GNZ Admin</h2>
+    <p>Private appointment manager for GNZ Oil Services.</p>
+    <div class="field">
+      <i class="fa-solid fa-key"></i>
+      <input type="password" id="adminPassword" placeholder="Admin password" autocomplete="current-password">
+    </div>
+    <button class="btn primary" id="loginBtn" style="width:100%;">Log In</button>
+    <div class="message" id="loginMessage"></div>
+  </div>
+
+  <div id="appView" class="app hidden">
+    <div class="topbar">
+      <div class="brand">
+        <h1>GNZ Admin</h1>
+        <p>Reservations, scheduling, pricing, reminders and status updates.</p>
+      </div>
+      <button class="btn" id="refreshBtn"><i class="fa-solid fa-rotate"></i> Refresh</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><strong id="statTotal">0</strong><span>Total</span></div>
+      <div class="stat"><strong id="statPendientes">0</strong><span>Pending</span></div>
+      <div class="stat"><strong id="statConfirmadas">0</strong><span>Confirmed</span></div>
+      <div class="stat"><strong id="statCompletadas">0</strong><span>Completed</span></div>
+      <div class="stat"><strong id="statHoy">0</strong><span>Today</span></div>
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>Appointments</h2>
+        <div class="filters">
+          <div class="field"><i class="fa-solid fa-magnifying-glass"></i><input id="searchInput" placeholder="Search by ID, name, phone, email" inputmode="search"></div>
+          <div class="field"><i class="fa-solid fa-calendar"></i><input type="date" id="filterDate"></div>
+          <div class="field">
+            <i class="fa-solid fa-filter"></i>
+            <select id="filterStatus">
+              <option value="">All statuses</option>
+              <option>Pendiente</option>
+              <option>Confirmada</option>
+              <option>Cancelada</option>
+              <option>Completada</option>
+            </select>
+          </div>
+          <button class="btn primary" id="searchBtn">Search</button>
+        </div>
+        <div id="reservasList" class="list"></div>
+      </section>
+
+      <section class="panel">
+        <h2 id="formTitle">Schedule Appointment</h2>
+        <form id="adminForm">
+          <div class="form-grid">
+            <div class="field"><i class="fa-solid fa-user"></i><input name="nombre" id="nombre" placeholder="Full name" autocomplete="name" required></div>
+            <div class="field"><i class="fa-solid fa-phone"></i><input name="telefono" id="telefono" placeholder="Phone" inputmode="tel" autocomplete="tel" required></div>
+            <div class="field full"><i class="fa-solid fa-envelope"></i><input name="correo" id="correo" type="email" placeholder="Email" autocomplete="email" required></div>
+            <div class="field"><i class="fa-solid fa-car"></i><select name="marca" id="marcaSelect" required><option value="">Select Make</option></select></div>
+            <div class="field"><i class="fa-solid fa-car-side"></i><select name="modelo" id="modeloSelect" required><option value="">Select Model</option></select></div>
+            <div class="field"><i class="fa-solid fa-calendar-days"></i><select name="ano" id="anoSelect" required><option value="">Select Year</option></select></div>
+            <div class="field" id="motorGroup" style="display:none;"><i class="fa-solid fa-gears"></i><select name="motor" id="motorSelect"></select></div>
+            <div class="field full"><i class="fa-solid fa-oil-can"></i><select name="marcaAceite" id="marcaAceite" required><option value="">Select Engine Oil</option></select></div>
+            <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="direccion" id="direccion" placeholder="Service address" autocomplete="street-address" required></div>
+            <div class="field"><i class="fa-solid fa-calendar-day"></i><input type="date" name="fecha" id="fecha" required></div>
+            <div class="field"><i class="fa-solid fa-clock"></i><input type="time" name="hora" id="hora" required></div>
+            <div class="field full"><i class="fa-solid fa-list-check"></i><select name="estado" id="estado"><option>Confirmada</option><option>Pendiente</option></select></div>
+            <div class="field full"><i class="fa-solid fa-comment"></i><textarea name="comentarios" id="comentarios" placeholder="Notes"></textarea></div>
+          </div>
+          <div class="price-box" id="priceBox">Estimated price: N/A</div>
+          <label class="checkline"><input type="checkbox" name="aceptoAcuerdo" id="aceptoAcuerdo" value="SI" checked> Agreement accepted verbally or by the customer.</label>
+          <label class="checkline"><input type="checkbox" name="notificarCliente" id="notificarCliente" value="SI" checked> Send confirmation email and PDF receipt to customer.</label>
+          <button class="btn primary" type="submit" id="saveBtn" style="width:100%;">Create Appointment</button>
+          <button class="btn hidden" type="button" id="cancelEditBtn" style="width:100%;margin-top:8px;">Cancel Edit</button>
+          <div class="message" id="formMessage"></div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const gnzEndpointFromUrl = new URLSearchParams(window.location.search).get("endpoint");
+    if (gnzEndpointFromUrl) {
+      localStorage.setItem("gnzUnifiedEndpoint", gnzEndpointFromUrl);
+    }
+    window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl ||
+      localStorage.getItem("gnzUnifiedEndpoint") ||
+      "REPLACE_WITH_UNIFIED_APPS_SCRIPT_WEB_APP_URL";
+  </script>
+  <script src="assets/js/apps-script-bridge.js"></script>
+  <script>
+    let adminToken = "";
+    let vehiculos = [];
+    let preciosAceite = [];
+    let reservasCache = [];
+    let editingId = "";
+    let typingTimer = null;
+
+    const loginView = document.getElementById("loginView");
+    const appView = document.getElementById("appView");
+    const loginMessage = document.getElementById("loginMessage");
+    const reservasList = document.getElementById("reservasList");
+    const marcaSelect = document.getElementById("marcaSelect");
+    const modeloSelect = document.getElementById("modeloSelect");
+    const anoSelect = document.getElementById("anoSelect");
+    const motorSelect = document.getElementById("motorSelect");
+    const motorGroup = document.getElementById("motorGroup");
+    const marcaAceite = document.getElementById("marcaAceite");
+    const priceBox = document.getElementById("priceBox");
+    const formMessage = document.getElementById("formMessage");
+    const formTitle = document.getElementById("formTitle");
+    const saveBtn = document.getElementById("saveBtn");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+    document.getElementById("loginBtn").addEventListener("click", login);
+    document.getElementById("adminPassword").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
+    document.getElementById("refreshBtn").addEventListener("click", cargarReservas);
+    document.getElementById("searchBtn").addEventListener("click", cargarReservas);
+    document.getElementById("filterStatus").addEventListener("change", cargarReservas);
+    document.getElementById("filterDate").addEventListener("change", cargarReservas);
+    cancelEditBtn.addEventListener("click", resetFormMode);
+    document.getElementById("searchInput").addEventListener("input", () => {
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(cargarReservas, 350);
+    });
+
+    function login() {
+      loginMessage.textContent = "Checking access...";
+      google.script.run
+        .withSuccessHandler(res => {
+          if (!res || !res.success) {
+            loginMessage.textContent = (res && res.error) || "Unable to log in.";
+            return;
+          }
+          adminToken = res.token;
+          loginView.classList.add("hidden");
+          appView.classList.remove("hidden");
+          cargarVehiculos();
+          cargarReservas();
+        })
+        .withFailureHandler(err => {
+          loginMessage.textContent = err.message || "Login failed.";
+        })
+        .adminLogin(document.getElementById("adminPassword").value);
+    }
+
+    function cargarVehiculos() {
+      google.script.run
+        .withSuccessHandler(data => {
+          if (data && data.vehiculos) {
+            vehiculos = data.vehiculos || [];
+            preciosAceite = data.precios || [];
+          } else {
+            vehiculos = data || [];
+            preciosAceite = [];
+          }
+
+          renderMarcas();
+        })
+        .withFailureHandler(showFormError)
+        .adminObtenerCatalogo(adminToken);
+    }
+
+    function renderMarcas() {
+      const marcas = [...new Set(vehiculos.map(v => String(v.marca || "").trim().toLowerCase()).filter(Boolean))].sort();
+      marcaSelect.innerHTML = '<option value="">Select Make</option>';
+      marcas.forEach(m => addOption(marcaSelect, m, m));
+    }
+
+    marcaSelect.addEventListener("change", () => {
+      modeloSelect.innerHTML = '<option value="">Select Model</option>';
+      anoSelect.innerHTML = '<option value="">Select Year</option>';
+      resetMotor();
+      resetOil();
+      const modelos = vehiculos
+        .filter(v => String(v.marca || "").trim().toLowerCase() === marcaSelect.value)
+        .map(v => String(v.modelo || "").trim().toLowerCase())
+        .filter(Boolean);
+      [...new Set(modelos)].forEach(m => addOption(modeloSelect, m, m));
+    });
+
+    modeloSelect.addEventListener("change", () => {
+      anoSelect.innerHTML = '<option value="">Select Year</option>';
+      resetMotor();
+      resetOil();
+      const anos = vehiculos
+        .filter(v => String(v.marca || "").trim().toLowerCase() === marcaSelect.value &&
+                     String(v.modelo || "").trim().toLowerCase() === modeloSelect.value)
+        .map(v => String(v.ano || "").trim())
+        .filter(Boolean);
+      [...new Set(anos)].sort().forEach(a => addOption(anoSelect, a, a));
+    });
+
+    anoSelect.addEventListener("change", () => cargarMotores());
+    motorSelect.addEventListener("change", () => cargarAceites());
+    marcaAceite.addEventListener("change", calcularPrecio);
+
+    function cargarMotores(selectedMotor, selectedOil) {
+      resetMotor();
+      resetOil();
+      if (!anoSelect.value || !marcaSelect.value || !modeloSelect.value) return;
+
+      const motorMap = new Map();
+      vehiculos
+        .filter(v =>
+          String(v.ano || "").trim() === anoSelect.value &&
+          normalizar(v.marca) === normalizar(marcaSelect.value) &&
+          normalizar(v.modelo) === normalizar(modeloSelect.value)
+        )
+        .map(v => String(v.motor || "").trim())
+        .filter(Boolean)
+        .forEach(m => {
+          const key = normalizarMotor(m);
+          if (!motorMap.has(key)) motorMap.set(key, m);
+        });
+
+      const list = Array.from(motorMap.values()).sort();
+
+      if (!list.length) {
+        cargarAceites(selectedOil);
+        return;
+      }
+
+      motorGroup.style.display = "block";
+      motorSelect.required = true;
+      motorSelect.innerHTML = "";
+      if (list.length > 1) addOption(motorSelect, "", "Select Engine / Code");
+      list.forEach(m => addOption(motorSelect, m, m));
+
+      if (selectedMotor && list.some(m => normalizarMotor(m) === normalizarMotor(selectedMotor))) {
+        motorSelect.value = list.find(m => normalizarMotor(m) === normalizarMotor(selectedMotor));
+        cargarAceites(selectedOil);
+      } else if (list.length === 1) {
+        motorSelect.value = list[0];
+        cargarAceites(selectedOil);
+      }
+    }
+
+    function cargarAceites(selectedOil) {
+      resetOil();
+      if (!anoSelect.value || !marcaSelect.value || !modeloSelect.value) return;
+      if (motorSelect.required && !motorSelect.value) return;
+
+      const matches = getVehicleMatches();
+      const tipos = [...new Set(matches.map(v => normalizar(v.aceite)).filter(Boolean))];
+      const aceites = [...new Set(preciosAceite
+        .filter(p => tipos.indexOf(normalizar(p.tipo)) !== -1)
+        .map(p => p.marca)
+        .filter(Boolean))]
+        .sort();
+
+      marcaAceite.innerHTML = '<option value="">Select Engine Oil</option>';
+      aceites.forEach(a => addOption(marcaAceite, a, a));
+
+      if (selectedOil) {
+        setSelectValue(marcaAceite, selectedOil);
+      }
+
+      if (marcaAceite.value) calcularPrecio();
+    }
+
+    function calcularPrecio() {
+      if (!marcaAceite.value || !modeloSelect.value || !anoSelect.value) return;
+      if (motorSelect.required && !motorSelect.value) return;
+
+      const estimate = calcularPrecioLocal();
+      if (!estimate) {
+        priceBox.textContent = "Estimated price: N/A";
+        return;
+      }
+
+      priceBox.textContent = `Estimated price: $${estimate.total} | Oil $${estimate.aceite} | Filter $${estimate.filtro} | Labor $${estimate.manoObra} | Disposal $${estimate.desecho}`;
+    }
+
+    document.getElementById("adminForm").addEventListener("submit", e => {
+      e.preventDefault();
+      formMessage.textContent = editingId ? "Updating appointment..." : "Saving appointment...";
+      saveBtn.disabled = true;
+
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      data.aceptoAcuerdo = document.getElementById("aceptoAcuerdo").checked ? "SI" : "ADMIN";
+      data.notificarCliente = document.getElementById("notificarCliente").checked ? "SI" : "NO";
+
+      const runner = google.script.run
+        .withSuccessHandler(res => {
+          saveBtn.disabled = false;
+          if (!res || !res.success) {
+            formMessage.textContent = (res && res.error) || "Appointment was not saved.";
+            return;
+          }
+          formMessage.textContent = editingId ? `Appointment updated: ${res.id}` : `Appointment created: ${res.id}`;
+          resetFormMode();
+          cargarReservas();
+        })
+        .withFailureHandler(err => {
+          saveBtn.disabled = false;
+          showFormError(err);
+        });
+
+      if (editingId) {
+        runner.adminActualizarReserva(adminToken, editingId, data);
+      } else {
+        runner.adminCrearReserva(adminToken, data);
+      }
+    });
+
+    function cargarReservas() {
+      const filtros = {
+        query: document.getElementById("searchInput").value,
+        fecha: document.getElementById("filterDate").value,
+        estado: document.getElementById("filterStatus").value,
+        limit: 300
+      };
+
+      reservasList.innerHTML = '<div class="empty">Loading appointments...</div>';
+      google.script.run
+        .withSuccessHandler(res => {
+          if (!res || !res.success) {
+            reservasList.innerHTML = '<div class="empty">Unable to load appointments.</div>';
+            return;
+          }
+          renderStats(res.resumen || {});
+          reservasCache = res.reservas || [];
+          renderReservas(reservasCache);
+        })
+        .withFailureHandler(err => {
+          reservasList.innerHTML = `<div class="empty">${escapeHtml(err.message || "Unable to load appointments.")}</div>`;
+        })
+        .adminListarReservas(adminToken, filtros);
+    }
+
+    function renderStats(s) {
+      document.getElementById("statTotal").textContent = s.total || 0;
+      document.getElementById("statPendientes").textContent = s.pendientes || 0;
+      document.getElementById("statConfirmadas").textContent = s.confirmadas || 0;
+      document.getElementById("statCompletadas").textContent = s.completadas || 0;
+      document.getElementById("statHoy").textContent = s.hoy || 0;
+    }
+
+    function renderReservas(reservas) {
+      if (!reservas.length) {
+        reservasList.innerHTML = '<div class="empty">No appointments found.</div>';
+        return;
+      }
+
+      reservasList.innerHTML = reservas.map(r => `
+        <article class="card">
+          <div class="card-head">
+            <div class="card-title">
+              <strong>${escapeHtml(r.nombre || "No name")}</strong>
+              <span>${escapeHtml(r.id || "")} | ${escapeHtml(r.fecha || "")} ${escapeHtml(r.hora || "")}</span>
+            </div>
+            <span class="badge ${escapeHtml(r.estado || "")}">${escapeHtml(r.estado || "N/A")}</span>
+          </div>
+          <div class="details">
+            <div><span>Phone</span><br>${escapeHtml(r.telefono || "")}</div>
+            <div><span>Email</span><br>${escapeHtml(r.correo || "")}</div>
+            <div><span>Vehicle</span><br>${escapeHtml(`${r.marca || ""} ${r.modelo || ""} ${r.ano || ""}`)}</div>
+            <div><span>Oil</span><br>${escapeHtml(r.marcaAceite || "")}</div>
+            <div class="full"><span>Address</span><br>${escapeHtml(r.direccion || "")}</div>
+          </div>
+          <div class="actions">
+            <button class="btn" onclick="editarReserva('${escapeAttr(r.id)}')">Edit</button>
+            <button class="btn success" onclick="actualizarEstado('${escapeAttr(r.id)}','Confirmada')">Confirm</button>
+            <button class="btn warn" onclick="actualizarEstado('${escapeAttr(r.id)}','Pendiente')">Pending</button>
+            <button class="btn danger" onclick="actualizarEstado('${escapeAttr(r.id)}','Cancelada')">Cancel</button>
+            <button class="btn info" onclick="actualizarEstado('${escapeAttr(r.id)}','Completada')">Complete</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    window.editarReserva = function(id) {
+      const r = reservasCache.find(item => String(item.id) === String(id));
+      if (!r) {
+        alert("Appointment was not found in the current list.");
+        return;
+      }
+
+      editingId = r.id;
+      formTitle.textContent = `Edit Appointment ${r.id}`;
+      saveBtn.textContent = "Update Appointment";
+      cancelEditBtn.classList.remove("hidden");
+      formMessage.textContent = "Editing existing appointment.";
+
+      document.getElementById("nombre").value = r.nombre || "";
+      document.getElementById("telefono").value = r.telefono || "";
+      document.getElementById("correo").value = r.correo || "";
+      document.getElementById("direccion").value = r.direccion || "";
+      document.getElementById("fecha").value = r.fecha || "";
+      document.getElementById("hora").value = toInputTime(r.hora || "");
+      document.getElementById("estado").value = r.estado || "Pendiente";
+      document.getElementById("comentarios").value = r.comentarios || "";
+      document.getElementById("aceptoAcuerdo").checked = String(r.aceptoAcuerdo || "").toUpperCase() === "SI";
+      document.getElementById("notificarCliente").checked = false;
+
+      setSelectValue(marcaSelect, String(r.marca || "").trim().toLowerCase());
+      populateModelos();
+      setSelectValue(modeloSelect, String(r.modelo || "").trim().toLowerCase());
+      populateAnos();
+      setSelectValue(anoSelect, String(r.ano || "").trim());
+      cargarMotores("", r.marcaAceite || "");
+
+      document.getElementById("adminForm").scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    window.actualizarEstado = function(id, estado) {
+      google.script.run
+        .withSuccessHandler(res => {
+          if (!res || !res.success) {
+            alert((res && res.error) || "Status was not updated.");
+            return;
+          }
+          cargarReservas();
+        })
+        .withFailureHandler(err => alert(err.message || "Status update failed."))
+        .adminActualizarEstado(adminToken, id, estado);
+    };
+
+    function resetFormMode() {
+      editingId = "";
+      formTitle.textContent = "Schedule Appointment";
+      saveBtn.textContent = "Create Appointment";
+      saveBtn.disabled = false;
+      cancelEditBtn.classList.add("hidden");
+      document.getElementById("adminForm").reset();
+      document.getElementById("aceptoAcuerdo").checked = true;
+      document.getElementById("notificarCliente").checked = true;
+      formMessage.textContent = "";
+      resetMotor();
+      resetOil();
+      modeloSelect.innerHTML = '<option value="">Select Model</option>';
+      anoSelect.innerHTML = '<option value="">Select Year</option>';
+      renderMarcas();
+    }
+
+    function populateModelos() {
+      modeloSelect.innerHTML = '<option value="">Select Model</option>';
+      anoSelect.innerHTML = '<option value="">Select Year</option>';
+      resetMotor();
+      resetOil();
+
+      const modelos = vehiculos
+        .filter(v => String(v.marca || "").trim().toLowerCase() === marcaSelect.value)
+        .map(v => String(v.modelo || "").trim().toLowerCase())
+        .filter(Boolean);
+      [...new Set(modelos)].forEach(m => addOption(modeloSelect, m, m));
+    }
+
+    function populateAnos() {
+      anoSelect.innerHTML = '<option value="">Select Year</option>';
+      resetMotor();
+      resetOil();
+
+      const anos = vehiculos
+        .filter(v => String(v.marca || "").trim().toLowerCase() === marcaSelect.value &&
+                     String(v.modelo || "").trim().toLowerCase() === modeloSelect.value)
+        .map(v => String(v.ano || "").trim())
+        .filter(Boolean);
+      [...new Set(anos)].sort().forEach(a => addOption(anoSelect, a, a));
+    }
+
+    function resetMotor() {
+      motorSelect.innerHTML = "";
+      motorSelect.required = false;
+      motorGroup.style.display = "none";
+    }
+
+    function resetOil() {
+      marcaAceite.innerHTML = '<option value="">Select Engine Oil</option>';
+      priceBox.textContent = "Estimated price: N/A";
+    }
+
+    function addOption(select, value, text) {
+      const opt = document.createElement("option");
+      opt.value = value;
+      opt.textContent = text;
+      select.appendChild(opt);
+    }
+
+    function setSelectValue(select, value) {
+      const stringValue = String(value || "");
+      const exists = Array.from(select.options).some(opt => opt.value === stringValue);
+      if (!exists && stringValue) addOption(select, stringValue, stringValue);
+      select.value = stringValue;
+    }
+
+    function getVehicleMatches() {
+      return vehiculos.filter(v =>
+        String(v.ano || "").trim() === anoSelect.value &&
+        normalizar(v.marca) === normalizar(marcaSelect.value) &&
+        normalizar(v.modelo) === normalizar(modeloSelect.value) &&
+        (!motorSelect.value || normalizarMotor(v.motor) === normalizarMotor(motorSelect.value))
+      );
+    }
+
+    function calcularPrecioLocal() {
+      const matches = getVehicleMatches();
+      const match = matches[0];
+      if (!match || !marcaAceite.value) return null;
+
+      const precio = preciosAceite.find(p =>
+        normalizar(p.tipo) === normalizar(match.aceite) &&
+        normalizar(p.marca) === normalizar(marcaAceite.value)
+      );
+      if (!precio) return null;
+
+      const capacidadOriginal = toNumber(match.capacidad);
+      const capacidadLitros = convertirCapacidadALitros(match.capacidad, capacidadOriginal);
+      const litrosBase = convertirCapacidadALitros("5 QT", 5);
+      const aceiteBase = toNumber(precio.precioBase);
+      const precio1L = toNumber(precio.precio1L);
+      const filtro = toNumber(precio.filtro);
+      const manoObra = toNumber(precio.manoObra);
+      const desecho = toNumber(precio.desecho);
+      const extraCantidad = capacidadLitros > litrosBase ? Math.ceil(capacidadLitros - litrosBase) : 0;
+      const aceiteExtra = extraCantidad * precio1L;
+      const aceite = aceiteBase + aceiteExtra;
+      const total = aceite + filtro + manoObra + desecho;
+
+      return {
+        aceite: aceite.toFixed(2),
+        aceiteBase: aceiteBase.toFixed(2),
+        aceiteExtraCantidad: extraCantidad,
+        aceiteExtra: aceiteExtra.toFixed(2),
+        filtro: filtro.toFixed(2),
+        manoObra: manoObra.toFixed(2),
+        desecho: desecho.toFixed(2),
+        total: total.toFixed(2)
+      };
+    }
+
+    function normalizar(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function normalizarMotor(value) {
+      return normalizar(value)
+        .replace(/\s+/g, " ")
+        .replace(/[()]/g, "")
+        .replace(/\s*\/\s*/g, "/")
+        .replace(/\s*-\s*/g, "-");
+    }
+
+    function toNumber(value) {
+      if (typeof value === "number") return value;
+      const parsed = parseFloat(String(value || "").replace(/[^0-9.-]/g, ""));
+      return isNaN(parsed) ? 0 : parsed;
+    }
+
+    function convertirCapacidadALitros(rawValue, numericValue) {
+      const text = String(rawValue || "").toLowerCase();
+      const value = toNumber(numericValue);
+      if (!value) return 0;
+      if (text.indexOf("qt") !== -1 || text.indexOf("quart") !== -1) return value * 0.946352946;
+      if (text.indexOf("l") !== -1 || text.indexOf("liter") !== -1 || text.indexOf("litro") !== -1) return value;
+      return value * 0.946352946;
+    }
+
+    function toInputTime(value) {
+      const text = String(value || "").trim();
+      if (!text) return "";
+
+      const match = text.match(/^(\d{1,2})(?::(\d{2}))?\s*([AaPp]\.?[Mm]\.?)?$/);
+      if (!match) return text;
+
+      let hour = Number(match[1]);
+      const minute = String(Number(match[2] || 0)).padStart(2, "0");
+      const suffix = String(match[3] || "").toUpperCase().replace(/\./g, "");
+
+      if (suffix === "AM" && hour === 12) hour = 0;
+      if (suffix === "PM" && hour < 12) hour += 12;
+
+      if (hour < 0 || hour > 23) return "";
+      return `${String(hour).padStart(2, "0")}:${minute}`;
+    }
+
+    function showFormError(err) {
+      formMessage.textContent = err.message || String(err || "Something went wrong.");
+    }
+
+    function escapeHtml(value) {
+      return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function escapeAttr(value) {
+      return String(value == null ? "" : value).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GNZ Oil Services</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body{
+      background:#050509;
+      color:#e0e0e0;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      min-height:100vh;
+      padding:30px 10px;
+    }
+    body.modal-recibo-open{
+      overflow:hidden;
+    }
+    .container{
+      background:rgba(15,15,20,0.96);
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.85);
+      padding:28px 22px 30px;
+      max-width:900px;
+      width:100%;
+      border:1px solid rgba(255,255,255,0.04);
+    }
+
+    /* HEADER GLASSMORPHISM */
+    .page-header{
+      background:rgba(20,20,30,0.85);
+      border-radius:18px;
+      padding:18px 18px 20px;
+      margin-bottom:24px;
+      border:1px solid rgba(255,255,255,0.12);
+      box-shadow:0 18px 40px rgba(0,0,0,0.7);
+      backdrop-filter:blur(18px);
+    }
+    .page-title{
+      font-size:26px;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:#ffffff;
+      text-align:center;
+      margin-bottom:6px;
+    }
+    .page-subtitle{
+      text-align:center;
+      font-size:14px;
+      color:#9fb7ff;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+    }
+    .header-actions{
+      margin-top:16px;
+      display:flex;
+      justify-content:center;
+    }
+    .btn-brake{
+      padding:10px 18px;
+      border-radius:999px;
+      border:1px solid #0b5ed7;
+      background:linear-gradient(135deg,rgba(10,132,255,0.18),rgba(10,132,255,0.05));
+      color:#e5f0ff;
+      font-size:13px;
+      font-weight:600;
+      letter-spacing:0.05em;
+      text-transform:uppercase;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      transition:all .25s ease;
+      text-decoration:none;
+    }
+    .btn-brake:hover{
+      background:linear-gradient(135deg,rgba(10,132,255,0.35),rgba(10,132,255,0.12));
+      transform:translateY(-1px);
+      box-shadow:0 10px 25px rgba(10,132,255,0.35);
+    }
+
+    h2{
+      text-align:center;
+      margin-bottom:30px;
+      font-size:26px;
+      color:#fff;
+    }
+    .form-group{
+      position:relative;
+      margin-bottom:18px;
+    }
+    .form-group i{
+      position:absolute;
+      top:50%;
+      left:12px;
+      transform:translateY(-50%);
+      color:#888;
+      font-size:16px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea{
+      width:100%;
+      padding:13px 12px 13px 38px;
+      border-radius:10px;
+      border:none;
+      background:#181820;
+      color:#e0e0e0;
+      font-size:15px;
+      transition:all .25s;
+      box-shadow:0 0 0 1px rgba(255,255,255,0.03);
+    }
+    .form-group textarea{
+      min-height:80px;
+      resize:vertical;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus{
+      outline:none;
+      background:#1f1f2a;
+      box-shadow:0 0 0 1px #0b5ed7,0 0 12px rgba(11,94,215,0.6);
+    }
+    .form-group label{
+      position:absolute;
+      top:50%;
+      left:38px;
+      transform:translateY(-50%);
+      pointer-events:none;
+      color:#aaa;
+      transition:.25s;
+      font-size:14px;
+      background:#0f0f14;
+      padding:0 5px;
+    }
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group select:focus + label,
+    .form-group select:not([value=""]) + label,
+    .form-group textarea:focus + label,
+    .form-group textarea:not(:placeholder-shown) + label{
+      top:-9px;
+      left:10px;
+      font-size:11px;
+      color:#0b5ed7;
+    }
+
+    button.primary{
+      width:100%;
+      padding:15px;
+      background:linear-gradient(120deg,#0b5ed7,#2563eb);
+      color:#fff;
+      font-size:17px;
+      border:none;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:600;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      transition:.25s;
+      margin-top:6px;
+      box-shadow:0 14px 30px rgba(11,94,215,0.55);
+    }
+    button.primary:hover{
+      background:linear-gradient(120deg,#084298,#0b5ed7);
+      transform:translateY(-1px);
+      box-shadow:0 18px 40px rgba(0,0,0,.7);
+    }
+    button.primary:disabled{
+      cursor:not-allowed;
+      opacity:.72;
+      transform:none;
+      box-shadow:none;
+    }
+
+    .mensaje{
+      text-align:center;
+      margin-top:16px;
+      font-weight:bold;
+      font-size:15px;
+      color:#c7d7ff;
+    }
+
+    #recibo{
+      display:none;
+      background:linear-gradient(180deg,rgba(22,22,32,0.98),rgba(12,12,18,0.98));
+      margin-top:0;
+      padding:20px 16px 22px;
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,0.12);
+      box-shadow:0 18px 45px rgba(0,0,0,0.7);
+    }
+    #recibo h3{
+      text-align:center;
+      margin-bottom:14px;
+      font-size:20px;
+      color:#ffffff;
+    }
+    #recibo h4{
+      margin-top:18px;
+      margin-bottom:8px;
+      font-size:16px;
+      color:#d0e0ff;
+    }
+    .recibo-datos p{
+      font-size:14px;
+      margin-bottom:8px;
+      padding-bottom:8px;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    .recibo-datos p:last-child{
+      border-bottom:none;
+      padding-bottom:0;
+    }
+
+    .tabla-recibo{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:6px;
+      font-size:14px;
+      overflow:hidden;
+      border-radius:14px;
+    }
+    .tabla-recibo td{
+      padding:10px 6px;
+      border-bottom:1px solid #33384a;
+    }
+    .tabla-recibo tr:last-child td{
+      border-bottom:none;
+    }
+    .tabla-recibo .total td{
+      font-weight:bold;
+      color:#0b9bff;
+      font-size:16px;
+    }
+
+    a#linkAcuerdo{
+      color:#4ea3ff;
+      text-decoration:none;
+      font-weight:600;
+      cursor:pointer;
+      font-size:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    a#linkAcuerdo:hover{
+      text-decoration:underline;
+      color:#7bb8ff;
+    }
+    a#linkAcuerdo.accepted{
+      color:#30d158;
+    }
+    .agreement-status{
+      display:none;
+    }
+    .agreement-status i{
+      margin-top:2px;
+      color:#ffc107;
+    }
+    .agreement-status.accepted{
+      border-color:rgba(48,209,88,0.28);
+      background:rgba(48,209,88,0.10);
+      color:#d8ffe4;
+    }
+    .agreement-status.accepted i{
+      color:#30d158;
+    }
+    .hp-field{
+      position:absolute !important;
+      left:-9999px !important;
+      width:1px !important;
+      height:1px !important;
+      opacity:0 !important;
+      pointer-events:none !important;
+      tab-size:0;
+    }
+
+    .modal{
+      display:none;
+      position:fixed;
+      z-index:9999;
+      left:0;
+      top:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,.82);
+      backdrop-filter:blur(6px);
+    }
+    .modal-content{
+      background:#11121a;
+      margin:40px auto;
+      padding:18px 16px 20px;
+      border-radius:14px;
+      width:92%;
+      max-width:900px;
+      color:#e0e0e0;
+      position:relative;
+      box-shadow:0 18px 40px rgba(0,0,0,0.85);
+      border:1px solid rgba(255,255,255,0.08);
+    }
+    .modal-close{
+      position:absolute;
+      top:10px;
+      right:18px;
+      font-size:26px;
+      color:#aaa;
+      cursor:pointer;
+      transition:.2s;
+      z-index:2;
+    }
+    .modal-close:hover{
+      color:#fff;
+    }
+    iframe#acuerdoFrame{
+      width:100%;
+      height:70vh;
+      border:none;
+      border-radius:10px;
+      background:#050509;
+    }
+    .agreement-modal-content{
+      max-width:760px;
+      padding:16px;
+      border-radius:22px;
+      background:rgba(15,15,20,0.98);
+    }
+    iframe#acuerdoFrame.agreement-frame-hidden{
+      display:none;
+    }
+    .agreement-inline-header{
+      background:rgba(20,20,30,0.86);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:18px;
+      padding:18px;
+      text-align:center;
+      margin-bottom:16px;
+      box-shadow:0 14px 30px rgba(0,0,0,0.42);
+    }
+    .agreement-inline-icon{
+      width:58px;
+      height:58px;
+      border-radius:20px;
+      margin:0 auto 12px;
+      background:linear-gradient(145deg,#0b5ed7,#4ea3ff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:25px;
+      box-shadow:0 14px 28px rgba(11,94,215,0.38);
+    }
+    .agreement-inline-header h2{
+      margin:0 0 6px;
+      font-size:24px;
+      line-height:1.2;
+    }
+    .agreement-inline-subtitle{
+      color:#9fb7ff;
+      font-size:13px;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+    }
+    .agreement-inline-body{
+      background:linear-gradient(180deg,rgba(22,22,32,0.96),rgba(12,12,18,0.96));
+      border:1px solid rgba(255,255,255,0.09);
+      border-radius:18px;
+      padding:18px;
+      max-height:62vh;
+      overflow:auto;
+    }
+    #textoAcuerdo p{
+      margin-bottom:15px;
+      line-height:1.65;
+      color:#d8def5;
+      font-size:15px;
+    }
+    #textoAcuerdo ul{
+      list-style:none;
+      margin:0 0 16px;
+    }
+    #textoAcuerdo li{
+      position:relative;
+      padding:10px 0 10px 34px;
+      border-bottom:1px solid rgba(255,255,255,0.07);
+      line-height:1.5;
+      color:#e8ecff;
+      font-size:15px;
+    }
+    #textoAcuerdo li:last-child{
+      border-bottom:none;
+    }
+    #textoAcuerdo li::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:12px;
+      width:20px;
+      height:20px;
+      border-radius:50%;
+      background:rgba(10,132,255,0.18);
+      border:1px solid rgba(126,184,255,0.45);
+    }
+    #textoAcuerdo li::after{
+      content:"✓";
+      position:absolute;
+      left:5px;
+      top:9px;
+      color:#7fb4ff;
+      font-weight:800;
+      font-size:14px;
+    }
+    .agreement-accept-note{
+      margin-top:14px;
+      padding:14px;
+      border-radius:16px;
+      background:rgba(10,132,255,0.10);
+      border:1px solid rgba(10,132,255,0.24);
+      color:#cfe2ff;
+      font-size:14px;
+      line-height:1.55;
+    }
+    #btnAceptar{
+      width:100%;
+      margin:18px auto 0;
+      padding:15px 18px;
+      background:linear-gradient(120deg,#0b5ed7,#2563eb);
+      color:white;
+      font-size:16px;
+      border:none;
+      border-radius:16px;
+      cursor:pointer;
+      font-weight:700;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      transition:all 0.25s ease;
+      box-shadow:0 14px 30px rgba(11,94,215,0.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+    #btnAceptar:hover{
+      background:linear-gradient(120deg,#084298,#0b5ed7);
+      transform:translateY(-1px);
+      box-shadow:0 18px 38px rgba(0,0,0,0.58);
+    }
+    #btnAceptar.accepted{
+      background:linear-gradient(120deg,#198754,#30d158);
+      box-shadow:0 14px 30px rgba(25,135,84,0.36);
+    }
+
+    .gnz-alert-modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:11000;
+      background:rgba(0,0,0,0.78);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      padding:18px;
+      align-items:center;
+      justify-content:center;
+    }
+    .gnz-alert-modal.show{
+      display:flex;
+    }
+    .gnz-alert-card{
+      width:100%;
+      max-width:430px;
+      border-radius:24px;
+      background:linear-gradient(180deg,rgba(24,24,34,0.98),rgba(12,12,18,0.98));
+      border:1px solid rgba(255,255,255,0.12);
+      box-shadow:0 24px 60px rgba(0,0,0,0.72);
+      padding:24px 20px 20px;
+      text-align:center;
+      color:#eef3ff;
+    }
+    .gnz-alert-icon{
+      width:64px;
+      height:64px;
+      margin:0 auto 14px;
+      border-radius:22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:28px;
+      background:linear-gradient(145deg,#0b5ed7,#4ea3ff);
+      box-shadow:0 16px 32px rgba(11,94,215,0.38);
+    }
+    .gnz-alert-icon.success{
+      background:linear-gradient(145deg,#198754,#30d158);
+      box-shadow:0 16px 32px rgba(48,209,88,0.28);
+    }
+    .gnz-alert-icon.warning{
+      background:linear-gradient(145deg,#f59e0b,#ffc107);
+      box-shadow:0 16px 32px rgba(245,158,11,0.25);
+    }
+    .gnz-alert-icon.error{
+      background:linear-gradient(145deg,#dc3545,#ff6b7a);
+      box-shadow:0 16px 32px rgba(220,53,69,0.26);
+    }
+    .gnz-alert-card h3{
+      font-size:22px;
+      margin-bottom:8px;
+      color:#fff;
+      line-height:1.2;
+    }
+    .gnz-alert-card p{
+      color:#b8c3eb;
+      line-height:1.55;
+      font-size:14px;
+      margin-bottom:18px;
+    }
+    .gnz-alert-card button{
+      width:100%;
+      padding:14px 16px;
+      border:none;
+      border-radius:16px;
+      background:linear-gradient(120deg,#0b5ed7,#2563eb);
+      color:#fff;
+      font-size:15px;
+      font-weight:700;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      cursor:pointer;
+      box-shadow:0 14px 28px rgba(11,94,215,0.34);
+      transition:.22s;
+    }
+    .gnz-alert-card button:hover{
+      transform:translateY(-1px);
+      box-shadow:0 18px 36px rgba(0,0,0,0.5);
+    }
+
+    /* MODAL RECIBO FINAL FULL SCREEN */
+    .receipt-modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:10000;
+      background:
+        radial-gradient(circle at top left,rgba(10,132,255,0.24),transparent 32%),
+        radial-gradient(circle at bottom right,rgba(37,99,235,0.20),transparent 34%),
+        rgba(5,5,9,0.96);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      overflow-y:auto;
+      padding:18px 12px 28px;
+    }
+    .receipt-modal.show{
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+    }
+    .receipt-modal-shell{
+      width:100%;
+      max-width:620px;
+      min-height:calc(100vh - 46px);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    .receipt-modal-topbar{
+      position:sticky;
+      top:10px;
+      z-index:2;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:12px 12px;
+      border-radius:999px;
+      background:rgba(20,20,30,0.72);
+      border:1px solid rgba(255,255,255,0.12);
+      box-shadow:0 14px 30px rgba(0,0,0,0.35);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+    }
+    .receipt-modal-brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .receipt-status-dot{
+      width:13px;
+      height:13px;
+      flex:0 0 auto;
+      border-radius:50%;
+      background:#30d158;
+      box-shadow:0 0 0 5px rgba(48,209,88,0.14),0 0 18px rgba(48,209,88,0.7);
+    }
+    .receipt-modal-brand strong{
+      display:block;
+      color:#ffffff;
+      font-size:13px;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .receipt-modal-brand span{
+      display:block;
+      color:#a8b8e8;
+      font-size:12px;
+      margin-top:1px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .receipt-close-btn{
+      width:38px;
+      height:38px;
+      flex:0 0 auto;
+      border:none;
+      border-radius:50%;
+      background:rgba(255,255,255,0.12);
+      color:#ffffff;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      transition:.2s ease;
+    }
+    .receipt-close-btn:hover{
+      background:rgba(255,255,255,0.20);
+      transform:scale(1.03);
+    }
+    .receipt-modal-hero{
+      text-align:center;
+      padding:14px 8px 2px;
+    }
+    .receipt-modal-hero-icon{
+      width:70px;
+      height:70px;
+      margin:0 auto 12px;
+      border-radius:24px;
+      background:linear-gradient(145deg,#0b5ed7,#4ea3ff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:30px;
+      box-shadow:0 18px 35px rgba(11,94,215,0.42);
+    }
+    .receipt-modal-hero h2{
+      margin:0 0 7px;
+      font-size:28px;
+      line-height:1.15;
+      color:#fff;
+    }
+    .receipt-modal-hero p{
+      color:#aebbea;
+      font-size:14px;
+      line-height:1.45;
+    }
+    .receipt-modal-card{
+      margin-top:4px;
+    }
+    .receipt-done-btn{
+      width:100%;
+      margin-top:14px;
+      padding:15px;
+      border:none;
+      border-radius:16px;
+      background:linear-gradient(120deg,#0b5ed7,#2563eb);
+      color:#fff;
+      font-size:16px;
+      font-weight:700;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      cursor:pointer;
+      box-shadow:0 14px 30px rgba(11,94,215,0.42);
+      transition:.22s ease;
+    }
+    .receipt-done-btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 18px 38px rgba(0,0,0,0.55);
+    }
+
+    /* FOOTER CONTACT */
+    .footer-contact{
+      margin-top:26px;
+      padding-top:14px;
+      border-top:1px solid rgba(255,255,255,0.06);
+      text-align:center;
+      font-size:13px;
+      color:#a8b3d9;
+    }
+    .footer-contact strong{
+      color:#dbe4ff;
+    }
+    .footer-contact a{
+      color:#7fb4ff;
+      text-decoration:none;
+    }
+    .footer-contact a:hover{
+      text-decoration:underline;
+    }
+
+    @media(max-width:700px){
+      body{
+        font-size:18px;
+      }
+
+      .page-title{
+        font-size:26px;
+      }
+
+      .page-subtitle{
+        font-size:15px;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea{
+        font-size:17px;
+        padding:14px 12px 14px 38px;
+      }
+
+      label{
+        font-size:14px;
+      }
+
+      button.primary{
+        font-size:18px;
+        padding:16px;
+      }
+
+      #recibo{
+        font-size:17px;
+        border-radius:22px;
+        padding:18px 14px 20px;
+      }
+
+      .tabla-recibo td{
+        font-size:17px;
+      }
+
+      .footer-contact{
+        font-size:16px;
+      }
+
+      iframe#acuerdoFrame{
+        height:76vh;
+      }
+
+      .modal-content{
+        margin:18px auto;
+        width:96%;
+        padding:14px 12px 16px;
+      }
+
+      .receipt-modal{
+        padding:12px 10px 24px;
+      }
+
+      .receipt-modal-shell{
+        min-height:calc(100vh - 36px);
+      }
+
+      .receipt-modal-topbar{
+        top:8px;
+        border-radius:22px;
+        align-items:flex-start;
+      }
+
+      .receipt-modal-brand strong{
+        font-size:12px;
+      }
+
+      .receipt-modal-brand span{
+        font-size:11px;
+      }
+
+      .receipt-modal-hero h2{
+        font-size:25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- HEADER GLASSMORPHISM -->
+    <header class="page-header">
+      <div class="page-title">GNZ OIL SERVICES</div>
+      <div class="page-subtitle">Mobile Oil Change & Maintenance at Your Door</div>
+      <div class="header-actions">
+        <a
+          href="frenos.html"
+          class="btn-brake"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GNZ Brake & Flush Services
+          <span style="font-size:11px;">→</span>
+        </a>
+      </div>
+    </header>
+
+    <form id="formCita">
+      <input type="text" name="companyWebsite" id="companyWebsite" class="hp-field" tabindex="-1" autocomplete="off">
+
+      <div class="form-group">
+        <i class="fas fa-user"></i>
+        <input type="text" name="nombre" id="nombre" placeholder=" " required>
+        <label>Full Name</label>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-phone"></i>
+        <input type="tel" name="telefono" id="telefono" placeholder=" " required>
+        <label>Phone</label>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" name="correo" id="correo" placeholder=" " required>
+        <label>Email</label>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-car"></i>
+        <select name="marca" id="marcaSelect" required>
+          <option value="">Select Make</option>
+        </select>
+        <label>Marca del vehículo</label>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-car-side"></i>
+        <select name="modelo" id="modeloSelect" required>
+          <option value="">Select Model</option>
+        </select>
+        <label>Selecciona Modelo</label>
+      </div>
+      <div class="form-group" id="motorGroup" style="display:none;">
+        <i class="fas fa-cogs"></i>
+        <select id="motorSelect" name="motor"></select>
+        <label>Engine / Code</label>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-calendar-alt"></i>
+        <select name="ano" id="anoSelect" required>
+          <option value="">Select Year</option>
+        </select>
+        <label>Año del vehículo</label>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-industry"></i>
+        <select name="marcaAceite" id="marcaAceite" required>
+          <option value="">Select Engine Oil</option>
+        </select>
+        <label>Marca de Aceite</label>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-map-marker-alt"></i>
+        <input type="text" name="direccion" id="direccion" placeholder=" " required>
+        <label>Service Address</label>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-calendar-day"></i>
+        <input type="date" name="fecha" id="fecha" required>
+        <label>Date</label>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-clock"></i>
+        <input type="time" name="hora" id="hora" required>
+        <label>Time</label>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-comment-dots"></i>
+        <textarea name="comentarios" id="comentarios" placeholder=" "></textarea>
+        <label>Aditional Coments</label>
+      </div>
+      <div class="form-group">
+      <a id="linkAcuerdo">Read Full Agreement</a>
+      </div>
+      <div class="agreement-status" id="agreementStatus" aria-live="polite"></div>
+      <input type="hidden" name="estado" value="Pendiente">
+      <input type="hidden" name="idioma" id="langField">
+      <input type="hidden" name="aceptoAcuerdo" id="aceptoAcuerdo" value="N/A">
+      <button type="submit" class="primary" id="btnEnviarReserva">Enviar Reserva</button>
+    </form>
+
+    <div class="mensaje" id="mensaje"></div>
+
+    <div id="modalAcuerdo" class="modal">
+      <div class="modal-content agreement-modal-content">
+        <span class="modal-close">&times;</span>
+        <iframe id="acuerdoFrame" class="agreement-frame-hidden" title="Agreement legacy frame"></iframe>
+        <div class="agreement-inline-header">
+          <div class="agreement-inline-icon">
+            <i class="fas fa-file-signature"></i>
+          </div>
+          <h2 id="tituloAcuerdo">Mobile Service Agreement</h2>
+          <div class="agreement-inline-subtitle">GNZ Oil Services</div>
+        </div>
+        <div class="agreement-inline-body">
+          <div id="textoAcuerdo"></div>
+          <div class="agreement-accept-note" id="acceptNote">
+            By accepting this agreement, you authorize GNZ Oil Services to process your appointment request using the information provided.
+          </div>
+          <button id="btnAceptar" type="button">
+            <i class="fas fa-check-circle"></i>
+            <span>Accept and sign agreement</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modalAlertaGNZ" class="gnz-alert-modal" aria-hidden="true">
+      <div class="gnz-alert-card">
+        <div class="gnz-alert-icon" id="gnzAlertIcon">
+          <i class="fas fa-exclamation"></i>
+        </div>
+        <h3 id="gnzAlertTitulo"></h3>
+        <p id="gnzAlertMensaje"></p>
+        <button type="button" id="gnzAlertBtn">OK</button>
+      </div>
+    </div>
+
+    <div id="modalReciboFinal" class="receipt-modal" aria-hidden="true">
+      <div class="receipt-modal-shell">
+        <div class="receipt-modal-topbar">
+          <div class="receipt-modal-brand">
+            <span class="receipt-status-dot"></span>
+            <div>
+              <strong>GNZ Oil Services</strong>
+              <span>Reservation confirmed</span>
+            </div>
+          </div>
+          <button type="button" class="receipt-close-btn" id="cerrarReciboFinal" aria-label="Cerrar recibo">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="receipt-modal-hero">
+          <div class="receipt-modal-hero-icon">
+            <i class="fas fa-check"></i>
+          </div>
+          <h2>Reservation Sent</h2>
+          <p>Your appointment request has been received. Please keep this receipt for your records.</p>
+        </div>
+
+        <div class="receipt-modal-card">
+          <div id="recibo">
+            <h3>📋 Reservation Recive</h3>
+            <div class="recibo-datos">
+              <p><strong>Full Name:</strong> <span id="rNombre"></span></p>
+              <p><strong>Phone:</strong> <span id="rTelefono"></span></p>
+              <p><strong>E-mail:</strong> <span id="rCorreo"></span></p>
+              <p><strong>Make:</strong> <span id="rMarca"></span></p>
+              <p><strong>Model:</strong> <span id="rModelo"></span></p>
+              <p><strong>Year:</strong> <span id="rAno"></span></p>
+              <p><strong>Select Engine Oil:</strong> <span id="rMarcaAceite"></span></p>
+              <p><strong>Service Address:</strong> <span id="rDireccionRec"></span></p>
+              <p><strong>Date:</strong> <span id="rFecha"></span></p>
+              <p><strong>Time:</strong> <span id="rHora"></span></p>
+              <p><strong>Leave a Note:</strong> <span id="rComentarios"></span></p>
+            </div>
+
+            <h4>💲 Desglose de Costos</h4>
+            <table class="tabla-recibo">
+              <tr><td>Engine Oil</td><td><span id="reciboAceite"></span></td></tr>
+              <tr><td>Engine Oil Filter</td><td><span id="reciboFiltro"></span></td></tr>
+              <tr><td>Hands of Work</td><td><span id="reciboManoObra"></span></td></tr>
+              <tr><td>Trash</td><td><span id="reciboDesecho"></span></td></tr>
+              <tr class="total"><td>Total</td><td><strong><span id="reciboTotal"></span></strong></td></tr>
+            </table>
+          </div>
+
+          <button type="button" class="receipt-done-btn" id="cerrarReciboFinalAbajo">
+            Close Receipt
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <p><strong>Contact GNZ Oil Services</strong></p>
+      <p>Phone: <a href="tel:19045024182">904-502-4182</a></p>
+      <p>Email: <a href="mailto:gnzoilservices@gmail.com">gnzoilservices@gmail.com</a></p>
+    </div>
+
+  </div>
+
+  <script>
+    const gnzEndpointFromUrl = new URLSearchParams(window.location.search).get("endpoint");
+    if (gnzEndpointFromUrl) {
+      localStorage.setItem("gnzUnifiedEndpoint", gnzEndpointFromUrl);
+    }
+    window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl ||
+      localStorage.getItem("gnzUnifiedEndpoint") ||
+      "REPLACE_WITH_UNIFIED_APPS_SCRIPT_WEB_APP_URL";
+  </script>
+  <script src="assets/js/apps-script-bridge.js"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const marcaSelect = document.getElementById("marcaSelect");
+    const modeloSelect = document.getElementById("modeloSelect");
+    const anoSelect = document.getElementById("anoSelect");
+    const motorGroup = document.getElementById("motorGroup");
+    const motorSelect = document.getElementById("motorSelect");
+    const marcaAceiteSelect = document.getElementById("marcaAceite");
+    const formCita = document.getElementById("formCita");
+    const submitButton = document.getElementById("btnEnviarReserva");
+    const aceptoAcuerdoField = document.getElementById("aceptoAcuerdo");
+    const agreementStatus = document.getElementById("agreementStatus");
+    const precioBox = document.createElement("div");
+    precioBox.id = "precioBox";
+    precioBox.style.marginTop = "10px";
+    precioBox.style.fontWeight = "700";
+    precioBox.style.fontSize = "14px";
+    precioBox.style.color = "#cfe2ff";
+    document.querySelector("form").appendChild(precioBox);
+
+    let vehiculos = [];
+    let isSubmitting = false;
+    let acuerdoAceptadoActual = false;
+    let gnzAlertCallback = null;
+    let gnzAlertTimer = null;
+
+    // Cargar vehículos desde backend
+    google.script.run
+      .withSuccessHandler(data => {
+        vehiculos = data || [];
+        const marcasUnicas = [...new Set(vehiculos.map(v => String(v.marca || "").trim().toLowerCase()).filter(Boolean))].sort();
+        marcasUnicas.forEach(m => {
+          const opt = document.createElement("option");
+          opt.value = m;
+          opt.textContent = m;
+          marcaSelect.appendChild(opt);
+        });
+      })
+      .withFailureHandler(err => {
+        mostrarAlertaGNZ(
+          "Unable to Load Vehicles",
+          "We could not load the vehicle list right now. Please refresh the page or try again in a moment.",
+          "error",
+          "OK"
+        );
+        console.error(err);
+      })
+      .obtenerVehiculos();
+
+    function resetMotorOptions() {
+      motorSelect.innerHTML = "";
+      motorSelect.required = false;
+      motorGroup.style.display = "none";
+    }
+
+    function resetOilOptions() {
+      marcaAceiteSelect.innerHTML = '<option value="">Selecciona marca de aceite</option>';
+      precioBox.textContent = "";
+      document.getElementById("reciboAceite").textContent = "";
+      document.getElementById("reciboFiltro").textContent = "";
+      document.getElementById("reciboManoObra").textContent = "";
+      document.getElementById("reciboDesecho").textContent = "";
+      document.getElementById("reciboTotal").textContent = "";
+    }
+
+    function cargarAceitesCompatibles() {
+      const selectedVehiculo = {
+        marca: marcaSelect.value,
+        modelo: modeloSelect.value,
+        motor: motorSelect.value || "",
+        ano: anoSelect.value || ""
+      };
+
+      resetOilOptions();
+
+      if (!selectedVehiculo.marca || !selectedVehiculo.modelo || !selectedVehiculo.ano) return;
+      if (motorGroup.style.display !== "none" && motorSelect.required && !selectedVehiculo.motor) return;
+
+      google.script.run
+        .withSuccessHandler(aceites => {
+          marcaAceiteSelect.innerHTML = '<option value="">Select Engine Oil</option>';
+          if (!aceites || !aceites.length) {
+            marcaAceiteSelect.innerHTML = '<option value="">No compatible oil found</option>';
+            return;
+          }
+
+          aceites.forEach(a => {
+            const opt = document.createElement("option");
+            opt.value = a;
+            opt.textContent = a;
+            marcaAceiteSelect.appendChild(opt);
+          });
+        })
+        .withFailureHandler(err => {
+          mostrarAlertaGNZ(
+            "Unable to Load Oil Options",
+            "We could not load compatible oil options for this vehicle. Please try selecting the vehicle again.",
+            "error",
+            "OK"
+          );
+          console.error(err);
+        })
+        .obtenerAceitesCompatibles(
+          selectedVehiculo.ano,
+          selectedVehiculo.marca,
+          selectedVehiculo.modelo,
+          selectedVehiculo.motor
+        );
+    }
+
+    function cargarMotoresDisponibles() {
+      resetMotorOptions();
+      resetOilOptions();
+
+      const ano = anoSelect.value || "";
+      const marca = marcaSelect.value || "";
+      const modelo = modeloSelect.value || "";
+
+      if (!ano || !marca || !modelo) return;
+
+      google.script.run
+        .withSuccessHandler(motores => {
+          motorSelect.innerHTML = "";
+          const motoresUnicos = [...new Set((motores || []).map(m => String(m || "").trim()).filter(Boolean))];
+
+          if (!motoresUnicos.length) {
+            resetMotorOptions();
+            cargarAceitesCompatibles();
+            return;
+          }
+
+          motorGroup.style.display = "block";
+          motorSelect.required = true;
+
+          if (motoresUnicos.length > 1) {
+            const placeholder = document.createElement("option");
+            placeholder.value = "";
+            placeholder.textContent = "Select Engine / Code";
+            motorSelect.appendChild(placeholder);
+          }
+
+          motoresUnicos.forEach(m => {
+            const opt = document.createElement("option");
+            opt.value = m;
+            opt.textContent = m;
+            motorSelect.appendChild(opt);
+          });
+
+          if (motoresUnicos.length === 1) {
+            motorSelect.value = motoresUnicos[0];
+            cargarAceitesCompatibles();
+          }
+        })
+        .withFailureHandler(err => {
+          resetMotorOptions();
+          mostrarAlertaGNZ(
+            "Unable to Load Engine Codes",
+            "We could not load the engine codes for this vehicle. Please try selecting the year again.",
+            "error",
+            "OK"
+          );
+          console.error(err);
+        })
+        .obtenerMotoresDisponibles(ano, marca, modelo);
+    }
+
+    // Poblar modelos
+    marcaSelect.addEventListener("change", () => {
+      modeloSelect.innerHTML = '<option value="">Selecciona modelo</option>';
+      anoSelect.innerHTML = '<option value="">Selecciona año</option>';
+      resetMotorOptions();
+      resetOilOptions();
+
+      const modelos = vehiculos
+        .filter(v => String(v.marca || "").trim().toLowerCase() === marcaSelect.value)
+        .map(v => String(v.modelo || "").trim().toLowerCase())
+        .filter(Boolean);
+      [...new Set(modelos)].forEach(modelo => {
+        const opt = document.createElement("option");
+        opt.value = modelo;
+        opt.textContent = modelo;
+        modeloSelect.appendChild(opt);
+      });
+    });
+
+    modeloSelect.addEventListener("change", () => {
+      anoSelect.innerHTML = '<option value="">Selecciona año</option>';
+      resetMotorOptions();
+      resetOilOptions();
+
+      // Años únicos
+      const anos = vehiculos
+        .filter(v => String(v.marca || "").trim().toLowerCase() === marcaSelect.value &&
+                     String(v.modelo || "").trim().toLowerCase() === modeloSelect.value)
+        .map(v => String(v.ano || "").trim().toLowerCase())
+        .filter(Boolean);
+      [...new Set(anos)].forEach(ano => {
+        const opt = document.createElement("option");
+        opt.value = ano;
+        opt.textContent = ano;
+        anoSelect.appendChild(opt);
+      });
+
+      // Motores únicos
+      const motores = vehiculos
+        .filter(v => String(v.marca || "").trim().toLowerCase() === marcaSelect.value &&
+                     String(v.modelo || "").trim().toLowerCase() === modeloSelect.value)
+        .map(v => String(v.motor || "").trim())
+        .filter(Boolean);
+      [...new Set(motores)].forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = m;
+        motorSelect.appendChild(opt);
+      });
+      if (motores.length) motorGroup.style.display = "block";
+
+      const selectedVehiculo = {
+        marca: marcaSelect.value,
+        modelo: modeloSelect.value,
+        motor: motorSelect.value || "",
+        ano: anoSelect.value || ""
+      };
+
+      google.script.run
+        .withSuccessHandler(aceites => {
+          marcaAceiteSelect.innerHTML = "";
+          if (!aceites || !aceites.length) return;
+          aceites.forEach(a => {
+            const opt = document.createElement("option");
+            opt.value = a;
+            opt.textContent = a;
+            marcaAceiteSelect.appendChild(opt);
+          });
+        })
+        .withFailureHandler(err => {
+          mostrarAlertaGNZ(
+            "Unable to Load Oil Options",
+            "We could not load compatible oil options for this vehicle. Please try selecting the vehicle again.",
+            "error",
+            "OK"
+          );
+          console.error(err);
+        })
+        .obtenerAceitesCompatibles(selectedVehiculo.ano, selectedVehiculo.marca, selectedVehiculo.modelo);
+    });
+
+    // Cambio de aceite / cálculo de precio
+    modeloSelect.addEventListener("change", () => {
+      resetMotorOptions();
+      resetOilOptions();
+    });
+
+    anoSelect.addEventListener("change", cargarMotoresDisponibles);
+
+    motorSelect.addEventListener("change", cargarAceitesCompatibles);
+
+    marcaAceiteSelect.addEventListener("change", () => {
+      const marcaAceite = marcaAceiteSelect.value;
+      const modelo = modeloSelect.value;
+      const motor = motorSelect.value || "";
+      const ano = anoSelect.value || "";
+
+      if (!marcaAceite || !modelo || !ano) return;
+      if (motorGroup.style.display !== "none" && motorSelect.required && !motor) return;
+
+      const params = { marcaAceite, modelo, motor, ano };
+      google.script.run
+        .withSuccessHandler(data => {
+          precioBox.textContent = data && data.total ? `💲 Precio estimado: ${data.total}` : "💲 Precio estimado: N/A";
+          document.getElementById("reciboAceite").textContent = (data && data.aceite) || "";
+          document.getElementById("reciboFiltro").textContent = (data && data.filtro) || "";
+          document.getElementById("reciboManoObra").textContent = (data && data.manoObra) || "";
+          document.getElementById("reciboDesecho").textContent = (data && data.desecho) || "";
+          document.getElementById("reciboTotal").textContent = (data && data.total) || "";
+        })
+        .withFailureHandler(err => {
+          precioBox.textContent = "💲 Precio estimado: N/A";
+          mostrarAlertaGNZ(
+            "Unable to Calculate Price",
+            "We could not calculate the estimated price right now. Please try again in a moment.",
+            "error",
+            "OK"
+          );
+          console.error(err);
+        })
+        .calcularPrecio(params);
+    });
+
+    // Modal acuerdo
+    const modal = document.getElementById("modalAcuerdo");
+    const link = document.getElementById("linkAcuerdo");
+    const spanClose = document.querySelector(".modal-close");
+    const acuerdoFrame = document.getElementById("acuerdoFrame");
+    const btnAceptarAcuerdo = document.getElementById("btnAceptar");
+    const tituloAcuerdo = document.getElementById("tituloAcuerdo");
+    const textoAcuerdo = document.getElementById("textoAcuerdo");
+    const acceptNote = document.getElementById("acceptNote");
+    const agreementTexts = {
+      es: {
+        title: "Acuerdo de Servicio a Domicilio",
+        note: "Al aceptar este acuerdo, autorizas a GNZ Oil Services a procesar tu solicitud de cita usando la informacion proporcionada.",
+        button: "Aceptar y firmar acuerdo",
+        body: `
+          <p>Al solicitar nuestro servicio de cambio de aceite a domicilio, usted acepta los siguientes terminos y condiciones:</p>
+          <ul>
+            <li>El cliente debe proporcionar informacion veraz sobre el vehiculo y la ubicacion del servicio.</li>
+            <li>Se requiere agendar la cita con al menos 24 horas de anticipacion.</li>
+            <li>El tecnico puede reprogramar la cita en caso de condiciones climaticas adversas, emergencias o situaciones fuera de su control.</li>
+            <li>Los precios pueden variar segun el tipo de aceite, filtro, capacidad del vehiculo y servicios adicionales.</li>
+            <li>El cliente debe garantizar acceso adecuado y seguro al vehiculo al momento del servicio.</li>
+            <li>Los pagos deben completarse al finalizar el servicio, salvo acuerdo previo.</li>
+            <li>La aceptacion digital de este acuerdo confirma que el cliente leyo y acepto estos terminos.</li>
+          </ul>
+          <p>Al presionar "Aceptar y firmar acuerdo", confirma que ha leido y aceptado estos terminos.</p>
+        `
+      },
+      en: {
+        title: "Mobile Service Agreement",
+        note: "By accepting this agreement, you authorize GNZ Oil Services to process your appointment request using the information provided.",
+        button: "Accept and sign agreement",
+        body: `
+          <p>By requesting our mobile oil change service, you agree to the following terms and conditions:</p>
+          <ul>
+            <li>The client must provide accurate vehicle and service location information.</li>
+            <li>Appointments must be scheduled at least 24 hours in advance.</li>
+            <li>The technician may reschedule due to weather, emergencies, or circumstances outside their control.</li>
+            <li>Prices may vary depending on oil type, filter, vehicle capacity, and additional services.</li>
+            <li>The client must ensure safe and proper access to the vehicle at the time of service.</li>
+            <li>Payment is due upon service completion unless otherwise agreed in advance.</li>
+            <li>Digital acceptance of this agreement confirms that the client has read and accepted these terms.</li>
+          </ul>
+          <p>By clicking "Accept and sign agreement", you confirm acceptance of these terms.</p>
+        `
+      },
+      pt: {
+        title: "Acordo de Servico Domiciliar",
+        note: "Ao aceitar este acordo, voce autoriza a GNZ Oil Services a processar sua solicitacao de agendamento usando as informacoes fornecidas.",
+        button: "Aceitar e assinar acordo",
+        body: `
+          <p>Ao solicitar nosso servico movel de troca de oleo, voce concorda com os seguintes termos:</p>
+          <ul>
+            <li>O cliente deve fornecer informacoes corretas do veiculo e do local do servico.</li>
+            <li>As reservas devem ser feitas com pelo menos 24 horas de antecedencia.</li>
+            <li>O tecnico pode reagendar por clima, emergencias ou situacoes fora de seu controle.</li>
+            <li>Os precos podem variar conforme o tipo de oleo, filtro, capacidade do veiculo e servicos adicionais.</li>
+            <li>O cliente deve garantir acesso adequado e seguro ao veiculo.</li>
+            <li>O pagamento deve ser feito apos o servico, salvo acordo previo.</li>
+            <li>A aceitacao digital confirma que o cliente leu e aceitou estes termos.</li>
+          </ul>
+          <p>Ao clicar em "Aceitar e assinar acordo", voce confirma que aceita estes termos.</p>
+        `
+      }
+    };
+    const agreementLang = agreementTexts[(navigator.language || "en").slice(0, 2)] ? (navigator.language || "en").slice(0, 2) : "en";
+
+    function renderAgreement() {
+      const selected = agreementTexts[agreementLang];
+      tituloAcuerdo.textContent = selected.title;
+      textoAcuerdo.innerHTML = selected.body;
+      acceptNote.textContent = selected.note;
+      btnAceptarAcuerdo.querySelector("span").textContent = selected.button;
+    }
+
+    function abrirAcuerdo() {
+      acuerdoFrame.removeAttribute("src");
+      modal.style.display = "block";
+    }
+
+    function cerrarAcuerdo() {
+      modal.style.display = "none";
+    }
+
+    function marcarAcuerdoAceptado(showMessage) {
+      const alreadyAccepted = acuerdoAceptadoActual || aceptoAcuerdoField.value === "SI";
+      acuerdoAceptadoActual = true;
+      aceptoAcuerdoField.value = "SI";
+      link.classList.add("accepted");
+      agreementStatus.classList.add("accepted");
+      cerrarAcuerdo();
+
+      if (showMessage && !alreadyAccepted) {
+        mostrarAlertaGNZ(
+          "Agreement Accepted",
+          "Thank you. Your service agreement has been accepted and attached to this reservation.",
+          "success",
+          "Continue",
+          null,
+          1500
+        );
+      }
+    }
+
+    function resetearAcuerdoAceptado() {
+      acuerdoAceptadoActual = false;
+      aceptoAcuerdoField.value = "N/A";
+      link.classList.remove("accepted");
+      agreementStatus.classList.remove("accepted");
+    }
+
+    function sincronizarAcuerdoAceptado() {
+      if (acuerdoAceptadoActual || aceptoAcuerdoField.value === "SI") {
+        marcarAcuerdoAceptado(false);
+        return true;
+      }
+
+      return false;
+    }
+
+    renderAgreement();
+
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      abrirAcuerdo();
+    });
+
+    btnAceptarAcuerdo.addEventListener("click", () => {
+      marcarAcuerdoAceptado(true);
+    });
+
+    spanClose.addEventListener("click", cerrarAcuerdo);
+
+    window.addEventListener("click", (e) => {
+      if (e.target === modal) cerrarAcuerdo();
+    });
+
+    // Modal alerta GNZ
+    const alertModal = document.getElementById("modalAlertaGNZ");
+    const alertIcon = document.getElementById("gnzAlertIcon");
+    const alertTitle = document.getElementById("gnzAlertTitulo");
+    const alertMessage = document.getElementById("gnzAlertMensaje");
+    const alertButton = document.getElementById("gnzAlertBtn");
+
+    function mostrarAlertaGNZ(titulo, mensaje, tipo, botonTexto, callback, autoCloseMs) {
+      if (gnzAlertTimer) {
+        clearTimeout(gnzAlertTimer);
+        gnzAlertTimer = null;
+      }
+
+      alertTitle.textContent = titulo || "Notice";
+      alertMessage.textContent = mensaje || "";
+      alertButton.textContent = botonTexto || "OK";
+
+      alertIcon.className = "gnz-alert-icon " + (tipo || "info");
+      if (tipo === "success") {
+        alertIcon.innerHTML = '<i class="fas fa-check"></i>';
+      } else if (tipo === "error") {
+        alertIcon.innerHTML = '<i class="fas fa-times"></i>';
+      } else {
+        alertIcon.innerHTML = '<i class="fas fa-exclamation"></i>';
+      }
+
+      gnzAlertCallback = callback || null;
+      alertModal.classList.add("show");
+      alertModal.setAttribute("aria-hidden", "false");
+
+      if (autoCloseMs) {
+        gnzAlertTimer = setTimeout(() => {
+          cerrarAlertaGNZ();
+        }, autoCloseMs);
+      }
+    }
+
+    function cerrarAlertaGNZ() {
+      if (gnzAlertTimer) {
+        clearTimeout(gnzAlertTimer);
+        gnzAlertTimer = null;
+      }
+
+      alertModal.classList.remove("show");
+      alertModal.setAttribute("aria-hidden", "true");
+
+      if (typeof gnzAlertCallback === "function") {
+        const callback = gnzAlertCallback;
+        gnzAlertCallback = null;
+        callback();
+      }
+    }
+
+    alertButton.addEventListener("click", cerrarAlertaGNZ);
+
+    alertModal.addEventListener("click", (e) => {
+      if (e.target === alertModal) cerrarAlertaGNZ();
+    });
+
+    // Modal recibo final
+    const modalReciboFinal = document.getElementById("modalReciboFinal");
+    const cerrarReciboFinal = document.getElementById("cerrarReciboFinal");
+    const cerrarReciboFinalAbajo = document.getElementById("cerrarReciboFinalAbajo");
+
+    function abrirModalReciboFinal() {
+      document.getElementById("recibo").style.display = "block";
+      modalReciboFinal.classList.add("show");
+      modalReciboFinal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-recibo-open");
+    }
+
+    function cerrarModalReciboFinal() {
+      modalReciboFinal.classList.remove("show");
+      modalReciboFinal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("modal-recibo-open");
+    }
+
+    cerrarReciboFinal.addEventListener("click", cerrarModalReciboFinal);
+    cerrarReciboFinalAbajo.addEventListener("click", cerrarModalReciboFinal);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modalReciboFinal.classList.contains("show")) {
+        cerrarModalReciboFinal();
+      }
+
+      if (e.key === "Escape" && alertModal.classList.contains("show")) {
+        cerrarAlertaGNZ();
+      }
+    });
+
+    function setSubmitting(isActive) {
+      isSubmitting = isActive;
+      submitButton.disabled = isActive;
+      submitButton.textContent = isActive ? "Enviando..." : "Enviar Reserva";
+    }
+
+    function formatTimeAmPm(timeValue) {
+      if (!timeValue) return "";
+      const parts = String(timeValue).split(":");
+      let hour = parseInt(parts[0], 10);
+      const minute = parts[1] || "00";
+      const suffix = hour >= 12 ? "PM" : "AM";
+      hour = hour % 12 || 12;
+      return `${hour}:${minute} ${suffix}`;
+    }
+
+    // Confetti
+    function launchConfetti() {
+      const duration = 1500;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#0b5ed7','#ffffff']
+        });
+        confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#0b5ed7','#ffffff']
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+
+    // Submit reserva
+    formCita.addEventListener("submit", e => {
+      e.preventDefault();
+
+      if (isSubmitting) return;
+
+      if (document.getElementById("companyWebsite").value.trim() !== "") {
+        return;
+      }
+
+      if (!sincronizarAcuerdoAceptado()) {
+        abrirAcuerdo();
+        return;
+      }
+
+      const formData = Object.fromEntries(new FormData(e.target).entries());
+      const fecha = document.getElementById("fecha").value;
+      const hora = document.getElementById("hora").value;
+      const fechaHora = new Date(fecha + " " + hora);
+      const ahora = new Date();
+      const diffHoras = (fechaHora.getTime() - ahora.getTime()) / (1000 * 60 * 60);
+      if (diffHoras < 24) {
+        mostrarAlertaGNZ(
+          "Reservation Time Required",
+          "Reservations must be scheduled at least 24 hours in advance. Please choose a later date or time.",
+          "warning",
+          "OK"
+        );
+        return;
+      }
+
+      document.getElementById("mensaje").textContent = "Enviando reserva...";
+      setSubmitting(true);
+
+      google.script.run
+        .withSuccessHandler(res => {
+          setSubmitting(false);
+
+          if (res && res.success === true) {
+            document.getElementById("mensaje").textContent = "✅ Reserva enviada con éxito";
+
+            document.getElementById("rNombre").textContent = formData.nombre || "";
+            document.getElementById("rTelefono").textContent = formData.telefono || "";
+            document.getElementById("rCorreo").textContent = formData.correo || "";
+            document.getElementById("rMarca").textContent = formData.marca || "";
+            document.getElementById("rModelo").textContent = formData.modelo || "";
+            document.getElementById("rAno").textContent = formData.ano || "";
+            document.getElementById("rMarcaAceite").textContent = formData.marcaAceite || "";
+            document.getElementById("rDireccionRec").textContent = formData.direccion || "";
+            document.getElementById("rFecha").textContent = formData.fecha || "";
+            document.getElementById("rHora").textContent = res.hora || formatTimeAmPm(formData.hora) || "";
+            document.getElementById("rComentarios").textContent = formData.comentarios || "";
+
+            document.getElementById("reciboTotal").textContent = "$" + (res.total || "0.00");
+            if (res.aceite) document.getElementById("reciboAceite").textContent = "$" + res.aceite;
+            if (res.filtro) document.getElementById("reciboFiltro").textContent = "$" + res.filtro;
+            if (res.manoObra) document.getElementById("reciboManoObra").textContent = "$" + res.manoObra;
+            if (res.desecho) document.getElementById("reciboDesecho").textContent = "$" + res.desecho;
+
+            abrirModalReciboFinal();
+            resetearAcuerdoAceptado();
+
+            // Confetti al éxito
+            launchConfetti();
+          } else {
+            document.getElementById("mensaje").textContent = "";
+            mostrarAlertaGNZ(
+              "Reservation Not Sent",
+              "We could not send your reservation. " + (res && res.error ? res.error : "Please try again in a moment."),
+              "error",
+              "OK"
+            );
+          }
+        })
+        .withFailureHandler(err => {
+          setSubmitting(false);
+          document.getElementById("mensaje").textContent = "";
+          mostrarAlertaGNZ(
+            "Connection Error",
+            "We could not connect to the reservation system. Please check your connection and try again.",
+            "error",
+            "OK"
+          );
+          console.error(err);
+        })
+        .guardarReserva(formData);
+    });
+  });
+  </script>
+
+  <!-- CONFETTI LIBRARY -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</body>
+</html>
