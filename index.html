@@ -1041,9 +1041,10 @@
         });
       })
       .withFailureHandler(err => {
+        const errorDetail = err && err.message ? "\n\nTechnical detail: " + err.message : "";
         mostrarAlertaGNZ(
           "Unable to Load Vehicles",
-          "We could not load the vehicle list right now. Please refresh the page or try again in a moment.",
+          "We could not load the vehicle list right now. Please refresh the page or try again in a moment." + errorDetail,
           "error",
           "OK"
         );
