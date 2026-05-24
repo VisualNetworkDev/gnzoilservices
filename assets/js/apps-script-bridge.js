@@ -18,6 +18,18 @@
   var pending = Object.create(null);
   var counter = 0;
   var timeoutMs = Number(window.GNZ_APPS_SCRIPT_TIMEOUT_MS || 45000);
+  var jsonpMethods = {
+    obtenerVehiculos: true,
+    obtenerMotoresDisponibles: true,
+    obtenerAceitesCompatibles: true,
+    calcularPrecio: true,
+    adminObtenerVehiculos: true,
+    adminObtenerCatalogo: true,
+    adminObtenerMotoresDisponibles: true,
+    adminObtenerAceitesCompatibles: true,
+    adminCalcularPrecio: true,
+    adminListarReservas: true
+  };
 
   window.addEventListener("message", function (event) {
     var data = event.data || {};
@@ -82,6 +94,10 @@
   }
 
   function sendRequest(fn, args) {
+    if (jsonpMethods[fn]) {
+      return sendJsonpRequest(fn, args);
+    }
+
     return new Promise(function (resolve, reject) {
       var requestId = "gnz_" + Date.now() + "_" + (++counter);
       var iframeName = requestId + "_frame";
@@ -108,6 +124,7 @@
         reject: reject,
         iframe: iframe,
         form: form,
+        pollTimer: null,
         timer: window.setTimeout(function () {
           cleanup(requestId);
           reject(new Error("Apps Script request timed out."));
@@ -117,7 +134,91 @@
       document.body.appendChild(iframe);
       document.body.appendChild(form);
       form.submit();
+      pollPostResult(requestId);
     });
+  }
+
+  function sendJsonpRequest(fn, args) {
+    return new Promise(function (resolve, reject) {
+      var requestId = "gnz_" + Date.now() + "_" + (++counter);
+      var callbackName = "__gnzBridgeJsonp_" + requestId.replace(/[^a-zA-Z0-9_]/g, "_");
+      var script = document.createElement("script");
+      var query = [
+        "api=1",
+        "jsonp=1",
+        "requestId=" + encodeURIComponent(requestId),
+        "fn=" + encodeURIComponent(fn),
+        "args=" + encodeURIComponent(JSON.stringify(args || [])),
+        "callback=" + encodeURIComponent(callbackName)
+      ].join("&");
+
+      window[callbackName] = function (data) {
+        cleanupJsonp(callbackName, script, timer);
+        if (data && data.ok) {
+          resolve(data.result);
+        } else {
+          reject(new Error((data && data.error) || "Apps Script request failed."));
+        }
+      };
+
+      var timer = window.setTimeout(function () {
+        cleanupJsonp(callbackName, script, null);
+        reject(new Error("Apps Script request timed out."));
+      }, timeoutMs);
+
+      script.onerror = function () {
+        cleanupJsonp(callbackName, script, timer);
+        reject(new Error("Apps Script JSONP request failed."));
+      };
+
+      script.src = endpoint + (endpoint.indexOf("?") === -1 ? "?" : "&") + query;
+      document.body.appendChild(script);
+    });
+  }
+
+  function pollPostResult(requestId) {
+    var request = pending[requestId];
+    if (!request) return;
+
+    var callbackName = "__gnzBridgePost_" + requestId.replace(/[^a-zA-Z0-9_]/g, "_");
+    var script = document.createElement("script");
+    var query = [
+      "api=1",
+      "bridgeResult=1",
+      "requestId=" + encodeURIComponent(requestId),
+      "callback=" + encodeURIComponent(callbackName)
+    ].join("&");
+
+    window[callbackName] = function (data) {
+      cleanupJsonp(callbackName, script, null);
+
+      if (!pending[requestId]) return;
+
+      if (data && data.pending) {
+        request.pollTimer = window.setTimeout(function () {
+          pollPostResult(requestId);
+        }, 700);
+        return;
+      }
+
+      cleanup(requestId);
+      if (data && data.ok) {
+        request.resolve(data.result);
+      } else {
+        request.reject(new Error((data && data.error) || "Apps Script request failed."));
+      }
+    };
+
+    script.onerror = function () {
+      cleanupJsonp(callbackName, script, null);
+      if (!pending[requestId]) return;
+      request.pollTimer = window.setTimeout(function () {
+        pollPostResult(requestId);
+      }, 1000);
+    };
+
+    script.src = endpoint + (endpoint.indexOf("?") === -1 ? "?" : "&") + query;
+    document.body.appendChild(script);
   }
 
   function addField(form, name, value) {
@@ -133,8 +234,19 @@
     if (!request) return;
 
     window.clearTimeout(request.timer);
+    if (request.pollTimer) window.clearTimeout(request.pollTimer);
     if (request.form && request.form.parentNode) request.form.parentNode.removeChild(request.form);
     if (request.iframe && request.iframe.parentNode) request.iframe.parentNode.removeChild(request.iframe);
     delete pending[requestId];
+  }
+
+  function cleanupJsonp(callbackName, script, timer) {
+    if (timer) window.clearTimeout(timer);
+    try {
+      delete window[callbackName];
+    } catch (err) {
+      window[callbackName] = undefined;
+    }
+    if (script && script.parentNode) script.parentNode.removeChild(script);
   }
 })();
