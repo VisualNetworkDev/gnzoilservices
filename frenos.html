@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GNZ Brake & Flush Services</title>
+<link rel="icon" href="favicon.ico">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
@@ -356,144 +357,256 @@
     th,td{padding:9px 6px;}
     .fullscreen-shell{min-height:calc(100vh - 36px);}
   }
+  :root{
+    --gnz-cream:#f6efe2;
+    --gnz-panel:#fffaf1;
+    --gnz-ink:#102a33;
+    --gnz-teal:#063f4c;
+    --gnz-red:#a51e22;
+    --gnz-gold:#c9a46a;
+    --gnz-line:rgba(6,63,76,.16);
+  }
+  body{
+    background:
+      radial-gradient(circle at 16% 0%,rgba(201,164,106,.28),transparent 30%),
+      linear-gradient(180deg,#fbf5e9 0%,#efe2cf 100%);
+    color:var(--gnz-ink);
+  }
+  .container{
+    background:rgba(255,250,241,.96);
+    border:1px solid var(--gnz-line);
+    box-shadow:0 24px 70px rgba(28,20,8,.20);
+  }
+  .page-header{
+    background:
+      linear-gradient(135deg,rgba(6,63,76,.93),rgba(16,42,51,.92)),
+      var(--gnz-teal);
+    border:1px solid rgba(255,255,255,.32);
+    box-shadow:0 18px 45px rgba(6,63,76,.28);
+  }
+  .brand-logo{
+    width:138px;
+    max-width:56vw;
+    aspect-ratio:1;
+    object-fit:cover;
+    border-radius:50%;
+    display:block;
+    margin:0 auto 12px;
+    box-shadow:0 16px 34px rgba(0,0,0,.28);
+    border:3px solid rgba(255,250,241,.9);
+  }
+  h1{
+    color:#fffaf1;
+    letter-spacing:.05em;
+    font-weight:900;
+  }
+  .subtitle{color:#f1d7a2;}
+  .disclaimer{color:#f7ead4;}
+  .header-actions{margin-top:14px;display:flex;justify-content:center;}
+  .language-switch{margin:12px auto 0;display:flex;justify-content:center;gap:6px;}
+  .lang-btn{width:auto;min-width:44px;min-height:34px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#f6efe2;font-size:12px;font-weight:800;letter-spacing:.04em;cursor:pointer;transition:.2s ease;}
+  .lang-btn.active{background:#a51e22;border-color:#c9a46a;color:#fffaf1;box-shadow:0 10px 22px rgba(165,30,34,.25);}
+  .btn-home{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:999px;padding:10px 16px;background:rgba(255,250,241,.12);border:1px solid rgba(255,250,241,.32);color:#fffaf1;font-weight:800;font-size:13px;}
+  .btn-home:hover{background:rgba(255,250,241,.20);}
+  input,select,textarea{
+    background:#fffdf8;
+    color:var(--gnz-ink);
+    border:1px solid rgba(6,63,76,.12);
+    box-shadow:0 1px 0 rgba(255,255,255,.8);
+  }
+  input:focus,select:focus,textarea:focus{
+    background:#fff;
+    box-shadow:0 0 0 2px rgba(165,30,34,.22),0 10px 24px rgba(6,63,76,.10);
+  }
+  label{color:var(--gnz-teal);}
+  .form-group i{color:var(--gnz-red);}
+  .price-live,.total-line{
+    background:rgba(6,63,76,.08);
+    border:1px solid rgba(6,63,76,.18);
+    color:var(--gnz-teal);
+  }
+  .agreement-line,.modal-content,.receipt-card{
+    background:#fffaf1;
+    border-color:var(--gnz-line);
+    color:var(--gnz-ink);
+    box-shadow:0 20px 55px rgba(28,20,8,.22);
+  }
+  .agreement-line strong,.modal-head h2,.receipt-card h2{
+    color:var(--gnz-teal);
+  }
+  .agreement-line span,.agreement-text,.receipt-list p,.success-content p{
+    color:#344b52;
+  }
+  button.primary{
+    background:linear-gradient(120deg,var(--gnz-red),#d64235);
+    box-shadow:0 14px 30px rgba(165,30,34,.25);
+  }
+  button.secondary,button.ghost{
+    background:#123f4b;
+    border-color:rgba(255,255,255,.12);
+    color:#fffaf1;
+  }
+  button.primary:hover,button.secondary:hover,button.ghost:hover{
+    box-shadow:0 18px 38px rgba(6,63,76,.24);
+  }
+  .modal,#fullscreenReceipt{
+    background:rgba(246,239,226,.94);
+  }
+  table th{color:var(--gnz-red);}
+  th,td,.receipt-list p{
+    border-color:rgba(6,63,76,.14);
+  }
+  .receipt-topbar{
+    background:rgba(6,63,76,.92);
+  }
+  @media(max-width:700px){
+    .brand-logo{width:118px;}
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
   <header class="page-header">
+    <img class="brand-logo" src="assets/img/gnz-logo.png" alt="GNZ Oil Services logo">
     <h1>GNZ Brake & Flush Services</h1>
-    <p class="subtitle">By GNZ Oil Services</p>
-    <p class="disclaimer">
-      Labor only. Parts are NOT included. / Solamente mano de obra. Las piezas NO están incluidas.
+    <p class="subtitle" data-i18n="subtitle">By GNZ Oil Services</p>
+    <div class="language-switch" aria-label="Language">
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+      <button type="button" class="lang-btn" data-lang="es">ES</button>
+    </div>
+    <p class="disclaimer" data-i18n="disclaimer">
+      Labor only. Parts are NOT included.
     </p>
+    <div class="header-actions"><a class="btn-home" href="index.html" data-i18n="oilHome">GNZ Oil Services</a></div>
   </header>
 
   <form id="brakeForm">
+    <input type="hidden" name="Language" id="languageField">
     <div class="form-grid">
       <div class="form-group">
-        <label>Full Name / Nombre Completo</label>
+        <label data-i18n="labelName">Full Name</label>
         <i class="fa-solid fa-user"></i>
         <input type="text" name="Full Name" autocomplete="name" required>
       </div>
 
       <div class="form-group">
-        <label>Phone / Teléfono</label>
+        <label data-i18n="labelPhone">Phone</label>
         <i class="fa-solid fa-phone"></i>
         <input type="tel" name="Phone" inputmode="tel" autocomplete="tel" required>
       </div>
 
       <div class="form-group full">
-        <label>Email / Correo</label>
+        <label data-i18n="labelEmail">Email</label>
         <i class="fa-solid fa-envelope"></i>
         <input type="email" name="Email" autocomplete="email" required>
       </div>
 
       <div class="form-group">
-        <label>Service / Servicio</label>
+        <label data-i18n="labelService">Service</label>
         <i class="fa-solid fa-screwdriver-wrench"></i>
         <select name="Service" id="serviceSelect" required>
-          <option value="">Select / Seleccionar</option>
-          <option value="pads">Brake Pads Only / Solo Pastillas</option>
-          <option value="combo">Rotors + Pads / Rotores + Pastillas</option>
-          <option value="flush">Flush Service / Servicio de Drenado</option>
+          <option value="" data-i18n="selectService">Select Service</option>
+          <option value="pads" data-i18n="servicePads">Brake Pads Only</option>
+          <option value="combo" data-i18n="serviceCombo">Rotors + Pads</option>
+          <option value="flush" data-i18n="serviceFlush">Flush Service</option>
         </select>
       </div>
 
       <div class="form-group" id="axleBox" style="display:none;">
-        <label>Axles / Ejes (1-4)</label>
+        <label data-i18n="labelAxles">Axles (1-4)</label>
         <i class="fa-solid fa-circle-dot"></i>
         <select name="Axles">
-          <option value="1">1 axle / 1 eje</option>
-          <option value="2">2 axles / 2 ejes</option>
-          <option value="3">3 axles / 3 ejes</option>
-          <option value="4">4 axles / 4 ejes</option>
+          <option value="1" data-i18n="axle1">1 axle</option>
+          <option value="2" data-i18n="axle2">2 axles</option>
+          <option value="3" data-i18n="axle3">3 axles</option>
+          <option value="4" data-i18n="axle4">4 axles</option>
         </select>
       </div>
 
       <div class="form-group" id="flushBox" style="display:none;">
-        <label>Flush Type / Tipo de Flush</label>
+        <label data-i18n="labelFlushType">Flush Type</label>
         <i class="fa-solid fa-droplet"></i>
         <select name="FlushType">
-          <option value="regular">Regular Flush / Flush Regular</option>
-          <option value="complete">Complete Flush / Flush Completo</option>
+          <option value="regular" data-i18n="flushRegular">Regular Flush</option>
+          <option value="complete" data-i18n="flushComplete">Complete Flush</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label>Body Style / Estilo</label>
+        <label data-i18n="labelBody">Body Style</label>
         <i class="fa-solid fa-car-side"></i>
         <select name="Body" required>
-          <option value="">Select / Seleccionar</option>
+          <option value="" data-i18n="selectBody">Select Body Style</option>
           <option value="sedan">Sedan / Coupe</option>
           <option value="suv">SUV / Truck</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label>Year / Año</label>
+        <label data-i18n="labelYear">Year</label>
         <i class="fa-solid fa-calendar"></i>
         <input type="text" name="Year" inputmode="numeric" required>
       </div>
 
       <div class="form-group">
-        <label>Make / Marca</label>
+        <label data-i18n="labelMake">Make</label>
         <i class="fa-solid fa-car"></i>
         <input type="text" name="Make" required>
       </div>
 
       <div class="form-group">
-        <label>Model / Modelo</label>
+        <label data-i18n="labelModel">Model</label>
         <i class="fa-solid fa-car-rear"></i>
         <input type="text" name="Model" required>
       </div>
 
       <div class="form-group full">
-        <label>Service Address / Dirección de Servicio</label>
+        <label data-i18n="labelAddress">Service Address</label>
         <i class="fa-solid fa-location-dot"></i>
         <input type="text" name="Address" autocomplete="street-address" required>
       </div>
 
       <div class="form-group">
-        <label>Date / Día</label>
+        <label data-i18n="labelDate">Date</label>
         <i class="fa-solid fa-calendar-day"></i>
         <input type="date" name="Date" required>
       </div>
 
       <div class="form-group">
-        <label>Time / Tiempo</label>
+        <label data-i18n="labelTime">Time</label>
         <i class="fa-solid fa-clock"></i>
         <input type="time" name="Time" required>
       </div>
 
       <div class="form-group full">
-        <label>Additional Comment / Comentarios Adicionales</label>
+        <label data-i18n="labelComments">Additional Comments</label>
         <i class="fa-solid fa-comment-dots"></i>
         <textarea name="Comment" rows="3"></textarea>
       </div>
 
-      <div class="price-live" id="priceBox">Estimated price / Precio estimado: N/A</div>
+      <div class="price-live" id="priceBox">Estimated price: N/A</div>
 
       <div class="agreement-line">
         <div>
-          <strong>Service Agreement / Acuerdo de Servicio</strong><br>
-          <span>The agreement must be accepted before sending the reservation.</span>
+          <strong data-i18n="agreementTitle">Service Agreement</strong><br>
+          <span data-i18n="agreementHelp">The agreement must be accepted before sending the reservation.</span>
         </div>
         <span class="agreement-status" id="agreementStatus">Not accepted</span>
       </div>
 
       <div class="button-row">
         <button type="button" class="secondary" id="openPrices">
-          <i class="fa-solid fa-tags"></i> Service Prices / Precios
+          <i class="fa-solid fa-tags"></i> <span data-i18n="pricesButton">Service Prices</span>
         </button>
         <button type="button" class="secondary" id="openAgreement">
-          <i class="fa-solid fa-file-signature"></i> Read Agreement
+          <i class="fa-solid fa-file-signature"></i> <span data-i18n="agreementButton">Read Agreement</span>
         </button>
       </div>
 
       <div class="button-row">
         <button type="button" class="primary" id="previewBtn">
-          Submit Reservation / Enviar Reserva
+          <span data-i18n="submitButton">Submit Reservation</span>
         </button>
       </div>
     </div>
@@ -503,31 +616,31 @@
 <div class="modal" id="priceModal">
   <div class="modal-content">
     <div class="modal-head">
-      <h2>Service Prices / Precios de los Servicios</h2>
+      <h2 data-i18n="pricesTitle">Service Prices</h2>
       <span class="close" id="closePrices">&times;</span>
     </div>
 
-    <h3>Brake Pads Only / Instalación de Pastillas</h3>
+    <h3 data-i18n="servicePads">Brake Pads Only</h3>
     <table>
-      <tr><th>Axles</th><th>Sedan</th><th>SUV</th></tr>
+      <tr><th data-i18n="labelAxlesShort">Axles</th><th>Sedan</th><th>SUV</th></tr>
       <tr><td>1</td><td>$70</td><td>$90</td></tr>
       <tr><td>2</td><td>$130</td><td>$170</td></tr>
       <tr><td>3</td><td>$180</td><td>$240</td></tr>
       <tr><td>4</td><td>$220</td><td>$300</td></tr>
     </table>
 
-    <h3>Rotors + Pads / Rotores + Pastillas</h3>
+    <h3 data-i18n="serviceCombo">Rotors + Pads</h3>
     <table>
-      <tr><th>Axles</th><th>Sedan</th><th>SUV</th></tr>
+      <tr><th data-i18n="labelAxlesShort">Axles</th><th>Sedan</th><th>SUV</th></tr>
       <tr><td>1</td><td>$110</td><td>$135</td></tr>
       <tr><td>2</td><td>$210</td><td>$260</td></tr>
       <tr><td>3</td><td>$300</td><td>$370</td></tr>
       <tr><td>4</td><td>$380</td><td>$480</td></tr>
     </table>
 
-    <h3>Flush Services / Servicios de Drenado</h3>
+    <h3 data-i18n="flushServicesTitle">Flush Services</h3>
     <table>
-      <tr><th>Type</th><th>Sedan</th><th>SUV</th></tr>
+      <tr><th data-i18n="labelType">Type</th><th>Sedan</th><th>SUV</th></tr>
       <tr><td>Regular</td><td>$107</td><td>$138</td></tr>
       <tr><td>Complete</td><td>$119</td><td>$150</td></tr>
     </table>
@@ -537,25 +650,14 @@
 <div class="modal" id="agreementModal">
   <div class="modal-content">
     <div class="modal-head">
-      <h2>Service Agreement / Acuerdo de Servicio</h2>
+      <h2 data-i18n="agreementTitle">Service Agreement</h2>
       <span class="close" id="closeAgreement">&times;</span>
     </div>
     <div class="agreement-text">
-      <p>By requesting our mobile brake and brake fluid service, you agree to the following terms and conditions:</p>
-      <ul>
-        <li>The client must provide accurate vehicle and service location information.</li>
-        <li>Appointments must be scheduled at least 24 hours in advance.</li>
-        <li>The technician may reschedule due to weather, unsafe work conditions, or emergencies.</li>
-        <li>Prices shown are labor only. Parts are not included unless agreed in writing.</li>
-        <li>The client must ensure safe and clear access to the vehicle.</li>
-        <li>GNZ Brake & Flush Services is not responsible for pre-existing mechanical issues or hidden defects.</li>
-        <li>Payment is due upon service completion unless another written agreement exists.</li>
-        <li>Digital acceptance of this form is binding and equivalent to a physical signature.</li>
-      </ul>
-      <p>Al aceptar este acuerdo, confirmas que has leído y aceptado estos términos.</p>
+      <div id="agreementText"></div>
     </div>
     <button type="button" class="primary" id="acceptAgreement">
-      Accept and Sign Agreement / Aceptar y Firmar
+      <span data-i18n="acceptAgreement">Accept and Sign Agreement</span>
     </button>
   </div>
 </div>
@@ -563,11 +665,11 @@
 <div class="modal" id="receiptModal">
   <div class="modal-content">
     <div class="modal-head">
-      <h2>Reservation Summary / Resumen de Reservación</h2>
+      <h2 data-i18n="summaryTitle">Reservation Summary</h2>
       <span class="close" id="closeReceipt">&times;</span>
     </div>
     <div id="receiptContent" class="receipt-list"></div>
-    <button type="button" class="primary" id="confirmSend">Confirm Reservation / Confirmar Reservación</button>
+    <button type="button" class="primary" id="confirmSend"><span data-i18n="confirmReservation">Confirm Reservation</span></button>
   </div>
 </div>
 
@@ -576,7 +678,7 @@
     <div class="success-icon" id="successIcon"><i class="fa-solid fa-check"></i></div>
     <h2 id="successTitle">Reservation Sent!</h2>
     <p id="successMessage" style="font-size:15px;color:#cbd5ff;line-height:1.5;margin-top:8px;"></p>
-    <button type="button" class="ghost" id="viewReceiptBtn">View Receipt</button>
+    <button type="button" class="ghost" id="viewReceiptBtn" data-i18n="viewReceipt">View Receipt</button>
     <button type="button" class="primary" onclick="closeSuccessModal()">OK</button>
   </div>
 </div>
@@ -588,7 +690,7 @@
     <div class="receipt-topbar">
       <div class="receipt-brand">
         <strong>GNZ Brake & Flush Services</strong>
-        <span>Reservation receipt</span>
+        <span data-i18n="receiptTag">Reservation receipt</span>
       </div>
       <button type="button" class="ghost" onclick="closeFullscreenReceipt()" style="width:42px;min-height:42px;padding:0;border-radius:50%;">
         <i class="fa-solid fa-times"></i>
@@ -597,9 +699,9 @@
 
     <div class="receipt-card">
       <h2 style="text-align:center;margin-bottom:4px;">GNZ Brake & Flush Services</h2>
-      <p style="text-align:center;color:#9fb7ff;margin-bottom:16px;">By GNZ Oil Services</p>
+      <p style="text-align:center;color:#9fb7ff;margin-bottom:16px;" data-i18n="subtitle">By GNZ Oil Services</p>
       <div id="fullscreenReceiptContent" class="receipt-list"></div>
-      <button type="button" class="primary" onclick="closeFullscreenReceipt()">Close</button>
+      <button type="button" class="primary" onclick="closeFullscreenReceipt()" data-i18n="close">Close</button>
     </div>
   </div>
 </div>
@@ -630,6 +732,188 @@ const prices = {
   }
 };
 
+const translations = {
+  en: {
+    subtitle: "By GNZ Oil Services",
+    disclaimer: "Labor only. Parts are NOT included.",
+    oilHome: "GNZ Oil Services",
+    labelName: "Full Name",
+    labelPhone: "Phone",
+    labelEmail: "Email",
+    labelService: "Service",
+    selectService: "Select Service",
+    servicePads: "Brake Pads Only",
+    serviceCombo: "Rotors + Pads",
+    serviceFlush: "Flush Service",
+    labelAxles: "Axles (1-4)",
+    labelAxlesShort: "Axles",
+    axle1: "1 axle",
+    axle2: "2 axles",
+    axle3: "3 axles",
+    axle4: "4 axles",
+    labelFlushType: "Flush Type",
+    flushRegular: "Regular Flush",
+    flushComplete: "Complete Flush",
+    labelBody: "Body Style",
+    selectBody: "Select Body Style",
+    labelYear: "Year",
+    labelMake: "Make",
+    labelModel: "Model",
+    labelAddress: "Service Address",
+    labelDate: "Date",
+    labelTime: "Time",
+    labelComments: "Additional Comments",
+    estimatedPrice: "Estimated price",
+    notAvailable: "N/A",
+    agreementTitle: "Service Agreement",
+    agreementHelp: "The agreement must be accepted before sending the reservation.",
+    notAccepted: "Not accepted",
+    accepted: "Accepted",
+    pricesButton: "Service Prices",
+    agreementButton: "Read Agreement",
+    submitButton: "Submit Reservation",
+    pricesTitle: "Service Prices",
+    flushServicesTitle: "Flush Services",
+    labelType: "Type",
+    acceptAgreement: "Accept and Sign Agreement",
+    summaryTitle: "Reservation Summary",
+    confirmReservation: "Confirm Reservation",
+    sending: "Sending...",
+    viewReceipt: "View Receipt",
+    receiptTag: "Reservation receipt",
+    close: "Close",
+    attention: "Attention",
+    agreementToast: "Agreement accepted. You can now send your reservation.",
+    minTimeNotice: "Appointments must be scheduled at least 24 hours in advance.",
+    completeNotice: "Please complete the service, body style and axle/flush options.",
+    priceNotice: "The selected service could not be priced. Please check the form.",
+    appointmentFailed: "The appointment could not be sent.",
+    appointmentSent: "Your appointment has been successfully submitted.",
+    sendError: "An error occurred while sending the appointment. Please try again.",
+    successTitle: "Reservation Sent!",
+    bodySedan: "Sedan/Coupe",
+    bodySuv: "SUV/Truck",
+    serviceLabel: "Service:",
+    vehicleTypeLabel: "Vehicle Type:",
+    axlesLabel: "Axles:",
+    flushTypeLabel: "Flush Type:",
+    totalLabel: "Total Price:",
+    fullNameLabel: "Full Name:",
+    phoneLabel: "Phone:",
+    emailLabel: "Email:",
+    vehicleLabel: "Vehicle:",
+    addressLabel: "Address:",
+    dateLabel: "Date:",
+    timeLabel: "Time:",
+    commentsLabel: "Comments:"
+  },
+  es: {
+    subtitle: "Por GNZ Oil Services",
+    disclaimer: "Solo mano de obra. Las piezas NO estan incluidas.",
+    oilHome: "GNZ Cambio de Aceite",
+    labelName: "Nombre completo",
+    labelPhone: "Telefono",
+    labelEmail: "Correo electronico",
+    labelService: "Servicio",
+    selectService: "Selecciona servicio",
+    servicePads: "Solo pastillas de freno",
+    serviceCombo: "Rotores + pastillas",
+    serviceFlush: "Servicio de fluido",
+    labelAxles: "Ejes (1-4)",
+    labelAxlesShort: "Ejes",
+    axle1: "1 eje",
+    axle2: "2 ejes",
+    axle3: "3 ejes",
+    axle4: "4 ejes",
+    labelFlushType: "Tipo de fluido",
+    flushRegular: "Fluido regular",
+    flushComplete: "Fluido completo",
+    labelBody: "Tipo de vehiculo",
+    selectBody: "Selecciona tipo de vehiculo",
+    labelYear: "Ano",
+    labelMake: "Marca",
+    labelModel: "Modelo",
+    labelAddress: "Direccion del servicio",
+    labelDate: "Fecha",
+    labelTime: "Hora",
+    labelComments: "Comentarios adicionales",
+    estimatedPrice: "Precio estimado",
+    notAvailable: "N/D",
+    agreementTitle: "Acuerdo de servicio",
+    agreementHelp: "Debes aceptar el acuerdo antes de enviar la reserva.",
+    notAccepted: "No aceptado",
+    accepted: "Aceptado",
+    pricesButton: "Precios",
+    agreementButton: "Leer acuerdo",
+    submitButton: "Enviar reserva",
+    pricesTitle: "Precios de servicios",
+    flushServicesTitle: "Servicios de fluido",
+    labelType: "Tipo",
+    acceptAgreement: "Aceptar y firmar acuerdo",
+    summaryTitle: "Resumen de reserva",
+    confirmReservation: "Confirmar reserva",
+    sending: "Enviando...",
+    viewReceipt: "Ver recibo",
+    receiptTag: "Recibo de reserva",
+    close: "Cerrar",
+    attention: "Atencion",
+    agreementToast: "Acuerdo aceptado. Ya puedes enviar tu reserva.",
+    minTimeNotice: "Las citas deben programarse con al menos 24 horas de anticipacion.",
+    completeNotice: "Completa el servicio, tipo de vehiculo y opciones de ejes/fluido.",
+    priceNotice: "No se pudo calcular el precio del servicio seleccionado. Revisa el formulario.",
+    appointmentFailed: "No se pudo enviar la cita.",
+    appointmentSent: "Tu cita fue enviada correctamente.",
+    sendError: "Ocurrio un error al enviar la cita. Intenta de nuevo.",
+    successTitle: "Reserva enviada!",
+    bodySedan: "Sedan/Coupe",
+    bodySuv: "SUV/Camioneta",
+    serviceLabel: "Servicio:",
+    vehicleTypeLabel: "Tipo de vehiculo:",
+    axlesLabel: "Ejes:",
+    flushTypeLabel: "Tipo de fluido:",
+    totalLabel: "Precio total:",
+    fullNameLabel: "Nombre completo:",
+    phoneLabel: "Telefono:",
+    emailLabel: "Correo:",
+    vehicleLabel: "Vehiculo:",
+    addressLabel: "Direccion:",
+    dateLabel: "Fecha:",
+    timeLabel: "Hora:",
+    commentsLabel: "Comentarios:"
+  }
+};
+
+const agreementBodies = {
+  en: `
+    <p>By requesting our mobile brake and brake fluid service, you agree to the following terms and conditions:</p>
+    <ul>
+      <li>The client must provide accurate vehicle and service location information.</li>
+      <li>Appointments must be scheduled at least 24 hours in advance.</li>
+      <li>The technician may reschedule due to weather, unsafe work conditions, or emergencies.</li>
+      <li>Prices shown are labor only. Parts are not included unless agreed in writing.</li>
+      <li>The client must ensure safe and clear access to the vehicle.</li>
+      <li>GNZ Brake & Flush Services is not responsible for pre-existing mechanical issues or hidden defects.</li>
+      <li>Payment is due upon service completion unless another written agreement exists.</li>
+      <li>Digital acceptance of this form is binding and equivalent to a physical signature.</li>
+    </ul>
+    <p>By accepting this agreement, you confirm that you have read and accepted these terms.</p>
+  `,
+  es: `
+    <p>Al solicitar nuestro servicio movil de frenos y fluido de frenos, aceptas los siguientes terminos y condiciones:</p>
+    <ul>
+      <li>El cliente debe proporcionar informacion correcta del vehiculo y de la ubicacion del servicio.</li>
+      <li>Las citas deben programarse con al menos 24 horas de anticipacion.</li>
+      <li>El tecnico puede reprogramar por clima, condiciones inseguras o emergencias.</li>
+      <li>Los precios mostrados son solo mano de obra. Las piezas no estan incluidas salvo acuerdo por escrito.</li>
+      <li>El cliente debe garantizar acceso seguro y despejado al vehiculo.</li>
+      <li>GNZ Brake & Flush Services no se hace responsable por problemas mecanicos preexistentes o defectos ocultos.</li>
+      <li>El pago vence al completar el servicio, salvo otro acuerdo por escrito.</li>
+      <li>La aceptacion digital de este formulario es vinculante y equivale a una firma fisica.</li>
+    </ul>
+    <p>Al aceptar este acuerdo, confirmas que has leido y aceptado estos terminos.</p>
+  `
+};
+
 let agreementAccepted = false;
 window.calculatedPrice = 0;
 window.lastReceiptData = null;
@@ -642,6 +926,53 @@ const flushBox = document.getElementById("flushBox");
 const priceBox = document.getElementById("priceBox");
 const agreementStatus = document.getElementById("agreementStatus");
 const dateInput = brakeForm.querySelector('input[name="Date"]');
+const languageField = document.getElementById("languageField");
+let currentLang = getPreferredLanguage();
+
+function getPreferredLanguage() {
+  const saved = localStorage.getItem("gnzLang");
+  if (saved === "es" || saved === "en") return saved;
+  return (navigator.language || "en").toLowerCase().startsWith("es") ? "es" : "en";
+}
+
+function t(key) {
+  return (translations[currentLang] && translations[currentLang][key]) || translations.en[key] || key;
+}
+
+function serviceDisplayName(service, flushType) {
+  if (service === "pads") return t("servicePads");
+  if (service === "combo") return t("serviceCombo");
+  if (service === "flush") return flushType === "complete" ? t("flushComplete") : t("flushRegular");
+  return "";
+}
+
+function updateAgreementStatusText() {
+  agreementStatus.textContent = agreementAccepted ? t("accepted") : t("notAccepted");
+}
+
+function applyLanguage(lang) {
+  currentLang = lang === "es" ? "es" : "en";
+  localStorage.setItem("gnzLang", currentLang);
+  document.documentElement.lang = currentLang;
+  languageField.value = currentLang;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  document.querySelectorAll("[data-lang]").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.lang === currentLang);
+  });
+  document.getElementById("agreementText").innerHTML = agreementBodies[currentLang] || agreementBodies.en;
+  updateAgreementStatusText();
+  updatePriceEstimate();
+  if (window.lastReceiptData) {
+    document.getElementById("fullscreenReceiptContent").innerHTML = buildReceiptHtml(window.lastReceiptData);
+  }
+}
+
+document.querySelectorAll("[data-lang]").forEach(btn => {
+  btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
+});
+applyLanguage(currentLang);
 
 setMinAppointmentDate();
 
@@ -663,17 +994,17 @@ document.getElementById("closeReceipt").onclick = () => closeModal("receiptModal
 
 document.getElementById("acceptAgreement").onclick = () => {
   agreementAccepted = true;
-  agreementStatus.textContent = "Accepted";
+  updateAgreementStatusText();
   agreementStatus.classList.add("accepted");
   closeModal("agreementModal");
-  showToast("Agreement accepted. You can now send your reservation.");
+  showToast(t("agreementToast"));
 };
 
 document.getElementById("previewBtn").onclick = () => {
   if (!brakeForm.reportValidity()) return;
 
   if (!isAtLeast24Hours()) {
-    showNotice("Appointments must be scheduled at least 24 hours in advance.");
+    showNotice(t("minTimeNotice"));
     return;
   }
 
@@ -684,7 +1015,7 @@ document.getElementById("previewBtn").onclick = () => {
 
   const quote = getQuote();
   if (!quote) {
-    showNotice("Please complete the service, body style and axle/flush options.");
+    showNotice(t("completeNotice"));
     return;
   }
 
@@ -697,7 +1028,7 @@ document.getElementById("previewBtn").onclick = () => {
 document.getElementById("confirmSend").onclick = () => {
   const quote = getQuote();
   if (!quote) {
-    showNotice("The selected service could not be priced. Please check the form.");
+    showNotice(t("priceNotice"));
     return;
   }
   sendReservationToServer(buildPayload(quote));
@@ -717,21 +1048,19 @@ function getQuote() {
 
   if (service === "pads") {
     if (!axles || axles < 1 || axles > 4) return null;
-    serviceName = "Brake Pads Only / Solo Pastillas";
+    serviceName = serviceDisplayName(service, flushType);
     price = prices.pads[body][axles - 1];
   }
 
   if (service === "combo") {
     if (!axles || axles < 1 || axles > 4) return null;
-    serviceName = "Rotors + Pads / Rotores + Pastillas";
+    serviceName = serviceDisplayName(service, flushType);
     price = prices.combo[body][axles - 1];
   }
 
   if (service === "flush") {
     if (!flushType) return null;
-    serviceName = flushType === "regular"
-      ? "Regular Flush / Flush Regular"
-      : "Complete Flush / Flush Completo";
+    serviceName = serviceDisplayName(service, flushType);
     price = prices.flush[body][flushType];
   }
 
@@ -750,10 +1079,10 @@ function getQuote() {
 function updatePriceEstimate() {
   const quote = getQuote();
   if (!quote) {
-    priceBox.textContent = "Estimated price / Precio estimado: N/A";
+    priceBox.textContent = `${t("estimatedPrice")}: ${t("notAvailable")}`;
     return;
   }
-  priceBox.textContent = `Estimated price / Precio estimado: $${quote.price}`;
+  priceBox.textContent = `${t("estimatedPrice")}: $${quote.price}`;
 }
 
 function buildPayload(quote) {
@@ -773,6 +1102,7 @@ function buildPayload(quote) {
     "Date": form.get("Date"),
     "Time": form.get("Time"),
     "Comment": form.get("Comment"),
+    "Language": currentLang,
     "AgreementAccepted": agreementAccepted ? "SI" : "NO",
     "price": quote.price,
     "serviceLabel": quote.serviceName,
@@ -781,46 +1111,46 @@ function buildPayload(quote) {
 }
 
 function buildReceiptHtml(d) {
-  const bodyLabel = d.Body === "sedan" ? "Sedan/Coupe" : "SUV/Truck";
-  const flushLabel = d.FlushType === "regular" ? "Regular" : d.FlushType === "complete" ? "Complete" : "N/A";
+  const bodyLabel = d.Body === "sedan" ? t("bodySedan") : t("bodySuv");
+  const flushLabel = d.FlushType === "regular" ? t("flushRegular") : d.FlushType === "complete" ? t("flushComplete") : t("notAvailable");
   const serviceText = d.serviceLabel || getQuote().serviceName;
 
   return `
-    <p><strong>Service / Servicio:</strong> ${escapeHtml(serviceText)}</p>
-    <p><strong>Vehicle Type / Tipo:</strong> ${escapeHtml(bodyLabel)}</p>
-    <p><strong>Axles / Ejes:</strong> ${d.Service === "flush" ? "N/A" : escapeHtml(d.Axles)}</p>
-    <p><strong>Flush Type:</strong> ${escapeHtml(d.Service === "flush" ? flushLabel : "N/A")}</p>
-    <div class="total-line">Total Price / Precio Total: $${escapeHtml(d.price)}</div>
-    <p><strong>Full Name:</strong> ${escapeHtml(d["Full Name"])}</p>
-    <p><strong>Phone:</strong> ${escapeHtml(d.Phone)}</p>
-    <p><strong>Email:</strong> ${escapeHtml(d.Email)}</p>
-    <p><strong>Vehicle:</strong> ${escapeHtml(`${d.Year} ${d.Make} ${d.Model}`)}</p>
-    <p><strong>Address:</strong> ${escapeHtml(d.Address)}</p>
-    <p><strong>Date:</strong> ${escapeHtml(d.Date)}</p>
-    <p><strong>Time:</strong> ${escapeHtml(d.timeDisplay || formatTimeAmPm(d.Time))}</p>
-    <p><strong>Comments:</strong> ${escapeHtml(d.Comment || "N/A")}</p>
+    <p><strong>${t("serviceLabel")}</strong> ${escapeHtml(serviceText)}</p>
+    <p><strong>${t("vehicleTypeLabel")}</strong> ${escapeHtml(bodyLabel)}</p>
+    <p><strong>${t("axlesLabel")}</strong> ${d.Service === "flush" ? t("notAvailable") : escapeHtml(d.Axles)}</p>
+    <p><strong>${t("flushTypeLabel")}</strong> ${escapeHtml(d.Service === "flush" ? flushLabel : t("notAvailable"))}</p>
+    <div class="total-line">${t("totalLabel")} $${escapeHtml(d.price)}</div>
+    <p><strong>${t("fullNameLabel")}</strong> ${escapeHtml(d["Full Name"])}</p>
+    <p><strong>${t("phoneLabel")}</strong> ${escapeHtml(d.Phone)}</p>
+    <p><strong>${t("emailLabel")}</strong> ${escapeHtml(d.Email)}</p>
+    <p><strong>${t("vehicleLabel")}</strong> ${escapeHtml(`${d.Year} ${d.Make} ${d.Model}`)}</p>
+    <p><strong>${t("addressLabel")}</strong> ${escapeHtml(d.Address)}</p>
+    <p><strong>${t("dateLabel")}</strong> ${escapeHtml(d.Date)}</p>
+    <p><strong>${t("timeLabel")}</strong> ${escapeHtml(d.timeDisplay || formatTimeAmPm(d.Time))}</p>
+    <p><strong>${t("commentsLabel")}</strong> ${escapeHtml(d.Comment || t("notAvailable"))}</p>
   `;
 }
 
 function sendReservationToServer(data) {
   const confirmBtn = document.getElementById("confirmSend");
   confirmBtn.disabled = true;
-  confirmBtn.textContent = "Sending...";
+  confirmBtn.textContent = t("sending");
 
   google.script.run
     .withSuccessHandler(function(response) {
       confirmBtn.disabled = false;
-      confirmBtn.textContent = "Confirm Reservation / Confirmar Reservación";
+      confirmBtn.textContent = t("confirmReservation");
 
       if (!response || !response.success) {
-        showNotice((response && response.message) || "The appointment could not be sent.");
+        showNotice((response && response.message) || t("appointmentFailed"));
         return;
       }
 
       closeModal("receiptModal");
       const warning = response.warning ? `<br><span style="color:#ffcf8a;">${escapeHtml(response.warning)}</span>` : "";
       showSuccessModal(
-        "Your appointment has been successfully submitted.<br><strong>ID: " + escapeHtml(response.id) + "</strong>" + warning
+        t("appointmentSent") + "<br><strong>ID: " + escapeHtml(response.id) + "</strong>" + warning
       );
 
       window.lastReceiptData = Object.assign({}, data, {
@@ -830,8 +1160,9 @@ function sendReservationToServer(data) {
       });
 
       brakeForm.reset();
+      languageField.value = currentLang;
       agreementAccepted = false;
-      agreementStatus.textContent = "Not accepted";
+      updateAgreementStatusText();
       agreementStatus.classList.remove("accepted");
       axleBox.style.display = "none";
       flushBox.style.display = "none";
@@ -839,15 +1170,15 @@ function sendReservationToServer(data) {
     })
     .withFailureHandler(function(err) {
       confirmBtn.disabled = false;
-      confirmBtn.textContent = "Confirm Reservation / Confirmar Reservación";
-      showNotice("An error occurred while sending the appointment. Please try again.");
+      confirmBtn.textContent = t("confirmReservation");
+      showNotice(t("sendError"));
       console.error(err);
     })
     .submitReservation(data);
 }
 
 function showSuccessModal(message) {
-  document.getElementById("successTitle").textContent = "Reservation Sent!";
+  document.getElementById("successTitle").textContent = t("successTitle");
   document.getElementById("successIcon").classList.remove("notice");
   document.getElementById("successIcon").innerHTML = '<i class="fa-solid fa-check"></i>';
   document.getElementById("successMessage").innerHTML = message;
@@ -890,7 +1221,7 @@ function closeModal(id) {
 }
 
 function showNotice(message) {
-  document.getElementById("successTitle").textContent = "Attention";
+  document.getElementById("successTitle").textContent = t("attention");
   document.getElementById("successIcon").classList.add("notice");
   document.getElementById("successIcon").innerHTML = '<i class="fa-solid fa-exclamation"></i>';
   document.getElementById("successMessage").innerHTML = escapeHtml(message);
