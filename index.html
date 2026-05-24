@@ -113,6 +113,71 @@
       transform:translateY(-1px);
       box-shadow:0 10px 25px rgba(10,132,255,0.35);
     }
+    .discounts-panel{
+      margin:0 0 22px;
+      padding:16px;
+      border-radius:16px;
+      background:rgba(255,250,241,.94);
+      border:1px solid rgba(6,63,76,.14);
+      color:var(--gnz-ink);
+      box-shadow:0 14px 34px rgba(28,20,8,.12);
+    }
+    .discounts-panel[hidden]{display:none;}
+    .discounts-panel h2{
+      text-align:left;
+      margin:0 0 6px;
+      color:var(--gnz-teal);
+      font-size:18px;
+      letter-spacing:0;
+      text-transform:none;
+    }
+    .discounts-panel p{
+      margin:0;
+      color:#5d6d72;
+      font-size:13px;
+      line-height:1.45;
+    }
+    .discount-list{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:10px;
+    }
+    .discount-item{
+      border-radius:12px;
+      background:#fffdf8;
+      border:1px solid rgba(6,63,76,.14);
+      padding:12px;
+    }
+    .discount-item strong{
+      display:block;
+      color:var(--gnz-red);
+      font-size:15px;
+      margin-bottom:4px;
+    }
+    .discount-code-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:10px;
+    }
+    .discount-code{
+      font-weight:900;
+      color:var(--gnz-teal);
+      letter-spacing:.08em;
+    }
+    .discount-use{
+      width:auto;
+      border:none;
+      border-radius:999px;
+      background:var(--gnz-teal);
+      color:#fffaf1;
+      padding:8px 11px;
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+    }
 
     h2{
       text-align:center;
@@ -964,6 +1029,12 @@
       </div>
     </header>
 
+    <section class="discounts-panel" id="discountsPanel" hidden>
+      <h2 data-i18n="discountsTitle">Current Discounts</h2>
+      <p data-i18n="discountsHelp">Use the discount code in Additional Comments when booking your appointment.</p>
+      <div class="discount-list" id="discountsList"></div>
+    </section>
+
     <form id="formCita">
       <input type="text" name="companyWebsite" id="companyWebsite" class="hp-field" tabindex="-1" autocomplete="off">
 
@@ -1149,12 +1220,13 @@
 
   <script>
     const gnzEndpointFromUrl = new URLSearchParams(window.location.search).get("endpoint");
+    const gnzDefaultEndpoint = "https://script.google.com/macros/s/AKfycbzIjm2vj89cpRw5mzwYRVLAO4XPBRBSBoTFm5eing4vd0MQVWRj62hVd_Ghex0wN4pLsw/exec";
     if (gnzEndpointFromUrl) {
       localStorage.setItem("gnzUnifiedEndpoint", gnzEndpointFromUrl);
+    } else {
+      localStorage.setItem("gnzUnifiedEndpoint", gnzDefaultEndpoint);
     }
-    window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl ||
-      localStorage.getItem("gnzUnifiedEndpoint") ||
-      "https://script.google.com/macros/s/AKfycbzIjm2vj89cpRw5mzwYRVLAO4XPBRBSBoTFm5eing4vd0MQVWRj62hVd_Ghex0wN4pLsw/exec";
+    window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl || gnzDefaultEndpoint;
   </script>
   <script src="assets/js/apps-script-bridge.js"></script>
   <script>
@@ -1169,6 +1241,8 @@
     const submitButton = document.getElementById("btnEnviarReserva");
     const aceptoAcuerdoField = document.getElementById("aceptoAcuerdo");
     const agreementStatus = document.getElementById("agreementStatus");
+    const discountsPanel = document.getElementById("discountsPanel");
+    const discountsList = document.getElementById("discountsList");
     const precioBox = document.createElement("div");
     precioBox.id = "precioBox";
     precioBox.style.marginTop = "10px";
@@ -1182,6 +1256,7 @@
     let acuerdoAceptadoActual = false;
     let gnzAlertCallback = null;
     let gnzAlertTimer = null;
+    let agreementTextsReady = false;
     const translations = {
       en: {
         subtitle: "Mobile Oil Change & Maintenance at Your Door",
@@ -1256,7 +1331,11 @@
         closeReceipt: "Close Receipt",
         contactTitle: "Contact GNZ Oil Services",
         contactPhone: "Phone:",
-        contactEmail: "Email:"
+        contactEmail: "Email:",
+        discountsTitle: "Current Discounts",
+        discountsHelp: "Use the discount code in Additional Comments when booking your appointment.",
+        useDiscount: "Use code",
+        discountApplied: "Discount code added to comments."
       },
       es: {
         subtitle: "Cambio de aceite y mantenimiento movil en tu ubicacion",
@@ -1331,7 +1410,11 @@
         closeReceipt: "Cerrar recibo",
         contactTitle: "Contacta a GNZ Oil Services",
         contactPhone: "Telefono:",
-        contactEmail: "Correo:"
+        contactEmail: "Correo:",
+        discountsTitle: "Descuentos disponibles",
+        discountsHelp: "Usa el codigo de descuento en Comentarios adicionales al reservar tu cita.",
+        useDiscount: "Usar codigo",
+        discountApplied: "Codigo de descuento agregado a comentarios."
       }
     };
     let currentLang = getPreferredLanguage();
@@ -1375,15 +1458,29 @@
       setPlaceholder(modeloSelect, "selectModel");
       setPlaceholder(anoSelect, "selectYear");
       setPlaceholder(marcaAceiteSelect, "selectOil");
-      if (typeof renderAgreement === "function") renderAgreement();
+      if (agreementTextsReady && typeof renderAgreement === "function") renderAgreement();
       updateAgreementStatusText();
       if (!isSubmitting) submitButton.textContent = t("submitReservation");
+      if (window.gnzPublicDiscounts) renderPublicDiscounts(window.gnzPublicDiscounts);
     }
 
     document.querySelectorAll("[data-lang]").forEach(btn => {
       btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
     });
     applyLanguage(currentLang);
+
+    function escapeHtml(value) {
+      return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function escapeAttr(value) {
+      return String(value == null ? "" : value).replace(/\\/g, "\\\\").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
 
     // Cargar vehículos desde backend
     google.script.run
@@ -1408,6 +1505,54 @@
         console.error(err);
       })
       .obtenerVehiculos();
+
+    function renderPublicDiscounts(discounts) {
+      window.gnzPublicDiscounts = discounts || [];
+      if (!window.gnzPublicDiscounts.length) {
+        discountsPanel.hidden = true;
+        discountsList.innerHTML = "";
+        return;
+      }
+
+      discountsPanel.hidden = false;
+      discountsList.innerHTML = window.gnzPublicDiscounts.map(d => `
+        <article class="discount-item">
+          <strong>${escapeHtml(d.title || d.code)} - ${escapeHtml(d.label || (d.percent + "%"))}</strong>
+          <p>${escapeHtml(d.description || "")}</p>
+          <div class="discount-code-row">
+            <span class="discount-code">${escapeHtml(d.code)}</span>
+            <button type="button" class="discount-use" data-discount-code="${escapeAttr(d.code)}">${t("useDiscount")}</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function cargarDescuentosPublicos() {
+      google.script.run
+        .withSuccessHandler(discounts => renderPublicDiscounts(discounts || []))
+        .withFailureHandler(err => {
+          discountsPanel.hidden = true;
+          console.warn("Discounts not available:", err);
+        })
+        .obtenerDescuentosPublicos();
+    }
+
+    discountsList.addEventListener("click", e => {
+      const button = e.target.closest("[data-discount-code]");
+      if (!button) return;
+      const code = button.dataset.discountCode || "";
+      const comments = document.getElementById("comentarios");
+      const current = comments.value.trim();
+      if (!current.toLowerCase().includes(code.toLowerCase())) {
+        comments.value = current ? `${current} ${code}` : code;
+      }
+      comments.focus();
+      if (typeof mostrarAlertaGNZ === "function") {
+        mostrarAlertaGNZ(t("discountsTitle"), t("discountApplied"), "success", "OK", null, 1300);
+      }
+    });
+
+    cargarDescuentosPublicos();
 
     function resetMotorOptions() {
       motorSelect.innerHTML = "";
@@ -1714,6 +1859,8 @@
         `
       }
     };
+    agreementTextsReady = true;
+
     function renderAgreement() {
       const selected = agreementTexts[currentLang] || agreementTexts.en;
       tituloAcuerdo.textContent = selected.title;
