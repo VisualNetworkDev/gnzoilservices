@@ -26,7 +26,6 @@
     .btn.warn{background:#f59e0b;color:#111827;}
     .btn.danger{background:#dc3545;color:#fff;}
     .btn.info{background:#0d6efd;color:#fff;}
-    .btn.review{background:#7c2d12;color:#fff;}
     .login{max-width:430px;margin:12vh auto 0;padding:24px;border-radius:22px;background:rgba(18,18,28,.98);border:1px solid rgba(255,255,255,.1);box-shadow:0 22px 60px rgba(0,0,0,.65);}
     .login-icon{width:66px;height:66px;border-radius:22px;background:linear-gradient(145deg,#0b5ed7,#4ea3ff);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px;}
     .login h2{text-align:center;margin-bottom:8px;}
@@ -64,10 +63,16 @@
     .checkline{display:flex;gap:10px;align-items:flex-start;color:#c9d3f6;font-size:13px;line-height:1.45;margin:8px 0 12px;}
     .checkline input{margin-top:3px;}
     .message{margin-top:12px;color:#cfe2ff;font-weight:700;font-size:14px;}
-    .form-switch{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;padding:5px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
+    .form-switch{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;padding:5px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
     .tab-btn{border:none;border-radius:10px;padding:10px 12px;background:transparent;color:#c9d3f6;font-weight:800;cursor:pointer;}
     .tab-btn.active{background:#0b5ed7;color:#fff;box-shadow:0 10px 22px rgba(11,94,215,.24);}
     .service-tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:6px;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;background:rgba(10,132,255,.12);color:#cfe2ff;}
+    .discount-admin-list{display:flex;flex-direction:column;gap:9px;margin-top:12px;}
+    .discount-admin-card{border-radius:13px;background:#fffdf8;border:1px solid rgba(6,63,76,.14);padding:12px;color:var(--gnz-ink);}
+    .discount-admin-card strong{display:block;color:var(--gnz-teal);font-size:15px;}
+    .discount-admin-card p{margin:5px 0 0;color:#5d6d72;font-size:13px;line-height:1.4;}
+    .discount-flags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+    .discount-flag{padding:4px 8px;border-radius:999px;background:rgba(6,63,76,.08);color:var(--gnz-teal);font-size:11px;font-weight:900;text-transform:uppercase;}
     .hidden{display:none!important;}
     .empty{text-align:center;color:#8f9ac5;padding:24px;}
     @media(max-width:980px){.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
@@ -120,7 +125,6 @@
     .btn.primary{background:linear-gradient(120deg,var(--gnz-red),#d64235);box-shadow:0 14px 30px rgba(165,30,34,.25);}
     .btn{background:#123f4b;color:#fffaf1;border-color:rgba(255,255,255,.14);}
     .btn:hover{background:#0b303a;}
-    .btn.review{background:#9a3412;color:#fffaf1;}
     .form-switch{background:rgba(6,63,76,.06);border-color:rgba(6,63,76,.12);}
     .tab-btn{color:#31515a;}
     .tab-btn.active{background:var(--gnz-teal);color:#fffaf1;box-shadow:0 12px 24px rgba(6,63,76,.18);}
@@ -203,6 +207,7 @@
         <div class="form-switch" aria-label="Appointment type">
           <button class="tab-btn active" type="button" data-admin-form="oil"><i class="fa-solid fa-oil-can"></i> <span data-i18n="oilTab">Oil</span></button>
           <button class="tab-btn" type="button" data-admin-form="brake"><i class="fa-solid fa-screwdriver-wrench"></i> <span data-i18n="brakeTab">Brakes / Flush</span></button>
+          <button class="tab-btn" type="button" data-admin-form="discounts"><i class="fa-solid fa-percent"></i> <span data-i18n="discountTab">Discounts</span></button>
         </div>
         <form id="adminForm" class="service-form">
           <input type="hidden" name="idioma" id="adminLangField">
@@ -271,18 +276,36 @@
           <button class="btn primary" type="submit" id="saveBrakeBtn" style="width:100%;" data-i18n="createBrakeAppointment">Create Brake / Flush Appointment</button>
           <div class="message" id="brakeFormMessage"></div>
         </form>
+
+        <section id="adminDiscountSection" class="service-form hidden">
+          <form id="discountForm">
+            <div class="form-grid">
+              <div class="field"><i class="fa-solid fa-ticket"></i><input name="code" id="discountCode" placeholder="Code" required data-i18n-placeholder="discountCode"></div>
+              <div class="field"><i class="fa-solid fa-percent"></i><input name="percent" id="discountPercent" type="number" min="1" max="100" step="0.01" placeholder="Percent" required data-i18n-placeholder="discountPercent"></div>
+              <div class="field full"><i class="fa-solid fa-heading"></i><input name="title" id="discountTitle" placeholder="Title" data-i18n-placeholder="discountTitle"></div>
+              <div class="field full"><i class="fa-solid fa-align-left"></i><textarea name="description" id="discountDescription" placeholder="Description" data-i18n-placeholder="discountDescription"></textarea></div>
+              <div class="field"><i class="fa-solid fa-toggle-on"></i><select name="active" id="discountActive"><option value="SI" data-i18n="activeYes">Active</option><option value="NO" data-i18n="activeNo">Inactive</option></select></div>
+              <div class="field"><i class="fa-solid fa-eye"></i><select name="public" id="discountPublic"><option value="SI" data-i18n="publicYes">Public</option><option value="NO" data-i18n="publicNo">Private</option></select></div>
+            </div>
+            <button class="btn primary" type="submit" id="saveDiscountBtn" style="width:100%;" data-i18n="saveDiscount">Save Discount</button>
+            <button class="btn" type="button" id="resetDiscountBtn" style="width:100%;margin-top:8px;" data-i18n="newDiscount">New Discount</button>
+            <div class="message" id="discountMessage"></div>
+          </form>
+          <div class="discount-admin-list" id="discountList"></div>
+        </section>
       </section>
     </div>
   </div>
 
   <script>
     const gnzEndpointFromUrl = new URLSearchParams(window.location.search).get("endpoint");
+    const gnzDefaultEndpoint = "https://script.google.com/macros/s/AKfycbzIjm2vj89cpRw5mzwYRVLAO4XPBRBSBoTFm5eing4vd0MQVWRj62hVd_Ghex0wN4pLsw/exec";
     if (gnzEndpointFromUrl) {
       localStorage.setItem("gnzUnifiedEndpoint", gnzEndpointFromUrl);
+    } else {
+      localStorage.setItem("gnzUnifiedEndpoint", gnzDefaultEndpoint);
     }
-    window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl ||
-      localStorage.getItem("gnzUnifiedEndpoint") ||
-      "https://script.google.com/macros/s/AKfycbzIjm2vj89cpRw5mzwYRVLAO4XPBRBSBoTFm5eing4vd0MQVWRj62hVd_Ghex0wN4pLsw/exec";
+    window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl || gnzDefaultEndpoint;
   </script>
   <script src="assets/js/apps-script-bridge.js"></script>
   <script>
@@ -290,6 +313,7 @@
     let vehiculos = [];
     let preciosAceite = [];
     let reservasCache = [];
+    let descuentosCache = [];
     let editingId = "";
     let typingTimer = null;
     let activeFormType = "oil";
@@ -315,8 +339,10 @@
         search: "Search",
         oilTab: "Oil",
         brakeTab: "Brakes / Flush",
+        discountTab: "Discounts",
         scheduleOil: "Schedule Oil Appointment",
         scheduleBrake: "Schedule Brake / Flush Appointment",
+        manageDiscounts: "Manage Discounts",
         editAppointment: "Edit Appointment",
         fullName: "Full name",
         phone: "Phone",
@@ -354,6 +380,27 @@
         make: "Make",
         model: "Model",
         createBrakeAppointment: "Create Brake / Flush Appointment",
+        discountCode: "Code",
+        discountPercent: "Percent",
+        discountTitle: "Title",
+        discountDescription: "Description",
+        activeYes: "Active",
+        activeNo: "Inactive",
+        publicYes: "Public",
+        publicNo: "Private",
+        saveDiscount: "Save Discount",
+        newDiscount: "New Discount",
+        discountSaved: "Discount saved:",
+        discountDeleted: "Discount deleted:",
+        discountSaveFail: "Discount was not saved.",
+        discountDeleteFail: "Discount was not deleted.",
+        deleteDiscountConfirm: "Delete this discount?",
+        loadingDiscounts: "Loading discounts...",
+        noDiscounts: "No discounts found.",
+        publicDiscount: "Public",
+        privateDiscount: "Private",
+        activeDiscount: "Active",
+        inactiveDiscount: "Inactive",
         checkingAccess: "Checking access...",
         loginFailed: "Login failed.",
         unableLogin: "Unable to log in.",
@@ -381,16 +428,10 @@
         pending: "Pending",
         cancel: "Cancel",
         complete: "Complete",
-        review: "Review",
         notFound: "Appointment was not found in the current list.",
         editingExisting: "Editing existing appointment.",
         statusFail: "Status was not updated.",
         statusError: "Status update failed.",
-        reviewConfirm: "Send Google review email to this customer?",
-        reviewFail: "Review email was not sent.",
-        reviewSent: "Review email sent to",
-        customer: "customer",
-        reviewError: "Review email failed.",
         somethingWrong: "Something went wrong."
       },
       es: {
@@ -414,8 +455,10 @@
         search: "Buscar",
         oilTab: "Aceite",
         brakeTab: "Frenos / Fluidos",
+        discountTab: "Descuentos",
         scheduleOil: "Programar cita de aceite",
         scheduleBrake: "Programar cita de frenos / fluidos",
+        manageDiscounts: "Administrar descuentos",
         editAppointment: "Editar cita",
         fullName: "Nombre completo",
         phone: "Telefono",
@@ -453,6 +496,27 @@
         make: "Marca",
         model: "Modelo",
         createBrakeAppointment: "Crear cita de frenos / fluidos",
+        discountCode: "Codigo",
+        discountPercent: "Porcentaje",
+        discountTitle: "Titulo",
+        discountDescription: "Descripcion",
+        activeYes: "Activo",
+        activeNo: "Inactivo",
+        publicYes: "Publico",
+        publicNo: "Privado",
+        saveDiscount: "Guardar descuento",
+        newDiscount: "Nuevo descuento",
+        discountSaved: "Descuento guardado:",
+        discountDeleted: "Descuento eliminado:",
+        discountSaveFail: "No se guardo el descuento.",
+        discountDeleteFail: "No se elimino el descuento.",
+        deleteDiscountConfirm: "Eliminar este descuento?",
+        loadingDiscounts: "Cargando descuentos...",
+        noDiscounts: "No hay descuentos.",
+        publicDiscount: "Publico",
+        privateDiscount: "Privado",
+        activeDiscount: "Activo",
+        inactiveDiscount: "Inactivo",
         checkingAccess: "Verificando acceso...",
         loginFailed: "No se pudo entrar.",
         unableLogin: "No se pudo iniciar sesion.",
@@ -480,16 +544,10 @@
         pending: "Pendiente",
         cancel: "Cancelar",
         complete: "Completar",
-        review: "Review",
         notFound: "No se encontro la cita en la lista actual.",
         editingExisting: "Editando cita existente.",
         statusFail: "No se actualizo el estado.",
         statusError: "Fallo al actualizar el estado.",
-        reviewConfirm: "Enviar correo de valoracion de Google a este cliente?",
-        reviewFail: "No se envio el correo de valoracion.",
-        reviewSent: "Correo de valoracion enviado a",
-        customer: "cliente",
-        reviewError: "Fallo el correo de valoracion.",
         somethingWrong: "Algo salio mal."
       }
     };
@@ -518,8 +576,10 @@
     function setFormTitle() {
       if (activeFormType === "oil") {
         formTitle.textContent = editingId ? `${t("editAppointment")} ${editingId}` : t("scheduleOil");
-      } else {
+      } else if (activeFormType === "brake") {
         formTitle.textContent = t("scheduleBrake");
+      } else {
+        formTitle.textContent = t("manageDiscounts");
       }
     }
 
@@ -543,6 +603,7 @@
       calcularPrecio();
       updateAdminBrakePrice();
       if (reservasCache.length) renderReservas(reservasCache);
+      renderDescuentos(descuentosCache);
     }
 
     function placeholderOption(key) {
@@ -602,6 +663,12 @@
     const brakePriceBox = document.getElementById("brakePriceBox");
     const brakeFormMessage = document.getElementById("brakeFormMessage");
     const saveBrakeBtn = document.getElementById("saveBrakeBtn");
+    const adminDiscountSection = document.getElementById("adminDiscountSection");
+    const discountForm = document.getElementById("discountForm");
+    const discountList = document.getElementById("discountList");
+    const discountMessage = document.getElementById("discountMessage");
+    const saveDiscountBtn = document.getElementById("saveDiscountBtn");
+    const resetDiscountBtn = document.getElementById("resetDiscountBtn");
 
     document.querySelectorAll("[data-lang]").forEach(btn => {
       btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
@@ -621,6 +688,8 @@
     adminBrakeService.addEventListener("change", updateAdminBrakeOptions);
     adminBrakeForm.addEventListener("input", updateAdminBrakePrice);
     adminBrakeForm.addEventListener("change", updateAdminBrakePrice);
+    discountForm.addEventListener("submit", guardarDescuento);
+    resetDiscountBtn.addEventListener("click", resetDiscountForm);
     document.getElementById("searchInput").addEventListener("input", () => {
       clearTimeout(typingTimer);
       typingTimer = setTimeout(cargarReservas, 350);
@@ -639,6 +708,7 @@
           appView.classList.remove("hidden");
           cargarVehiculos();
           cargarReservas();
+          cargarDescuentos();
         })
         .withFailureHandler(err => {
           loginMessage.textContent = err.message || t("loginFailed");
@@ -647,7 +717,7 @@
     }
 
     function switchAdminForm(type) {
-      activeFormType = type === "brake" ? "brake" : "oil";
+      activeFormType = type === "brake" ? "brake" : type === "discounts" ? "discounts" : "oil";
 
       document.querySelectorAll("[data-admin-form]").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.adminForm === activeFormType);
@@ -655,13 +725,18 @@
 
       adminOilForm.classList.toggle("hidden", activeFormType !== "oil");
       adminBrakeForm.classList.toggle("hidden", activeFormType !== "brake");
+      adminDiscountSection.classList.toggle("hidden", activeFormType !== "discounts");
 
       if (activeFormType === "oil") {
         setFormTitle();
-      } else {
+      } else if (activeFormType === "brake") {
         if (editingId) resetFormMode();
         setFormTitle();
         updateAdminBrakeOptions();
+      } else {
+        if (editingId) resetFormMode();
+        setFormTitle();
+        cargarDescuentos();
       }
     }
 
@@ -914,6 +989,110 @@
         .adminCrearReservaFrenosFluidos(adminToken, payload);
     });
 
+    function cargarDescuentos() {
+      if (!adminToken) return;
+      discountList.innerHTML = `<div class="empty">${t("loadingDiscounts")}</div>`;
+      google.script.run
+        .withSuccessHandler(res => {
+          if (!res || !res.success) {
+            discountList.innerHTML = `<div class="empty">${escapeHtml((res && res.error) || t("discountSaveFail"))}</div>`;
+            return;
+          }
+          descuentosCache = res.discounts || [];
+          renderDescuentos(descuentosCache);
+        })
+        .withFailureHandler(err => {
+          discountList.innerHTML = `<div class="empty">${escapeHtml(err.message || t("discountSaveFail"))}</div>`;
+        })
+        .adminListarDescuentos(adminToken);
+    }
+
+    function renderDescuentos(discounts) {
+      if (!discountList) return;
+      if (!discounts || !discounts.length) {
+        discountList.innerHTML = `<div class="empty">${t("noDiscounts")}</div>`;
+        return;
+      }
+
+      discountList.innerHTML = discounts.map(d => `
+        <article class="discount-admin-card">
+          <strong>${escapeHtml(d.code)} - ${escapeHtml(d.percent)}%</strong>
+          <p>${escapeHtml(d.title || d.code)}</p>
+          <p>${escapeHtml(d.description || "")}</p>
+          <div class="discount-flags">
+            <span class="discount-flag">${d.active ? t("activeDiscount") : t("inactiveDiscount")}</span>
+            <span class="discount-flag">${d.public ? t("publicDiscount") : t("privateDiscount")}</span>
+          </div>
+          <div class="actions" style="margin-top:10px;">
+            <button class="btn" type="button" onclick="editarDescuento('${escapeAttr(d.code)}')">${t("edit")}</button>
+            <button class="btn danger" type="button" onclick="eliminarDescuento('${escapeAttr(d.code)}')">${t("cancel")}</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function guardarDescuento(e) {
+      e.preventDefault();
+      discountMessage.textContent = t("saving");
+      saveDiscountBtn.disabled = true;
+
+      const payload = Object.fromEntries(new FormData(discountForm).entries());
+      google.script.run
+        .withSuccessHandler(res => {
+          saveDiscountBtn.disabled = false;
+          if (!res || !res.success) {
+            discountMessage.textContent = (res && res.error) || t("discountSaveFail");
+            return;
+          }
+          discountMessage.textContent = `${t("discountSaved")} ${res.discount.code}`;
+          resetDiscountForm(false);
+          cargarDescuentos();
+        })
+        .withFailureHandler(err => {
+          saveDiscountBtn.disabled = false;
+          discountMessage.textContent = err.message || t("discountSaveFail");
+        })
+        .adminGuardarDescuento(adminToken, payload);
+    }
+
+    function resetDiscountForm(clearMessage) {
+      discountForm.reset();
+      document.getElementById("discountActive").value = "SI";
+      document.getElementById("discountPublic").value = "SI";
+      document.getElementById("discountCode").readOnly = false;
+      if (clearMessage !== false) discountMessage.textContent = "";
+    }
+
+    window.editarDescuento = function(code) {
+      const discount = descuentosCache.find(d => d.code === code);
+      if (!discount) return;
+      document.getElementById("discountCode").value = discount.code || "";
+      document.getElementById("discountCode").readOnly = true;
+      document.getElementById("discountPercent").value = discount.percent || "";
+      document.getElementById("discountTitle").value = discount.title || "";
+      document.getElementById("discountDescription").value = discount.description || "";
+      document.getElementById("discountActive").value = discount.active ? "SI" : "NO";
+      document.getElementById("discountPublic").value = discount.public ? "SI" : "NO";
+      discountMessage.textContent = "";
+      discountForm.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    window.eliminarDescuento = function(code) {
+      if (!confirm(t("deleteDiscountConfirm"))) return;
+      google.script.run
+        .withSuccessHandler(res => {
+          if (!res || !res.success) {
+            alert((res && res.error) || t("discountDeleteFail"));
+            return;
+          }
+          discountMessage.textContent = `${t("discountDeleted")} ${res.code}`;
+          resetDiscountForm(false);
+          cargarDescuentos();
+        })
+        .withFailureHandler(err => alert(err.message || t("discountDeleteFail")))
+        .adminEliminarDescuento(adminToken, code);
+    };
+
     function cargarReservas() {
       const filtros = {
         query: document.getElementById("searchInput").value,
@@ -987,7 +1166,6 @@
               <button class="btn warn" onclick="actualizarEstado('${escapeAttr(r.id)}','Pendiente')">${t("pending")}</button>
               <button class="btn danger" onclick="actualizarEstado('${escapeAttr(r.id)}','Cancelada')">${t("cancel")}</button>
               <button class="btn info" onclick="actualizarEstado('${escapeAttr(r.id)}','Completada')">${t("complete")}</button>
-              <button class="btn review" onclick="enviarReview('${escapeAttr(r.id)}')">${t("review")}</button>
             </div>
           </article>
         `;
@@ -1040,22 +1218,6 @@
         })
         .withFailureHandler(err => alert(err.message || t("statusError")))
         .adminActualizarEstado(adminToken, id, estado);
-    };
-
-    window.enviarReview = function(id) {
-      if (!confirm(t("reviewConfirm"))) return;
-
-      google.script.run
-        .withSuccessHandler(res => {
-          if (!res || !res.success) {
-            alert((res && res.error) || t("reviewFail"));
-            return;
-          }
-
-          alert(`${t("reviewSent")} ${res.email || t("customer")}.`);
-        })
-        .withFailureHandler(err => alert(err.message || t("reviewError")))
-        .adminEnviarCorreoReview(adminToken, id);
     };
 
     function resetFormMode() {
