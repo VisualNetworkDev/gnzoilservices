@@ -238,7 +238,7 @@
             <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="direccion" id="direccion" placeholder="Service address" autocomplete="street-address" required data-i18n-placeholder="serviceAddress"></div>
             <div class="field"><i class="fa-solid fa-calendar-day"></i><input type="date" name="fecha" id="fecha" required></div>
             <div class="field"><i class="fa-solid fa-clock"></i><input type="time" name="hora" id="hora" required></div>
-            <div class="field full"><i class="fa-solid fa-list-check"></i><select name="estado" id="estado"><option value="Confirmada" data-i18n="statusConfirmed">Confirmed</option><option value="Pendiente" data-i18n="statusPending">Pending</option></select></div>
+            <div class="field full"><i class="fa-solid fa-list-check"></i><select name="estado" id="estado"><option value="Confirmada" data-i18n="statusConfirmed">Confirmed</option><option value="Pendiente" data-i18n="statusPending">Pending</option><option value="Cancelada" data-i18n="statusCanceled">Canceled</option><option value="Completada" data-i18n="statusCompleted">Completed</option></select></div>
             <div class="field full"><i class="fa-solid fa-comment"></i><textarea name="comentarios" id="comentarios" placeholder="Notes" data-i18n-placeholder="notes"></textarea></div>
           </div>
           <div class="price-box" id="priceBox">Estimated price: N/A</div>
@@ -282,13 +282,14 @@
             <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="Address" id="brakeAddress" placeholder="Service address" autocomplete="street-address" required data-i18n-placeholder="serviceAddress"></div>
             <div class="field"><i class="fa-solid fa-calendar-day"></i><input type="date" name="Date" id="brakeDate" required></div>
             <div class="field"><i class="fa-solid fa-clock"></i><input type="time" name="Time" id="brakeTime" required></div>
-            <div class="field full"><i class="fa-solid fa-list-check"></i><select name="Estado" id="brakeEstado"><option value="Confirmada" data-i18n="statusConfirmed">Confirmed</option><option value="Pendiente" data-i18n="statusPending">Pending</option></select></div>
+            <div class="field full"><i class="fa-solid fa-list-check"></i><select name="Estado" id="brakeEstado"><option value="Confirmada" data-i18n="statusConfirmed">Confirmed</option><option value="Pendiente" data-i18n="statusPending">Pending</option><option value="Cancelada" data-i18n="statusCanceled">Canceled</option><option value="Completada" data-i18n="statusCompleted">Completed</option></select></div>
             <div class="field full"><i class="fa-solid fa-comment"></i><textarea name="Comment" id="brakeComment" placeholder="Notes" data-i18n-placeholder="notes"></textarea></div>
           </div>
           <div class="price-box" id="brakePriceBox">Estimated price: N/A</div>
           <label class="checkline"><input type="checkbox" name="AgreementAccepted" id="brakeAgreement" value="SI" checked> <span data-i18n="agreementAdmin">Agreement accepted verbally or by the customer.</span></label>
           <label class="checkline"><input type="checkbox" name="NotificarCliente" id="brakeNotify" value="SI" checked> <span data-i18n="notifyAdmin">Send confirmation email and PDF receipt to customer.</span></label>
           <button class="btn primary" type="submit" id="saveBrakeBtn" style="width:100%;" data-i18n="createBrakeAppointment">Create Brake / Flush Appointment</button>
+          <button class="btn hidden" type="button" id="cancelBrakeEditBtn" style="width:100%;margin-top:8px;" data-i18n="cancelEdit">Cancel Edit</button>
           <div class="message" id="brakeFormMessage"></div>
         </form>
 
@@ -332,6 +333,7 @@
     let reservasCache = [];
     let descuentosCache = [];
     let editingId = "";
+    let editingBrakeId = "";
     let typingTimer = null;
     let activeFormType = "oil";
     let appointmentsView = "list";
@@ -609,7 +611,7 @@
       if (activeFormType === "oil") {
         formTitle.textContent = editingId ? `${t("editAppointment")} ${editingId}` : t("scheduleOil");
       } else if (activeFormType === "brake") {
-        formTitle.textContent = t("scheduleBrake");
+        formTitle.textContent = editingBrakeId ? `${t("editAppointment")} ${editingBrakeId}` : t("scheduleBrake");
       } else {
         formTitle.textContent = t("manageDiscounts");
       }
@@ -631,6 +633,8 @@
       document.getElementById("adminLangField").value = currentLang;
       document.getElementById("adminBrakeLangField").value = currentLang;
       setFormTitle();
+      saveBtn.textContent = editingId ? t("updateAppointment") : t("createAppointment");
+      saveBrakeBtn.textContent = editingBrakeId ? t("updateAppointment") : t("createBrakeAppointment");
       updatePlaceholders();
       calcularPrecio();
       updateAdminBrakePrice();
@@ -696,6 +700,7 @@
     const brakePriceBox = document.getElementById("brakePriceBox");
     const brakeFormMessage = document.getElementById("brakeFormMessage");
     const saveBrakeBtn = document.getElementById("saveBrakeBtn");
+    const cancelBrakeEditBtn = document.getElementById("cancelBrakeEditBtn");
     const adminDiscountSection = document.getElementById("adminDiscountSection");
     const discountForm = document.getElementById("discountForm");
     const discountList = document.getElementById("discountList");
@@ -715,6 +720,7 @@
     document.getElementById("filterStatus").addEventListener("change", cargarReservas);
     document.getElementById("filterDate").addEventListener("change", cargarReservas);
     cancelEditBtn.addEventListener("click", resetFormMode);
+    cancelBrakeEditBtn.addEventListener("click", resetBrakeFormMode);
     document.querySelectorAll("[data-admin-form]").forEach(btn => {
       btn.addEventListener("click", () => switchAdminForm(btn.dataset.adminForm));
     });
@@ -767,6 +773,7 @@
       adminDiscountSection.classList.toggle("hidden", activeFormType !== "discounts");
 
       if (activeFormType === "oil") {
+        if (editingBrakeId) resetBrakeFormMode();
         setFormTitle();
       } else if (activeFormType === "brake") {
         if (editingId) resetFormMode();
@@ -774,6 +781,7 @@
         updateAdminBrakeOptions();
       } else {
         if (editingId) resetFormMode();
+        if (editingBrakeId) resetBrakeFormMode();
         setFormTitle();
         cargarDescuentos();
       }
@@ -1012,7 +1020,7 @@
         return;
       }
 
-      brakeFormMessage.textContent = t("savingBrake");
+      brakeFormMessage.textContent = editingBrakeId ? t("updating") : t("savingBrake");
       saveBrakeBtn.disabled = true;
 
       const payload = Object.fromEntries(new FormData(adminBrakeForm).entries());
@@ -1025,7 +1033,7 @@
       payload.discountPercent = quote.discountPercent;
       payload.serviceLabel = quote.serviceName;
 
-      google.script.run
+      const runner = google.script.run
         .withSuccessHandler(res => {
           saveBrakeBtn.disabled = false;
           if (!res || !res.success) {
@@ -1034,19 +1042,22 @@
           }
 
           const warning = res.warning ? ` ${res.warning}` : "";
-          brakeFormMessage.textContent = `${t("brakeCreated")} ${res.id}.${warning}`;
-          adminBrakeForm.reset();
-          document.getElementById("adminBrakeLangField").value = currentLang;
-          document.getElementById("brakeAgreement").checked = true;
-          document.getElementById("brakeNotify").checked = true;
-          updateAdminBrakeOptions();
+          brakeFormMessage.textContent = editingBrakeId
+            ? `${t("appointmentUpdated")} ${res.id}.${warning}`
+            : `${t("brakeCreated")} ${res.id}.${warning}`;
+          resetBrakeFormMode();
           cargarReservas();
         })
         .withFailureHandler(err => {
           saveBrakeBtn.disabled = false;
           brakeFormMessage.textContent = err.message || t("brakeFailed");
-        })
-        .adminCrearReservaFrenosFluidos(adminToken, payload);
+        });
+
+      if (editingBrakeId) {
+        runner.adminActualizarReservaFrenosFluidos(adminToken, editingBrakeId, payload);
+      } else {
+        runner.adminCrearReservaFrenosFluidos(adminToken, payload);
+      }
     });
 
     function cargarDescuentos() {
@@ -1252,7 +1263,7 @@
           : [r.bodyStyle, r.axles && r.axles !== "N/A" ? `${r.axles} axle(s)` : ""].filter(Boolean).join(" | ");
         const editButton = tipo === "oil"
           ? `<button class="btn" onclick="editarReserva('${escapeAttr(r.id)}')">${t("edit")}</button>`
-          : "";
+          : `<button class="btn" onclick="editarReservaFrenos('${escapeAttr(r.id)}')">${t("edit")}</button>`;
 
         return `
           <article class="card" data-reservation-id="${escapeAttr(r.id)}">
@@ -1322,6 +1333,77 @@
       document.getElementById("adminForm").scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
+    window.editarReservaFrenos = function(id) {
+      const r = reservasCache.find(item => String(item.id) === String(id));
+      if (!r) {
+        alert(t("notFound"));
+        return;
+      }
+
+      switchAdminForm("brake");
+      editingBrakeId = r.id;
+      setFormTitle();
+      saveBrakeBtn.textContent = t("updateAppointment");
+      cancelBrakeEditBtn.classList.remove("hidden");
+      brakeFormMessage.textContent = t("editingExisting");
+
+      const body = bodyValueFromLabel(r.bodyStyle);
+      const service = inferBrakeService(r, body);
+
+      document.getElementById("brakeFullName").value = r.nombre || "";
+      document.getElementById("brakePhone").value = r.telefono || "";
+      document.getElementById("brakeEmail").value = r.correo || "";
+      document.getElementById("adminBrakeService").value = service.service;
+      document.getElementById("adminBrakeAxles").value = service.axles;
+      document.getElementById("adminBrakeFlushType").value = service.flushType;
+      document.getElementById("adminBrakeBody").value = body;
+      document.getElementById("brakeYear").value = r.ano || "";
+      document.getElementById("brakeMake").value = r.marca || "";
+      document.getElementById("brakeModel").value = r.modelo || "";
+      document.getElementById("brakeAddress").value = r.direccion || "";
+      document.getElementById("brakeDate").value = r.fecha || "";
+      document.getElementById("brakeTime").value = toInputTime(r.hora || "");
+      document.getElementById("brakeEstado").value = r.estado || "Pendiente";
+      document.getElementById("brakeComment").value = r.comentarios || "";
+      document.getElementById("brakeAgreement").checked = String(r.aceptoAcuerdo || "").toUpperCase() === "SI";
+      document.getElementById("brakeNotify").checked = false;
+      document.getElementById("adminBrakeLangField").value = currentLang;
+
+      updateAdminBrakeOptions();
+      document.getElementById("adminBrakeForm").scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    function bodyValueFromLabel(label) {
+      const clean = normalizar(label);
+      return clean.indexOf("suv") !== -1 || clean.indexOf("truck") !== -1 || clean.indexOf("camioneta") !== -1
+        ? "suv"
+        : "sedan";
+    }
+
+    function inferBrakeService(r, body) {
+      const isFlush = String(r.tipoServicio || "").toLowerCase() === "flush" || normalizar(r.servicioFlush) === "si";
+      const axles = Math.max(1, Math.min(4, Number(r.axles) || 1));
+      const subtotal = Number(String(r.subtotal || r.totalFinal || "").replace(/[^0-9.]/g, "")) || 0;
+
+      if (isFlush) {
+        const regular = brakePrices.flush[body].regular;
+        const complete = brakePrices.flush[body].complete;
+        return {
+          service: "flush",
+          axles: "1",
+          flushType: Math.abs(subtotal - complete) < Math.abs(subtotal - regular) ? "complete" : "regular"
+        };
+      }
+
+      const pads = brakePrices.pads[body][axles - 1];
+      const combo = brakePrices.combo[body][axles - 1];
+      return {
+        service: subtotal && Math.abs(subtotal - combo) < Math.abs(subtotal - pads) ? "combo" : "pads",
+        axles: String(axles),
+        flushType: "regular"
+      };
+    }
+
     window.scrollToAppointment = function(id) {
       appointmentsView = "list";
       renderAppointmentView();
@@ -1362,6 +1444,20 @@
       modeloSelect.innerHTML = placeholderOption("selectModel");
       anoSelect.innerHTML = placeholderOption("selectYear");
       renderMarcas();
+    }
+
+    function resetBrakeFormMode() {
+      editingBrakeId = "";
+      setFormTitle();
+      saveBrakeBtn.textContent = t("createBrakeAppointment");
+      saveBrakeBtn.disabled = false;
+      cancelBrakeEditBtn.classList.add("hidden");
+      adminBrakeForm.reset();
+      document.getElementById("adminBrakeLangField").value = currentLang;
+      document.getElementById("brakeAgreement").checked = true;
+      document.getElementById("brakeNotify").checked = true;
+      brakeFormMessage.textContent = "";
+      updateAdminBrakeOptions();
     }
 
     function populateModelos() {
