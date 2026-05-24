@@ -44,6 +44,14 @@
     .stat strong{display:block;font-size:20px;color:#fff;}
     .stat span{font-size:12px;color:#9fb7ff;text-transform:uppercase;letter-spacing:.05em;}
     .list{display:flex;flex-direction:column;gap:10px;max-height:72vh;overflow:auto;padding-right:4px;}
+    .view-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+    .view-btn{border:none;border-radius:10px;padding:10px 12px;background:rgba(6,63,76,.08);color:var(--gnz-teal);font-weight:900;cursor:pointer;}
+    .view-btn.active{background:var(--gnz-teal);color:#fffaf1;}
+    .calendar-view{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;}
+    .calendar-day{min-height:118px;border-radius:13px;background:#fffdf8;border:1px solid rgba(6,63,76,.14);padding:9px;overflow:hidden;}
+    .calendar-date{font-weight:900;color:var(--gnz-teal);font-size:13px;margin-bottom:7px;}
+    .calendar-item{display:block;width:100%;margin:5px 0;padding:7px;border-radius:9px;background:rgba(6,63,76,.08);color:var(--gnz-ink);font-size:12px;line-height:1.25;border:none;border-left:3px solid var(--gnz-red);text-align:left;cursor:pointer;}
+    .calendar-item strong{display:block;color:var(--gnz-teal);font-size:12px;}
     .card{border-radius:15px;background:#12141e;border:1px solid rgba(255,255,255,.07);padding:13px;}
     .card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px;}
     .card-title strong{display:block;color:#fff;font-size:15px;}
@@ -97,6 +105,8 @@
       .field input,.field select,.field textarea{min-height:46px;font-size:16px;padding-top:12px;padding-bottom:12px;}
       .btn{min-height:44px;}
       .list{max-height:none;overflow:visible;padding-right:0;}
+      .calendar-view{grid-template-columns:1fr;}
+      .calendar-day{min-height:auto;}
       .card{padding:12px;border-radius:14px;}
       .card-head{flex-direction:column;align-items:stretch;}
       .badge{width:max-content;}
@@ -199,7 +209,12 @@
           </div>
           <button class="btn primary" id="searchBtn" data-i18n="search">Search</button>
         </div>
+        <div class="view-toggle" aria-label="Appointment view">
+          <button class="view-btn active" type="button" data-appointments-view="list"><i class="fa-solid fa-list"></i> <span data-i18n="listView">List</span></button>
+          <button class="view-btn" type="button" data-appointments-view="calendar"><i class="fa-solid fa-calendar-days"></i> <span data-i18n="calendarView">Calendar</span></button>
+        </div>
         <div id="reservasList" class="list"></div>
+        <div id="calendarView" class="calendar-view hidden"></div>
       </section>
 
       <section class="panel">
@@ -284,6 +299,8 @@
               <div class="field"><i class="fa-solid fa-percent"></i><input name="percent" id="discountPercent" type="number" min="1" max="100" step="0.01" placeholder="Percent" required data-i18n-placeholder="discountPercent"></div>
               <div class="field full"><i class="fa-solid fa-heading"></i><input name="title" id="discountTitle" placeholder="Title" data-i18n-placeholder="discountTitle"></div>
               <div class="field full"><i class="fa-solid fa-align-left"></i><textarea name="description" id="discountDescription" placeholder="Description" data-i18n-placeholder="discountDescription"></textarea></div>
+              <div class="field"><i class="fa-solid fa-calendar-xmark"></i><input name="expiresAt" id="discountExpires" type="date" data-i18n-placeholder="discountExpires"></div>
+              <div class="field"><i class="fa-solid fa-hashtag"></i><input name="usageLimit" id="discountUsageLimit" type="number" min="0" step="1" placeholder="Usage limit" data-i18n-placeholder="discountUsageLimit"></div>
               <div class="field"><i class="fa-solid fa-toggle-on"></i><select name="active" id="discountActive"><option value="SI" data-i18n="activeYes">Active</option><option value="NO" data-i18n="activeNo">Inactive</option></select></div>
               <div class="field"><i class="fa-solid fa-eye"></i><select name="public" id="discountPublic"><option value="SI" data-i18n="publicYes">Public</option><option value="NO" data-i18n="publicNo">Private</option></select></div>
             </div>
@@ -317,6 +334,7 @@
     let editingId = "";
     let typingTimer = null;
     let activeFormType = "oil";
+    let appointmentsView = "list";
     const translations = {
       en: {
         loginSubtitle: "Private appointment manager for GNZ Oil Services.",
@@ -330,6 +348,8 @@
         statCompleted: "Completed",
         statToday: "Today",
         appointments: "Appointments",
+        listView: "List",
+        calendarView: "Calendar",
         searchPlaceholder: "Search by ID, name, phone, email",
         allStatuses: "All statuses",
         statusPending: "Pending",
@@ -386,6 +406,9 @@
         discountPercent: "Percent",
         discountTitle: "Title",
         discountDescription: "Description",
+        discountExpires: "Expiration date",
+        discountUsageLimit: "Usage limit",
+        discountUsage: "Used",
         activeYes: "Active",
         activeNo: "Inactive",
         publicYes: "Public",
@@ -448,6 +471,8 @@
         statCompleted: "Completadas",
         statToday: "Hoy",
         appointments: "Citas",
+        listView: "Lista",
+        calendarView: "Calendario",
         searchPlaceholder: "Buscar por ID, nombre, telefono o correo",
         allStatuses: "Todos los estados",
         statusPending: "Pendiente",
@@ -504,6 +529,9 @@
         discountPercent: "Porcentaje",
         discountTitle: "Titulo",
         discountDescription: "Descripcion",
+        discountExpires: "Fecha de expiracion",
+        discountUsageLimit: "Limite de usos",
+        discountUsage: "Usado",
         activeYes: "Activo",
         activeNo: "Inactivo",
         publicYes: "Publico",
@@ -606,7 +634,7 @@
       updatePlaceholders();
       calcularPrecio();
       updateAdminBrakePrice();
-      if (reservasCache.length) renderReservas(reservasCache);
+      if (reservasCache.length) renderAppointmentView();
       renderDescuentos(descuentosCache);
     }
 
@@ -648,6 +676,7 @@
     const appView = document.getElementById("appView");
     const loginMessage = document.getElementById("loginMessage");
     const reservasList = document.getElementById("reservasList");
+    const calendarView = document.getElementById("calendarView");
     const marcaSelect = document.getElementById("marcaSelect");
     const modeloSelect = document.getElementById("modeloSelect");
     const anoSelect = document.getElementById("anoSelect");
@@ -688,6 +717,12 @@
     cancelEditBtn.addEventListener("click", resetFormMode);
     document.querySelectorAll("[data-admin-form]").forEach(btn => {
       btn.addEventListener("click", () => switchAdminForm(btn.dataset.adminForm));
+    });
+    document.querySelectorAll("[data-appointments-view]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        appointmentsView = btn.dataset.appointmentsView === "calendar" ? "calendar" : "list";
+        renderAppointmentView();
+      });
     });
     adminBrakeService.addEventListener("change", updateAdminBrakeOptions);
     adminBrakeForm.addEventListener("input", updateAdminBrakePrice);
@@ -1046,9 +1081,12 @@
           <strong>${escapeHtml(d.code)} - ${escapeHtml(d.percent)}%</strong>
           <p>${escapeHtml(d.title || d.code)}</p>
           <p>${escapeHtml(d.description || "")}</p>
+          <p>${t("discountExpires")}: ${escapeHtml(d.expiresAt || t("notAvailable"))} | ${t("discountUsage")}: ${escapeHtml(d.uses || 0)}${d.usageLimit ? " / " + escapeHtml(d.usageLimit) : ""}</p>
           <div class="discount-flags">
             <span class="discount-flag">${d.active ? t("activeDiscount") : t("inactiveDiscount")}</span>
             <span class="discount-flag">${d.public ? t("publicDiscount") : t("privateDiscount")}</span>
+            ${d.expired ? `<span class="discount-flag">${escapeHtml(t("discountExpires"))}</span>` : ""}
+            ${d.limitReached ? `<span class="discount-flag">${escapeHtml(t("discountUsageLimit"))}</span>` : ""}
           </div>
           <div class="actions" style="margin-top:10px;">
             <button class="btn" type="button" onclick="editarDescuento('${escapeAttr(d.code)}')">${t("edit")}</button>
@@ -1086,6 +1124,8 @@
       discountForm.reset();
       document.getElementById("discountActive").value = "SI";
       document.getElementById("discountPublic").value = "SI";
+      document.getElementById("discountExpires").value = "";
+      document.getElementById("discountUsageLimit").value = "";
       document.getElementById("discountCode").readOnly = false;
       if (clearMessage !== false) discountMessage.textContent = "";
     }
@@ -1098,6 +1138,8 @@
       document.getElementById("discountPercent").value = discount.percent || "";
       document.getElementById("discountTitle").value = discount.title || "";
       document.getElementById("discountDescription").value = discount.description || "";
+      document.getElementById("discountExpires").value = discount.expiresAt || "";
+      document.getElementById("discountUsageLimit").value = discount.usageLimit || "";
       document.getElementById("discountActive").value = discount.active ? "SI" : "NO";
       document.getElementById("discountPublic").value = discount.public ? "SI" : "NO";
       discountMessage.textContent = "";
@@ -1137,7 +1179,7 @@
           }
           renderStats(res.resumen || {});
           reservasCache = res.reservas || [];
-          renderReservas(reservasCache);
+          renderAppointmentView();
         })
         .withFailureHandler(err => {
           reservasList.innerHTML = `<div class="empty">${escapeHtml(err.message || t("unableAppointments"))}</div>`;
@@ -1151,6 +1193,48 @@
       document.getElementById("statConfirmadas").textContent = s.confirmadas || 0;
       document.getElementById("statCompletadas").textContent = s.completadas || 0;
       document.getElementById("statHoy").textContent = s.hoy || 0;
+    }
+
+    function renderAppointmentView() {
+      document.querySelectorAll("[data-appointments-view]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.appointmentsView === appointmentsView);
+      });
+      reservasList.classList.toggle("hidden", appointmentsView !== "list");
+      calendarView.classList.toggle("hidden", appointmentsView !== "calendar");
+
+      if (appointmentsView === "calendar") {
+        renderCalendar(reservasCache);
+      } else {
+        renderReservas(reservasCache);
+      }
+    }
+
+    function renderCalendar(reservas) {
+      if (!reservas.length) {
+        calendarView.innerHTML = `<div class="empty" style="grid-column:1/-1;">${t("noAppointments")}</div>`;
+        return;
+      }
+
+      const grouped = reservas.reduce((acc, r) => {
+        const key = r.fecha || t("notAvailable");
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(r);
+        return acc;
+      }, {});
+
+      const dates = Object.keys(grouped).sort();
+      calendarView.innerHTML = dates.map(date => `
+        <section class="calendar-day">
+          <div class="calendar-date">${escapeHtml(date)}</div>
+          ${grouped[date].map(r => `
+            <button type="button" class="calendar-item" onclick="scrollToAppointment('${escapeAttr(r.id)}')">
+              <strong>${escapeHtml(r.hora || "")} - ${escapeHtml(r.nombre || t("noName"))}</strong>
+              ${escapeHtml(r.servicioResumen || "")}<br>
+              ${escapeHtml(statusLabel(r.estado))}
+            </button>
+          `).join("")}
+        </section>
+      `).join("");
     }
 
     function renderReservas(reservas) {
@@ -1171,7 +1255,7 @@
           : "";
 
         return `
-          <article class="card">
+          <article class="card" data-reservation-id="${escapeAttr(r.id)}">
             <div class="service-tag"><i class="fa-solid ${tipo === "oil" ? "fa-oil-can" : "fa-screwdriver-wrench"}"></i>${escapeHtml(servicio)}</div>
             <div class="card-head">
               <div class="card-title">
@@ -1185,7 +1269,11 @@
               <div><span>${t("email")}</span><br>${escapeHtml(r.correo || "")}</div>
               <div><span>${t("vehicle")}</span><br>${escapeHtml(`${r.marca || ""} ${r.modelo || ""} ${r.ano || ""}`)}</div>
               <div><span>${escapeHtml(extraLabel)}</span><br>${escapeHtml(extraValue || t("notAvailable"))}</div>
+              <div><span>${t("subtotal")}</span><br>${r.totalFinal ? "$" + escapeHtml(r.totalFinal) : t("notAvailable")}</div>
+              <div><span>${t("discountLabel")}</span><br>${r.discountPercent ? escapeHtml(r.discountPercent) + "%" : t("notAvailable")}</div>
+              ${r.clientFee ? `<div><span>Fee</span><br>$${escapeHtml(r.clientFee)}</div>` : ""}
               <div class="full"><span>${t("address")}</span><br>${escapeHtml(r.direccion || "")}</div>
+              ${r.clientAction ? `<div class="full"><span>Customer action</span><br>${escapeHtml(r.clientAction)} ${escapeHtml(r.clientActionDate || "")}</div>` : ""}
             </div>
             <div class="actions">
               ${editButton}
@@ -1232,6 +1320,17 @@
       cargarMotores("", r.marcaAceite || "");
 
       document.getElementById("adminForm").scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    window.scrollToAppointment = function(id) {
+      appointmentsView = "list";
+      renderAppointmentView();
+      const card = document.querySelector(`[data-reservation-id="${cssEscape(id)}"]`);
+      if (card) {
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+        card.style.boxShadow = "0 0 0 3px rgba(165,30,34,.28),0 20px 55px rgba(28,20,8,.22)";
+        setTimeout(() => { card.style.boxShadow = ""; }, 1600);
+      }
     };
 
     window.actualizarEstado = function(id, estado) {
@@ -1453,6 +1552,11 @@
 
     function escapeAttr(value) {
       return String(value == null ? "" : value).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+    }
+
+    function cssEscape(value) {
+      if (window.CSS && typeof window.CSS.escape === "function") return window.CSS.escape(String(value || ""));
+      return String(value || "").replace(/["\\]/g, "\\$&");
     }
   </script>
 </body>
