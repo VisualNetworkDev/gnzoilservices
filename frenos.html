@@ -59,6 +59,66 @@
     font-size:13px;
     line-height:1.4;
   }
+  .discounts-panel{
+    margin:0 0 16px;
+    padding:14px;
+    border-radius:16px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.10);
+  }
+  .discounts-panel[hidden]{display:none;}
+  .discounts-panel h2{
+    margin:0;
+    color:#fff;
+    font-size:17px;
+    line-height:1.2;
+  }
+  .discounts-panel p{
+    margin:5px 0 0;
+    color:#cbd5ff;
+    font-size:13px;
+    line-height:1.4;
+  }
+  .discount-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:10px;
+    margin-top:12px;
+  }
+  .discount-item{
+    border-radius:14px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.10);
+    padding:11px;
+  }
+  .discount-item strong{
+    display:block;
+    color:#fff;
+    font-size:15px;
+  }
+  .discount-code-row{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:10px;
+  }
+  .discount-code{
+    padding:6px 9px;
+    border-radius:999px;
+    background:rgba(255,69,58,.18);
+    color:#fff;
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:.04em;
+  }
+  .discount-use{
+    width:auto;
+    min-height:34px;
+    padding:7px 10px;
+    border-radius:999px;
+    font-size:12px;
+  }
   .form-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -408,6 +468,26 @@
   .lang-btn.active{background:#a51e22;border-color:#c9a46a;color:#fffaf1;box-shadow:0 10px 22px rgba(165,30,34,.25);}
   .btn-home{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:999px;padding:10px 16px;background:rgba(255,250,241,.12);border:1px solid rgba(255,250,241,.32);color:#fffaf1;font-weight:800;font-size:13px;}
   .btn-home:hover{background:rgba(255,250,241,.20);}
+  .discounts-panel{
+    background:#fffdf8;
+    border-color:rgba(6,63,76,.14);
+    box-shadow:0 14px 32px rgba(28,20,8,.12);
+  }
+  .discounts-panel h2{color:var(--gnz-teal);}
+  .discounts-panel p{color:#52656b;}
+  .discount-item{
+    background:#fffaf1;
+    border-color:rgba(6,63,76,.12);
+  }
+  .discount-item strong{color:var(--gnz-teal);}
+  .discount-code{
+    background:rgba(165,30,34,.10);
+    color:var(--gnz-red);
+  }
+  .discount-use{
+    background:var(--gnz-teal);
+    color:#fffaf1;
+  }
   input,select,textarea{
     background:#fffdf8;
     color:var(--gnz-ink);
@@ -480,6 +560,12 @@
     </p>
     <div class="header-actions"><a class="btn-home" href="index.html" data-i18n="oilHome">GNZ Oil Services</a></div>
   </header>
+
+  <section class="discounts-panel" id="discountsPanel" hidden>
+    <h2 data-i18n="discountsTitle">Current Discounts</h2>
+    <p data-i18n="discountsHelp">Use the discount code in Additional Comments when booking your appointment.</p>
+    <div class="discount-list" id="discountsList"></div>
+  </section>
 
   <form id="brakeForm">
     <input type="hidden" name="Language" id="languageField">
@@ -798,6 +884,8 @@ const translations = {
     vehicleTypeLabel: "Vehicle Type:",
     axlesLabel: "Axles:",
     flushTypeLabel: "Flush Type:",
+    subtotalLabel: "Subtotal:",
+    discountLabel: "Discount:",
     totalLabel: "Total Price:",
     fullNameLabel: "Full Name:",
     phoneLabel: "Phone:",
@@ -806,7 +894,11 @@ const translations = {
     addressLabel: "Address:",
     dateLabel: "Date:",
     timeLabel: "Time:",
-    commentsLabel: "Comments:"
+    commentsLabel: "Comments:",
+    discountsTitle: "Current Discounts",
+    discountsHelp: "Use the discount code in Additional Comments when booking your appointment.",
+    useDiscount: "Use code",
+    discountApplied: "Discount code added to comments."
   },
   es: {
     subtitle: "Por GNZ Oil Services",
@@ -872,6 +964,8 @@ const translations = {
     vehicleTypeLabel: "Tipo de vehiculo:",
     axlesLabel: "Ejes:",
     flushTypeLabel: "Tipo de fluido:",
+    subtotalLabel: "Subtotal:",
+    discountLabel: "Descuento:",
     totalLabel: "Precio total:",
     fullNameLabel: "Nombre completo:",
     phoneLabel: "Telefono:",
@@ -880,7 +974,11 @@ const translations = {
     addressLabel: "Direccion:",
     dateLabel: "Fecha:",
     timeLabel: "Hora:",
-    commentsLabel: "Comentarios:"
+    commentsLabel: "Comentarios:",
+    discountsTitle: "Descuentos disponibles",
+    discountsHelp: "Usa el codigo de descuento en Comentarios adicionales al reservar tu cita.",
+    useDiscount: "Usar codigo",
+    discountApplied: "Codigo de descuento agregado a comentarios."
   }
 };
 
@@ -927,8 +1025,12 @@ const flushBox = document.getElementById("flushBox");
 const priceBox = document.getElementById("priceBox");
 const agreementStatus = document.getElementById("agreementStatus");
 const dateInput = brakeForm.querySelector('input[name="Date"]');
+const commentField = brakeForm.querySelector('textarea[name="Comment"]');
+const discountsPanel = document.getElementById("discountsPanel");
+const discountsList = document.getElementById("discountsList");
 const languageField = document.getElementById("languageField");
 let currentLang = getPreferredLanguage();
+window.gnzPublicDiscounts = [];
 
 function getPreferredLanguage() {
   const saved = localStorage.getItem("gnzLang");
@@ -945,6 +1047,33 @@ function serviceDisplayName(service, flushType) {
   if (service === "combo") return t("serviceCombo");
   if (service === "flush") return flushType === "complete" ? t("flushComplete") : t("flushRegular");
   return "";
+}
+
+function getDiscountRateFromComment(comment) {
+  const text = String(comment || "").toLowerCase();
+  if (!text || !window.gnzPublicDiscounts || !window.gnzPublicDiscounts.length) return 0;
+
+  return window.gnzPublicDiscounts.reduce((best, discount) => {
+    const code = String(discount.code || "").toLowerCase();
+    const rate = Number(discount.rate || 0);
+    if (!code || !rate || text.indexOf(code) === -1) return best;
+    return Math.max(best, rate);
+  }, 0);
+}
+
+function applyDiscount(price, discountRate) {
+  const amount = Number(price || 0);
+  const rate = Number(discountRate || 0);
+  return rate > 0 ? Math.max(0, amount - (amount * rate)) : amount;
+}
+
+function formatMoney(value) {
+  return Number(value || 0).toFixed(2);
+}
+
+function formatPercent(rate) {
+  const percent = Number(rate || 0) * 100;
+  return (Math.round(percent) === percent ? String(percent) : percent.toFixed(2).replace(/0+$/, "").replace(/\.$/, "")) + "%";
 }
 
 function updateAgreementStatusText() {
@@ -965,6 +1094,7 @@ function applyLanguage(lang) {
   document.getElementById("agreementText").innerHTML = agreementBodies[currentLang] || agreementBodies.en;
   updateAgreementStatusText();
   updatePriceEstimate();
+  renderPublicDiscounts(window.gnzPublicDiscounts || []);
   if (window.lastReceiptData) {
     document.getElementById("fullscreenReceiptContent").innerHTML = buildReceiptHtml(window.lastReceiptData);
   }
@@ -974,6 +1104,64 @@ document.querySelectorAll("[data-lang]").forEach(btn => {
   btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
 });
 applyLanguage(currentLang);
+
+function renderPublicDiscounts(discounts) {
+  window.gnzPublicDiscounts = Array.isArray(discounts) ? discounts : [];
+
+  if (!discountsPanel || !discountsList) return;
+
+  if (!window.gnzPublicDiscounts.length) {
+    discountsPanel.hidden = true;
+    discountsList.innerHTML = "";
+    return;
+  }
+
+  discountsPanel.hidden = false;
+  discountsList.innerHTML = window.gnzPublicDiscounts.map(d => `
+    <article class="discount-item">
+      <strong>${escapeHtml(d.title || d.code)} - ${escapeHtml(d.percent)}%</strong>
+      <p>${escapeHtml(d.description || "")}</p>
+      <div class="discount-code-row">
+        <span class="discount-code">${escapeHtml(d.code)}</span>
+        <button type="button" class="discount-use" data-discount-code="${escapeHtml(d.code)}">${t("useDiscount")}</button>
+      </div>
+    </article>
+  `).join("");
+}
+
+function loadPublicDiscounts() {
+  if (typeof google === "undefined" || !google.script || !google.script.run) return;
+
+  google.script.run
+    .withSuccessHandler(discounts => {
+      renderPublicDiscounts(discounts || []);
+      updatePriceEstimate();
+    })
+    .withFailureHandler(err => {
+      if (discountsPanel) discountsPanel.hidden = true;
+      console.error(err);
+    })
+    .obtenerDescuentosPublicos();
+}
+
+discountsList.addEventListener("click", e => {
+  const button = e.target.closest("[data-discount-code]");
+  if (!button || !commentField) return;
+
+  const code = button.dataset.discountCode || "";
+  if (!code) return;
+
+  const current = commentField.value || "";
+  if (current.toLowerCase().indexOf(code.toLowerCase()) === -1) {
+    commentField.value = current ? `${current.trim()} ${code}` : code;
+  }
+
+  commentField.focus();
+  updatePriceEstimate();
+  showToast(t("discountApplied"));
+});
+
+loadPublicDiscounts();
 
 setMinAppointmentDate();
 
@@ -1067,13 +1255,19 @@ function getQuote() {
 
   if (!price) return null;
 
+  const discountRate = getDiscountRateFromComment(form.get("Comment"));
+  const finalPrice = applyDiscount(price, discountRate);
+
   return {
     service,
     serviceName,
     body,
     axles,
     flushType,
-    price
+    basePrice: price,
+    discountRate,
+    discountPercent: Number((discountRate * 100).toFixed(2)),
+    price: finalPrice
   };
 }
 
@@ -1083,7 +1277,11 @@ function updatePriceEstimate() {
     priceBox.textContent = `${t("estimatedPrice")}: ${t("notAvailable")}`;
     return;
   }
-  priceBox.textContent = `${t("estimatedPrice")}: $${quote.price}`;
+
+  const discountText = quote.discountRate > 0
+    ? ` (${t("discountLabel")} -${formatPercent(quote.discountRate)})`
+    : "";
+  priceBox.textContent = `${t("estimatedPrice")}: $${formatMoney(quote.price)}${discountText}`;
 }
 
 function buildPayload(quote) {
@@ -1105,7 +1303,10 @@ function buildPayload(quote) {
     "Comment": form.get("Comment"),
     "Language": currentLang,
     "AgreementAccepted": agreementAccepted ? "SI" : "NO",
-    "price": quote.price,
+    "price": formatMoney(quote.price),
+    "basePrice": formatMoney(quote.basePrice),
+    "discountRate": quote.discountRate,
+    "discountPercent": quote.discountPercent,
     "serviceLabel": quote.serviceName,
     "timeDisplay": formatTimeAmPm(form.get("Time"))
   };
@@ -1115,12 +1316,18 @@ function buildReceiptHtml(d) {
   const bodyLabel = d.Body === "sedan" ? t("bodySedan") : t("bodySuv");
   const flushLabel = d.FlushType === "regular" ? t("flushRegular") : d.FlushType === "complete" ? t("flushComplete") : t("notAvailable");
   const serviceText = d.serviceLabel || getQuote().serviceName;
+  const discountRate = Number(d.discountRate || 0);
+  const basePrice = d.basePrice || d.price;
 
   return `
     <p><strong>${t("serviceLabel")}</strong> ${escapeHtml(serviceText)}</p>
     <p><strong>${t("vehicleTypeLabel")}</strong> ${escapeHtml(bodyLabel)}</p>
     <p><strong>${t("axlesLabel")}</strong> ${d.Service === "flush" ? t("notAvailable") : escapeHtml(d.Axles)}</p>
     <p><strong>${t("flushTypeLabel")}</strong> ${escapeHtml(d.Service === "flush" ? flushLabel : t("notAvailable"))}</p>
+    ${discountRate > 0 ? `
+      <p><strong>${t("subtotalLabel")}</strong> $${escapeHtml(basePrice)}</p>
+      <p><strong>${t("discountLabel")}</strong> -${escapeHtml(formatPercent(discountRate))}</p>
+    ` : ""}
     <div class="total-line">${t("totalLabel")} $${escapeHtml(d.price)}</div>
     <p><strong>${t("fullNameLabel")}</strong> ${escapeHtml(d["Full Name"])}</p>
     <p><strong>${t("phoneLabel")}</strong> ${escapeHtml(d.Phone)}</p>
@@ -1157,7 +1364,11 @@ function sendReservationToServer(data) {
       window.lastReceiptData = Object.assign({}, data, {
         id: response.id,
         Time: response.time || data.Time,
-        timeDisplay: response.time || data.timeDisplay
+        timeDisplay: response.time || data.timeDisplay,
+        price: response.total || data.price,
+        basePrice: response.subtotal || data.basePrice,
+        discountRate: response.discountRate != null ? Number(response.discountRate) : Number(data.discountRate || 0),
+        discountPercent: response.discountPercent != null ? Number(response.discountPercent) : Number(data.discountPercent || 0)
       });
 
       brakeForm.reset();
