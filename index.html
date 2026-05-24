@@ -1199,6 +1199,7 @@
               <tr><td data-i18n="costFilter">Engine Oil Filter</td><td><span id="reciboFiltro"></span></td></tr>
               <tr><td data-i18n="costLabor">Labor</td><td><span id="reciboManoObra"></span></td></tr>
               <tr><td data-i18n="costDisposal">Disposal</td><td><span id="reciboDesecho"></span></td></tr>
+              <tr id="reciboDescuentoRow" hidden><td data-i18n="costDiscount">Discount</td><td><span id="reciboDescuento"></span></td></tr>
               <tr class="total"><td data-i18n="costTotal">Total</td><td><strong><span id="reciboTotal"></span></strong></td></tr>
             </table>
           </div>
@@ -1327,6 +1328,7 @@
         costFilter: "Engine Oil Filter",
         costLabor: "Labor",
         costDisposal: "Disposal",
+        costDiscount: "Discount",
         costTotal: "Total",
         closeReceipt: "Close Receipt",
         contactTitle: "Contact GNZ Oil Services",
@@ -1406,6 +1408,7 @@
         costFilter: "Filtro de aceite",
         costLabor: "Mano de obra",
         costDisposal: "Desecho",
+        costDiscount: "Descuento",
         costTotal: "Total",
         closeReceipt: "Cerrar recibo",
         contactTitle: "Contacta a GNZ Oil Services",
@@ -1480,6 +1483,11 @@
 
     function escapeAttr(value) {
       return String(value == null ? "" : value).replace(/\\/g, "\\\\").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    function formatPercent(rate) {
+      const percent = Number(rate || 0) * 100;
+      return (Math.round(percent) === percent ? String(percent) : percent.toFixed(2).replace(/0+$/, "").replace(/\.$/, "")) + "%";
     }
 
     // Cargar vehículos desde backend
@@ -1567,6 +1575,8 @@
       document.getElementById("reciboFiltro").textContent = "";
       document.getElementById("reciboManoObra").textContent = "";
       document.getElementById("reciboDesecho").textContent = "";
+      document.getElementById("reciboDescuento").textContent = "";
+      document.getElementById("reciboDescuentoRow").hidden = true;
       document.getElementById("reciboTotal").textContent = "";
     }
 
@@ -1779,6 +1789,8 @@
           document.getElementById("reciboFiltro").textContent = (data && data.filtro) || "";
           document.getElementById("reciboManoObra").textContent = (data && data.manoObra) || "";
           document.getElementById("reciboDesecho").textContent = (data && data.desecho) || "";
+          document.getElementById("reciboDescuento").textContent = "";
+          document.getElementById("reciboDescuentoRow").hidden = true;
           document.getElementById("reciboTotal").textContent = (data && data.total) || "";
         })
         .withFailureHandler(err => {
@@ -2120,11 +2132,15 @@
             document.getElementById("rHora").textContent = res.hora || formatTimeAmPm(formData.hora) || "";
             document.getElementById("rComentarios").textContent = formData.comentarios || "";
 
-            document.getElementById("reciboTotal").textContent = "$" + (res.total || "0.00");
+            const discountRate = Number(res.discountRate || 0);
+            const finalTotal = res.finalTotal || res.total || "0.00";
+            document.getElementById("reciboTotal").textContent = "$" + finalTotal;
             if (res.aceite) document.getElementById("reciboAceite").textContent = "$" + res.aceite;
             if (res.filtro) document.getElementById("reciboFiltro").textContent = "$" + res.filtro;
             if (res.manoObra) document.getElementById("reciboManoObra").textContent = "$" + res.manoObra;
             if (res.desecho) document.getElementById("reciboDesecho").textContent = "$" + res.desecho;
+            document.getElementById("reciboDescuento").textContent = discountRate > 0 ? "-" + formatPercent(discountRate) : "";
+            document.getElementById("reciboDescuentoRow").hidden = discountRate <= 0;
 
             abrirModalReciboFinal();
             resetearAcuerdoAceptado();
