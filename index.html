@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GNZ Oil Services</title>
+  <link rel="icon" href="favicon.ico">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     *{
@@ -63,6 +64,32 @@
       margin-top:16px;
       display:flex;
       justify-content:center;
+    }
+    .language-switch{
+      margin:12px auto 0;
+      display:flex;
+      justify-content:center;
+      gap:6px;
+    }
+    .lang-btn{
+      width:auto;
+      min-width:44px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.06);
+      color:#f6efe2;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.04em;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .lang-btn.active{
+      background:#a51e22;
+      border-color:#c9a46a;
+      color:#fffaf1;
+      box-shadow:0 10px 22px rgba(165,30,34,.25);
     }
     .btn-brake{
       padding:10px 18px;
@@ -787,6 +814,131 @@
         font-size:25px;
       }
     }
+    :root{
+      --gnz-cream:#f6efe2;
+      --gnz-panel:#fffaf1;
+      --gnz-ink:#102a33;
+      --gnz-teal:#063f4c;
+      --gnz-red:#a51e22;
+      --gnz-gold:#c9a46a;
+      --gnz-line:rgba(6,63,76,.16);
+    }
+    body{
+      background:
+        radial-gradient(circle at 20% 0%,rgba(201,164,106,.26),transparent 30%),
+        linear-gradient(180deg,#fbf5e9 0%,#efe2cf 100%);
+      color:var(--gnz-ink);
+      padding:26px 10px;
+    }
+    .container{
+      background:rgba(255,250,241,.96);
+      border:1px solid var(--gnz-line);
+      border-radius:18px;
+      box-shadow:0 24px 70px rgba(28,20,8,.20);
+    }
+    .page-header{
+      background:
+        linear-gradient(135deg,rgba(6,63,76,.93),rgba(16,42,51,.92)),
+        var(--gnz-teal);
+      border:1px solid rgba(255,255,255,.32);
+      box-shadow:0 18px 45px rgba(6,63,76,.28);
+      text-align:center;
+    }
+    .brand-logo{
+      width:150px;
+      max-width:58vw;
+      aspect-ratio:1;
+      object-fit:cover;
+      border-radius:50%;
+      display:block;
+      margin:0 auto 12px;
+      box-shadow:0 16px 34px rgba(0,0,0,.28);
+      border:3px solid rgba(255,250,241,.9);
+    }
+    .page-title{
+      color:#fffaf1;
+      letter-spacing:.05em;
+      font-weight:900;
+    }
+    .page-subtitle{
+      color:#f1d7a2;
+      letter-spacing:.04em;
+    }
+    .btn-brake,
+    button.primary,
+    .receipt-done-btn,
+    .gnz-alert-card button,
+    #btnAceptar{
+      background:linear-gradient(120deg,var(--gnz-red),#d64235);
+      border:1px solid rgba(255,255,255,.20);
+      color:#fff;
+      box-shadow:0 14px 30px rgba(165,30,34,.25);
+    }
+    .btn-brake:hover,
+    button.primary:hover,
+    .receipt-done-btn:hover,
+    .gnz-alert-card button:hover,
+    #btnAceptar:hover{
+      background:linear-gradient(120deg,#7f1519,var(--gnz-red));
+      box-shadow:0 18px 38px rgba(6,63,76,.28);
+    }
+    h2,#recibo h3,#recibo h4,.gnz-alert-card h3,.receipt-modal-hero h2,.agreement-inline-header h2{
+      color:var(--gnz-teal);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea{
+      background:#fffdf8;
+      color:var(--gnz-ink);
+      border:1px solid rgba(6,63,76,.12);
+      box-shadow:0 1px 0 rgba(255,255,255,.8);
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus{
+      background:#ffffff;
+      box-shadow:0 0 0 2px rgba(6,63,76,.24),0 10px 24px rgba(6,63,76,.10);
+    }
+    .form-group label{
+      background:var(--gnz-panel);
+      color:#5f6d72;
+    }
+    .form-group i{
+      color:var(--gnz-red);
+    }
+    .mensaje,.footer-contact,.footer-contact strong{
+      color:var(--gnz-teal);
+    }
+    .footer-contact a,a#linkAcuerdo{
+      color:var(--gnz-red);
+    }
+    #recibo,.receipt-modal-card,.gnz-alert-card,.modal-content,.agreement-inline-body,.agreement-inline-header{
+      background:#fffaf1;
+      color:var(--gnz-ink);
+      border-color:var(--gnz-line);
+      box-shadow:0 20px 55px rgba(28,20,8,.22);
+    }
+    #textoAcuerdo p,#textoAcuerdo li,.agreement-accept-note,.gnz-alert-card p,.receipt-modal-hero p{
+      color:#344b52;
+    }
+    .receipt-modal{
+      background:rgba(246,239,226,.96);
+    }
+    .receipt-modal-topbar{
+      background:rgba(6,63,76,.92);
+    }
+    .tabla-recibo td,.recibo-datos p{
+      border-color:rgba(6,63,76,.14);
+      color:var(--gnz-ink);
+    }
+    .tabla-recibo .total td{
+      color:var(--gnz-red);
+    }
+    @media(max-width:700px){
+      .brand-logo{width:126px;}
+      .container{padding:18px 14px 22px;}
+      .page-header{padding:16px 14px 18px;}
+    }
   </style>
 </head>
 <body>
@@ -794,17 +946,20 @@
 
     <!-- HEADER GLASSMORPHISM -->
     <header class="page-header">
+      <img class="brand-logo" src="assets/img/gnz-logo.png" alt="GNZ Oil Services logo">
       <div class="page-title">GNZ OIL SERVICES</div>
-      <div class="page-subtitle">Mobile Oil Change & Maintenance at Your Door</div>
+      <div class="page-subtitle" data-i18n="subtitle">Mobile Oil Change & Maintenance at Your Door</div>
+      <div class="language-switch" aria-label="Language">
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+        <button type="button" class="lang-btn" data-lang="es">ES</button>
+      </div>
       <div class="header-actions">
         <a
           href="frenos.html"
           class="btn-brake"
-          target="_blank"
-          rel="noopener noreferrer"
         >
-          GNZ Brake & Flush Services
-          <span style="font-size:11px;">→</span>
+          <span data-i18n="brakeLink">GNZ Brake & Flush Services</span>
+          <span style="font-size:11px;">&rarr;</span>
         </a>
       </div>
     </header>
@@ -815,79 +970,79 @@
       <div class="form-group">
         <i class="fas fa-user"></i>
         <input type="text" name="nombre" id="nombre" placeholder=" " required>
-        <label>Full Name</label>
+        <label data-i18n="labelName">Full Name</label>
       </div>
       <div class="form-group">
         <i class="fas fa-phone"></i>
         <input type="tel" name="telefono" id="telefono" placeholder=" " required>
-        <label>Phone</label>
+        <label data-i18n="labelPhone">Phone</label>
       </div>
       <div class="form-group">
         <i class="fas fa-envelope"></i>
         <input type="email" name="correo" id="correo" placeholder=" " required>
-        <label>Email</label>
+        <label data-i18n="labelEmail">Email</label>
       </div>
       <div class="form-group">
         <i class="fas fa-car"></i>
         <select name="marca" id="marcaSelect" required>
           <option value="">Select Make</option>
         </select>
-        <label>Marca del vehículo</label>
+        <label data-i18n="labelMake">Vehicle Make</label>
       </div>
       <div class="form-group">
         <i class="fas fa-car-side"></i>
         <select name="modelo" id="modeloSelect" required>
           <option value="">Select Model</option>
         </select>
-        <label>Selecciona Modelo</label>
+        <label data-i18n="labelModel">Vehicle Model</label>
       </div>
       <div class="form-group" id="motorGroup" style="display:none;">
         <i class="fas fa-cogs"></i>
         <select id="motorSelect" name="motor"></select>
-        <label>Engine / Code</label>
+        <label data-i18n="labelEngine">Engine / Code</label>
       </div>
       <div class="form-group">
         <i class="fas fa-calendar-alt"></i>
         <select name="ano" id="anoSelect" required>
           <option value="">Select Year</option>
         </select>
-        <label>Año del vehículo</label>
+        <label data-i18n="labelYear">Vehicle Year</label>
       </div>
       <div class="form-group">
         <i class="fas fa-industry"></i>
         <select name="marcaAceite" id="marcaAceite" required>
           <option value="">Select Engine Oil</option>
         </select>
-        <label>Marca de Aceite</label>
+        <label data-i18n="labelOil">Engine Oil</label>
       </div>
       <div class="form-group">
         <i class="fas fa-map-marker-alt"></i>
         <input type="text" name="direccion" id="direccion" placeholder=" " required>
-        <label>Service Address</label>
+        <label data-i18n="labelAddress">Service Address</label>
       </div>
       <div class="form-group">
         <i class="fas fa-calendar-day"></i>
         <input type="date" name="fecha" id="fecha" required>
-        <label>Date</label>
+        <label data-i18n="labelDate">Date</label>
       </div>
       <div class="form-group">
         <i class="fas fa-clock"></i>
         <input type="time" name="hora" id="hora" required>
-        <label>Time</label>
+        <label data-i18n="labelTime">Time</label>
       </div>
       <div class="form-group">
         <i class="fas fa-comment-dots"></i>
         <textarea name="comentarios" id="comentarios" placeholder=" "></textarea>
-        <label>Aditional Coments</label>
+        <label data-i18n="labelComments">Additional Comments</label>
       </div>
       <div class="form-group">
-      <a id="linkAcuerdo">Read Full Agreement</a>
+      <a id="linkAcuerdo" data-i18n="readAgreement">Read Full Agreement</a>
       </div>
-      <div class="agreement-status" id="agreementStatus" aria-live="polite"></div>
+      <div class="agreement-status" id="agreementStatus" aria-live="polite" data-i18n="agreementPendingStatus">Please read and accept the service agreement before sending.</div>
       <input type="hidden" name="estado" value="Pendiente">
       <input type="hidden" name="idioma" id="langField">
       <input type="hidden" name="aceptoAcuerdo" id="aceptoAcuerdo" value="N/A">
-      <button type="submit" class="primary" id="btnEnviarReserva">Enviar Reserva</button>
+      <button type="submit" class="primary" id="btnEnviarReserva" data-i18n="submitReservation">Send Reservation</button>
     </form>
 
     <div class="mensaje" id="mensaje"></div>
@@ -934,7 +1089,7 @@
             <span class="receipt-status-dot"></span>
             <div>
               <strong>GNZ Oil Services</strong>
-              <span>Reservation confirmed</span>
+              <span data-i18n="receiptStatus">Reservation confirmed</span>
             </div>
           </div>
           <button type="button" class="receipt-close-btn" id="cerrarReciboFinal" aria-label="Cerrar recibo">
@@ -946,48 +1101,48 @@
           <div class="receipt-modal-hero-icon">
             <i class="fas fa-check"></i>
           </div>
-          <h2>Reservation Sent</h2>
-          <p>Your appointment request has been received. Please keep this receipt for your records.</p>
+          <h2 data-i18n="receiptSent">Reservation Sent</h2>
+          <p data-i18n="receiptIntro">Your appointment request has been received. Please keep this receipt for your records.</p>
         </div>
 
         <div class="receipt-modal-card">
           <div id="recibo">
-            <h3>📋 Reservation Recive</h3>
+            <h3 data-i18n="receiptTitle">Reservation Receipt</h3>
             <div class="recibo-datos">
-              <p><strong>Full Name:</strong> <span id="rNombre"></span></p>
-              <p><strong>Phone:</strong> <span id="rTelefono"></span></p>
-              <p><strong>E-mail:</strong> <span id="rCorreo"></span></p>
-              <p><strong>Make:</strong> <span id="rMarca"></span></p>
-              <p><strong>Model:</strong> <span id="rModelo"></span></p>
-              <p><strong>Year:</strong> <span id="rAno"></span></p>
-              <p><strong>Select Engine Oil:</strong> <span id="rMarcaAceite"></span></p>
-              <p><strong>Service Address:</strong> <span id="rDireccionRec"></span></p>
-              <p><strong>Date:</strong> <span id="rFecha"></span></p>
-              <p><strong>Time:</strong> <span id="rHora"></span></p>
-              <p><strong>Leave a Note:</strong> <span id="rComentarios"></span></p>
+              <p><strong data-i18n="receiptName">Full Name:</strong> <span id="rNombre"></span></p>
+              <p><strong data-i18n="receiptPhone">Phone:</strong> <span id="rTelefono"></span></p>
+              <p><strong data-i18n="receiptEmail">E-mail:</strong> <span id="rCorreo"></span></p>
+              <p><strong data-i18n="receiptMake">Make:</strong> <span id="rMarca"></span></p>
+              <p><strong data-i18n="receiptModel">Model:</strong> <span id="rModelo"></span></p>
+              <p><strong data-i18n="receiptYear">Year:</strong> <span id="rAno"></span></p>
+              <p><strong data-i18n="receiptOil">Engine Oil:</strong> <span id="rMarcaAceite"></span></p>
+              <p><strong data-i18n="receiptAddress">Service Address:</strong> <span id="rDireccionRec"></span></p>
+              <p><strong data-i18n="receiptDate">Date:</strong> <span id="rFecha"></span></p>
+              <p><strong data-i18n="receiptTime">Time:</strong> <span id="rHora"></span></p>
+              <p><strong data-i18n="receiptNotes">Notes:</strong> <span id="rComentarios"></span></p>
             </div>
 
-            <h4>💲 Desglose de Costos</h4>
+            <h4 data-i18n="costBreakdown">Cost Breakdown</h4>
             <table class="tabla-recibo">
-              <tr><td>Engine Oil</td><td><span id="reciboAceite"></span></td></tr>
-              <tr><td>Engine Oil Filter</td><td><span id="reciboFiltro"></span></td></tr>
-              <tr><td>Hands of Work</td><td><span id="reciboManoObra"></span></td></tr>
-              <tr><td>Trash</td><td><span id="reciboDesecho"></span></td></tr>
-              <tr class="total"><td>Total</td><td><strong><span id="reciboTotal"></span></strong></td></tr>
+              <tr><td data-i18n="costOil">Engine Oil</td><td><span id="reciboAceite"></span></td></tr>
+              <tr><td data-i18n="costFilter">Engine Oil Filter</td><td><span id="reciboFiltro"></span></td></tr>
+              <tr><td data-i18n="costLabor">Labor</td><td><span id="reciboManoObra"></span></td></tr>
+              <tr><td data-i18n="costDisposal">Disposal</td><td><span id="reciboDesecho"></span></td></tr>
+              <tr class="total"><td data-i18n="costTotal">Total</td><td><strong><span id="reciboTotal"></span></strong></td></tr>
             </table>
           </div>
 
           <button type="button" class="receipt-done-btn" id="cerrarReciboFinalAbajo">
-            Close Receipt
+            <span data-i18n="closeReceipt">Close Receipt</span>
           </button>
         </div>
       </div>
     </div>
 
     <div class="footer-contact">
-      <p><strong>Contact GNZ Oil Services</strong></p>
-      <p>Phone: <a href="tel:19045024182">904-502-4182</a></p>
-      <p>Email: <a href="mailto:gnzoilservices@gmail.com">gnzoilservices@gmail.com</a></p>
+      <p><strong data-i18n="contactTitle">Contact GNZ Oil Services</strong></p>
+      <p><span data-i18n="contactPhone">Phone:</span> <a href="tel:19045024182">904-502-4182</a></p>
+      <p><span data-i18n="contactEmail">Email:</span> <a href="mailto:gnzoilservices@gmail.com">gnzoilservices@gmail.com</a></p>
     </div>
 
   </div>
@@ -1027,6 +1182,208 @@
     let acuerdoAceptadoActual = false;
     let gnzAlertCallback = null;
     let gnzAlertTimer = null;
+    const translations = {
+      en: {
+        subtitle: "Mobile Oil Change & Maintenance at Your Door",
+        brakeLink: "GNZ Brake & Flush Services",
+        labelName: "Full Name",
+        labelPhone: "Phone",
+        labelEmail: "Email",
+        labelMake: "Vehicle Make",
+        labelModel: "Vehicle Model",
+        labelEngine: "Engine / Code",
+        labelYear: "Vehicle Year",
+        labelOil: "Engine Oil",
+        labelAddress: "Service Address",
+        labelDate: "Date",
+        labelTime: "Time",
+        labelComments: "Additional Comments",
+        readAgreement: "Read Full Agreement",
+        agreementAcceptedStatus: "Agreement accepted",
+        agreementPendingStatus: "Please read and accept the service agreement before sending.",
+        submitReservation: "Send Reservation",
+        submitting: "Sending...",
+        selectMake: "Select Make",
+        selectModel: "Select Model",
+        selectYear: "Select Year",
+        selectOil: "Select Engine Oil",
+        noOil: "No compatible oil found",
+        selectEngine: "Select Engine / Code",
+        estimatedPrice: "Estimated price",
+        notAvailable: "N/A",
+        loadingVehiclesTitle: "Unable to Load Vehicles",
+        loadingVehiclesMessage: "We could not load the vehicle list right now. Please refresh the page or try again in a moment.",
+        technicalDetail: "Technical detail",
+        oilOptionsTitle: "Unable to Load Oil Options",
+        oilOptionsMessage: "We could not load compatible oil options for this vehicle. Please try selecting the vehicle again.",
+        engineCodesTitle: "Unable to Load Engine Codes",
+        engineCodesMessage: "We could not load the engine codes for this vehicle. Please try selecting the year again.",
+        priceTitle: "Unable to Calculate Price",
+        priceMessage: "We could not calculate the estimated price right now. Please try again in a moment.",
+        agreementAcceptedTitle: "Agreement Accepted",
+        agreementAcceptedMessage: "Thank you. Your service agreement has been accepted and attached to this reservation.",
+        continue: "Continue",
+        reservationTimeTitle: "Reservation Time Required",
+        reservationTimeMessage: "Reservations must be scheduled at least 24 hours in advance. Please choose a later date or time.",
+        sendingMessage: "Sending reservation...",
+        sentMessage: "Reservation sent successfully",
+        reservationNotSentTitle: "Reservation Not Sent",
+        reservationNotSentMessage: "We could not send your reservation.",
+        tryAgain: "Please try again in a moment.",
+        connectionTitle: "Connection Error",
+        connectionMessage: "We could not connect to the reservation system. Please check your connection and try again.",
+        receiptStatus: "Reservation confirmed",
+        receiptSent: "Reservation Sent",
+        receiptIntro: "Your appointment request has been received. Please keep this receipt for your records.",
+        receiptTitle: "Reservation Receipt",
+        receiptName: "Full Name:",
+        receiptPhone: "Phone:",
+        receiptEmail: "E-mail:",
+        receiptMake: "Make:",
+        receiptModel: "Model:",
+        receiptYear: "Year:",
+        receiptOil: "Engine Oil:",
+        receiptAddress: "Service Address:",
+        receiptDate: "Date:",
+        receiptTime: "Time:",
+        receiptNotes: "Notes:",
+        costBreakdown: "Cost Breakdown",
+        costOil: "Engine Oil",
+        costFilter: "Engine Oil Filter",
+        costLabor: "Labor",
+        costDisposal: "Disposal",
+        costTotal: "Total",
+        closeReceipt: "Close Receipt",
+        contactTitle: "Contact GNZ Oil Services",
+        contactPhone: "Phone:",
+        contactEmail: "Email:"
+      },
+      es: {
+        subtitle: "Cambio de aceite y mantenimiento movil en tu ubicacion",
+        brakeLink: "GNZ Frenos y Fluidos",
+        labelName: "Nombre completo",
+        labelPhone: "Telefono",
+        labelEmail: "Correo electronico",
+        labelMake: "Marca del vehiculo",
+        labelModel: "Modelo del vehiculo",
+        labelEngine: "Motor / Codigo",
+        labelYear: "Ano del vehiculo",
+        labelOil: "Aceite de motor",
+        labelAddress: "Direccion del servicio",
+        labelDate: "Fecha",
+        labelTime: "Hora",
+        labelComments: "Comentarios adicionales",
+        readAgreement: "Leer acuerdo completo",
+        agreementAcceptedStatus: "Acuerdo aceptado",
+        agreementPendingStatus: "Lee y acepta el acuerdo de servicio antes de enviar.",
+        submitReservation: "Enviar reserva",
+        submitting: "Enviando...",
+        selectMake: "Selecciona marca",
+        selectModel: "Selecciona modelo",
+        selectYear: "Selecciona ano",
+        selectOil: "Selecciona aceite de motor",
+        noOil: "No se encontro aceite compatible",
+        selectEngine: "Selecciona motor / codigo",
+        estimatedPrice: "Precio estimado",
+        notAvailable: "N/D",
+        loadingVehiclesTitle: "No se pudieron cargar los vehiculos",
+        loadingVehiclesMessage: "No pudimos cargar la lista de vehiculos ahora. Actualiza la pagina o intenta de nuevo en un momento.",
+        technicalDetail: "Detalle tecnico",
+        oilOptionsTitle: "No se pudieron cargar los aceites",
+        oilOptionsMessage: "No pudimos cargar los aceites compatibles para este vehiculo. Intenta seleccionar el vehiculo otra vez.",
+        engineCodesTitle: "No se pudieron cargar los motores",
+        engineCodesMessage: "No pudimos cargar los codigos de motor para este vehiculo. Intenta seleccionar el ano otra vez.",
+        priceTitle: "No se pudo calcular el precio",
+        priceMessage: "No pudimos calcular el precio estimado ahora. Intenta de nuevo en un momento.",
+        agreementAcceptedTitle: "Acuerdo aceptado",
+        agreementAcceptedMessage: "Gracias. Tu acuerdo de servicio fue aceptado y adjuntado a esta reserva.",
+        continue: "Continuar",
+        reservationTimeTitle: "Horario requerido",
+        reservationTimeMessage: "Las reservas deben programarse con al menos 24 horas de anticipacion. Elige una fecha u hora posterior.",
+        sendingMessage: "Enviando reserva...",
+        sentMessage: "Reserva enviada con exito",
+        reservationNotSentTitle: "Reserva no enviada",
+        reservationNotSentMessage: "No pudimos enviar tu reserva.",
+        tryAgain: "Intenta de nuevo en un momento.",
+        connectionTitle: "Error de conexion",
+        connectionMessage: "No pudimos conectar con el sistema de reservas. Revisa tu conexion e intenta de nuevo.",
+        receiptStatus: "Reserva confirmada",
+        receiptSent: "Reserva enviada",
+        receiptIntro: "Recibimos tu solicitud de cita. Guarda este recibo para tus records.",
+        receiptTitle: "Recibo de reserva",
+        receiptName: "Nombre completo:",
+        receiptPhone: "Telefono:",
+        receiptEmail: "Correo:",
+        receiptMake: "Marca:",
+        receiptModel: "Modelo:",
+        receiptYear: "Ano:",
+        receiptOil: "Aceite de motor:",
+        receiptAddress: "Direccion del servicio:",
+        receiptDate: "Fecha:",
+        receiptTime: "Hora:",
+        receiptNotes: "Notas:",
+        costBreakdown: "Desglose de costos",
+        costOil: "Aceite de motor",
+        costFilter: "Filtro de aceite",
+        costLabor: "Mano de obra",
+        costDisposal: "Desecho",
+        costTotal: "Total",
+        closeReceipt: "Cerrar recibo",
+        contactTitle: "Contacta a GNZ Oil Services",
+        contactPhone: "Telefono:",
+        contactEmail: "Correo:"
+      }
+    };
+    let currentLang = getPreferredLanguage();
+
+    function getPreferredLanguage() {
+      const saved = localStorage.getItem("gnzLang");
+      if (saved === "es" || saved === "en") return saved;
+      return (navigator.language || "en").toLowerCase().startsWith("es") ? "es" : "en";
+    }
+
+    function t(key) {
+      return (translations[currentLang] && translations[currentLang][key]) || translations.en[key] || key;
+    }
+
+    function setPlaceholder(select, key) {
+      if (select && select.options.length) {
+        select.options[0].textContent = t(key);
+      }
+    }
+
+    function updateAgreementStatusText() {
+      const key = acuerdoAceptadoActual || aceptoAcuerdoField.value === "SI"
+        ? "agreementAcceptedStatus"
+        : "agreementPendingStatus";
+      agreementStatus.dataset.i18n = key;
+      agreementStatus.textContent = t(key);
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang === "es" ? "es" : "en";
+      localStorage.setItem("gnzLang", currentLang);
+      document.documentElement.lang = currentLang;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        el.textContent = t(el.dataset.i18n);
+      });
+      document.querySelectorAll("[data-lang]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.lang === currentLang);
+      });
+      document.getElementById("langField").value = currentLang;
+      setPlaceholder(marcaSelect, "selectMake");
+      setPlaceholder(modeloSelect, "selectModel");
+      setPlaceholder(anoSelect, "selectYear");
+      setPlaceholder(marcaAceiteSelect, "selectOil");
+      if (typeof renderAgreement === "function") renderAgreement();
+      updateAgreementStatusText();
+      if (!isSubmitting) submitButton.textContent = t("submitReservation");
+    }
+
+    document.querySelectorAll("[data-lang]").forEach(btn => {
+      btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
+    });
+    applyLanguage(currentLang);
 
     // Cargar vehículos desde backend
     google.script.run
@@ -1041,10 +1398,10 @@
         });
       })
       .withFailureHandler(err => {
-        const errorDetail = err && err.message ? "\n\nTechnical detail: " + err.message : "";
+        const errorDetail = err && err.message ? "\n\n" + t("technicalDetail") + ": " + err.message : "";
         mostrarAlertaGNZ(
-          "Unable to Load Vehicles",
-          "We could not load the vehicle list right now. Please refresh the page or try again in a moment." + errorDetail,
+          t("loadingVehiclesTitle"),
+          t("loadingVehiclesMessage") + errorDetail,
           "error",
           "OK"
         );
@@ -1059,7 +1416,7 @@
     }
 
     function resetOilOptions() {
-      marcaAceiteSelect.innerHTML = '<option value="">Selecciona marca de aceite</option>';
+      marcaAceiteSelect.innerHTML = `<option value="">${t("selectOil")}</option>`;
       precioBox.textContent = "";
       document.getElementById("reciboAceite").textContent = "";
       document.getElementById("reciboFiltro").textContent = "";
@@ -1083,9 +1440,9 @@
 
       google.script.run
         .withSuccessHandler(aceites => {
-          marcaAceiteSelect.innerHTML = '<option value="">Select Engine Oil</option>';
+          marcaAceiteSelect.innerHTML = `<option value="">${t("selectOil")}</option>`;
           if (!aceites || !aceites.length) {
-            marcaAceiteSelect.innerHTML = '<option value="">No compatible oil found</option>';
+            marcaAceiteSelect.innerHTML = `<option value="">${t("noOil")}</option>`;
             return;
           }
 
@@ -1098,8 +1455,8 @@
         })
         .withFailureHandler(err => {
           mostrarAlertaGNZ(
-            "Unable to Load Oil Options",
-            "We could not load compatible oil options for this vehicle. Please try selecting the vehicle again.",
+            t("oilOptionsTitle"),
+            t("oilOptionsMessage"),
             "error",
             "OK"
           );
@@ -1140,7 +1497,7 @@
           if (motoresUnicos.length > 1) {
             const placeholder = document.createElement("option");
             placeholder.value = "";
-            placeholder.textContent = "Select Engine / Code";
+            placeholder.textContent = t("selectEngine");
             motorSelect.appendChild(placeholder);
           }
 
@@ -1159,8 +1516,8 @@
         .withFailureHandler(err => {
           resetMotorOptions();
           mostrarAlertaGNZ(
-            "Unable to Load Engine Codes",
-            "We could not load the engine codes for this vehicle. Please try selecting the year again.",
+            t("engineCodesTitle"),
+            t("engineCodesMessage"),
             "error",
             "OK"
           );
@@ -1171,8 +1528,8 @@
 
     // Poblar modelos
     marcaSelect.addEventListener("change", () => {
-      modeloSelect.innerHTML = '<option value="">Selecciona modelo</option>';
-      anoSelect.innerHTML = '<option value="">Selecciona año</option>';
+      modeloSelect.innerHTML = `<option value="">${t("selectModel")}</option>`;
+      anoSelect.innerHTML = `<option value="">${t("selectYear")}</option>`;
       resetMotorOptions();
       resetOilOptions();
 
@@ -1189,7 +1546,7 @@
     });
 
     modeloSelect.addEventListener("change", () => {
-      anoSelect.innerHTML = '<option value="">Selecciona año</option>';
+      anoSelect.innerHTML = `<option value="">${t("selectYear")}</option>`;
       resetMotorOptions();
       resetOilOptions();
 
@@ -1240,8 +1597,8 @@
         })
         .withFailureHandler(err => {
           mostrarAlertaGNZ(
-            "Unable to Load Oil Options",
-            "We could not load compatible oil options for this vehicle. Please try selecting the vehicle again.",
+            t("oilOptionsTitle"),
+            t("oilOptionsMessage"),
             "error",
             "OK"
           );
@@ -1272,7 +1629,7 @@
       const params = { marcaAceite, modelo, motor, ano };
       google.script.run
         .withSuccessHandler(data => {
-          precioBox.textContent = data && data.total ? `💲 Precio estimado: ${data.total}` : "💲 Precio estimado: N/A";
+          precioBox.textContent = data && data.total ? `${t("estimatedPrice")}: ${data.total}` : `${t("estimatedPrice")}: ${t("notAvailable")}`;
           document.getElementById("reciboAceite").textContent = (data && data.aceite) || "";
           document.getElementById("reciboFiltro").textContent = (data && data.filtro) || "";
           document.getElementById("reciboManoObra").textContent = (data && data.manoObra) || "";
@@ -1280,10 +1637,10 @@
           document.getElementById("reciboTotal").textContent = (data && data.total) || "";
         })
         .withFailureHandler(err => {
-          precioBox.textContent = "💲 Precio estimado: N/A";
+          precioBox.textContent = `${t("estimatedPrice")}: ${t("notAvailable")}`;
           mostrarAlertaGNZ(
-            "Unable to Calculate Price",
-            "We could not calculate the estimated price right now. Please try again in a moment.",
+            t("priceTitle"),
+            t("priceMessage"),
             "error",
             "OK"
           );
@@ -1357,10 +1714,8 @@
         `
       }
     };
-    const agreementLang = agreementTexts[(navigator.language || "en").slice(0, 2)] ? (navigator.language || "en").slice(0, 2) : "en";
-
     function renderAgreement() {
-      const selected = agreementTexts[agreementLang];
+      const selected = agreementTexts[currentLang] || agreementTexts.en;
       tituloAcuerdo.textContent = selected.title;
       textoAcuerdo.innerHTML = selected.body;
       acceptNote.textContent = selected.note;
@@ -1382,14 +1737,15 @@
       aceptoAcuerdoField.value = "SI";
       link.classList.add("accepted");
       agreementStatus.classList.add("accepted");
+      updateAgreementStatusText();
       cerrarAcuerdo();
 
       if (showMessage && !alreadyAccepted) {
         mostrarAlertaGNZ(
-          "Agreement Accepted",
-          "Thank you. Your service agreement has been accepted and attached to this reservation.",
+          t("agreementAcceptedTitle"),
+          t("agreementAcceptedMessage"),
           "success",
-          "Continue",
+          t("continue"),
           null,
           1500
         );
@@ -1401,6 +1757,7 @@
       aceptoAcuerdoField.value = "N/A";
       link.classList.remove("accepted");
       agreementStatus.classList.remove("accepted");
+      updateAgreementStatusText();
     }
 
     function sincronizarAcuerdoAceptado() {
@@ -1522,7 +1879,7 @@
     function setSubmitting(isActive) {
       isSubmitting = isActive;
       submitButton.disabled = isActive;
-      submitButton.textContent = isActive ? "Enviando..." : "Enviar Reserva";
+      submitButton.textContent = isActive ? t("submitting") : t("submitReservation");
     }
 
     function formatTimeAmPm(timeValue) {
@@ -1585,15 +1942,16 @@
       const diffHoras = (fechaHora.getTime() - ahora.getTime()) / (1000 * 60 * 60);
       if (diffHoras < 24) {
         mostrarAlertaGNZ(
-          "Reservation Time Required",
-          "Reservations must be scheduled at least 24 hours in advance. Please choose a later date or time.",
+          t("reservationTimeTitle"),
+          t("reservationTimeMessage"),
           "warning",
           "OK"
         );
         return;
       }
 
-      document.getElementById("mensaje").textContent = "Enviando reserva...";
+      formData.idioma = currentLang;
+      document.getElementById("mensaje").textContent = t("sendingMessage");
       setSubmitting(true);
 
       google.script.run
@@ -1601,7 +1959,7 @@
           setSubmitting(false);
 
           if (res && res.success === true) {
-            document.getElementById("mensaje").textContent = "✅ Reserva enviada con éxito";
+            document.getElementById("mensaje").textContent = t("sentMessage");
 
             document.getElementById("rNombre").textContent = formData.nombre || "";
             document.getElementById("rTelefono").textContent = formData.telefono || "";
@@ -1629,8 +1987,8 @@
           } else {
             document.getElementById("mensaje").textContent = "";
             mostrarAlertaGNZ(
-              "Reservation Not Sent",
-              "We could not send your reservation. " + (res && res.error ? res.error : "Please try again in a moment."),
+              t("reservationNotSentTitle"),
+              t("reservationNotSentMessage") + " " + (res && res.error ? res.error : t("tryAgain")),
               "error",
               "OK"
             );
@@ -1640,8 +1998,8 @@
           setSubmitting(false);
           document.getElementById("mensaje").textContent = "";
           mostrarAlertaGNZ(
-            "Connection Error",
-            "We could not connect to the reservation system. Please check your connection and try again.",
+            t("connectionTitle"),
+            t("connectionMessage"),
             "error",
             "OK"
           );
