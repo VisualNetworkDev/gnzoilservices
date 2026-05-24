@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GNZ Admin</title>
+  <link rel="icon" href="favicon.ico">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
@@ -13,6 +14,11 @@
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;padding:18px;border-radius:18px;background:rgba(18,18,28,.96);border:1px solid rgba(255,255,255,.09);box-shadow:0 18px 40px rgba(0,0,0,.55);}
     .brand h1{font-size:22px;letter-spacing:.08em;text-transform:uppercase;color:#fff;}
     .brand p{font-size:13px;color:#9fb7ff;margin-top:4px;}
+    .top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+    .language-switch{display:flex;justify-content:center;gap:6px;}
+    .login .language-switch{margin:0 auto 14px;}
+    .lang-btn{width:auto;min-width:44px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#f6efe2;font-size:12px;font-weight:800;letter-spacing:.04em;cursor:pointer;transition:.2s ease;}
+    .lang-btn.active{background:var(--gnz-red);border-color:var(--gnz-gold);color:#fffaf1;box-shadow:0 10px 22px rgba(165,30,34,.25);}
     .btn{border:none;border-radius:12px;padding:11px 14px;font-weight:700;cursor:pointer;transition:.2s;background:#202231;color:#e8ecff;border:1px solid rgba(255,255,255,.08);}
     .btn:hover{transform:translateY(-1px);background:#292b3d;}
     .btn.primary{background:linear-gradient(120deg,#0b5ed7,#2563eb);color:#fff;box-shadow:0 12px 26px rgba(11,94,215,.35);}
@@ -20,6 +26,7 @@
     .btn.warn{background:#f59e0b;color:#111827;}
     .btn.danger{background:#dc3545;color:#fff;}
     .btn.info{background:#0d6efd;color:#fff;}
+    .btn.review{background:#7c2d12;color:#fff;}
     .login{max-width:430px;margin:12vh auto 0;padding:24px;border-radius:22px;background:rgba(18,18,28,.98);border:1px solid rgba(255,255,255,.1);box-shadow:0 22px 60px rgba(0,0,0,.65);}
     .login-icon{width:66px;height:66px;border-radius:22px;background:linear-gradient(145deg,#0b5ed7,#4ea3ff);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px;}
     .login h2{text-align:center;margin-bottom:8px;}
@@ -57,6 +64,10 @@
     .checkline{display:flex;gap:10px;align-items:flex-start;color:#c9d3f6;font-size:13px;line-height:1.45;margin:8px 0 12px;}
     .checkline input{margin-top:3px;}
     .message{margin-top:12px;color:#cfe2ff;font-weight:700;font-size:14px;}
+    .form-switch{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;padding:5px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
+    .tab-btn{border:none;border-radius:10px;padding:10px 12px;background:transparent;color:#c9d3f6;font-weight:800;cursor:pointer;}
+    .tab-btn.active{background:#0b5ed7;color:#fff;box-shadow:0 10px 22px rgba(11,94,215,.24);}
+    .service-tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:6px;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;background:rgba(10,132,255,.12);color:#cfe2ff;}
     .hidden{display:none!important;}
     .empty{text-align:center;color:#8f9ac5;padding:24px;}
     @media(max-width:980px){.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
@@ -66,6 +77,8 @@
       .login{margin:7vh auto 0;padding:20px;border-radius:18px;}
       .topbar{position:sticky;top:0;z-index:20;align-items:flex-start;flex-direction:column;padding:14px;border-radius:16px;background:rgba(18,18,28,.98);}
       .topbar .btn{width:100%;min-height:46px;}
+      .top-actions{width:100%;display:grid;grid-template-columns:1fr;gap:8px;}
+      .top-actions .language-switch{justify-content:flex-start;}
       .brand h1{font-size:19px;}
       .brand p{font-size:12px;line-height:1.4;}
       .grid{gap:12px;}
@@ -89,83 +102,174 @@
       .checkline{font-size:13px;}
       #saveBtn,#cancelEditBtn{min-height:48px;}
     }
+    :root{--gnz-cream:#f6efe2;--gnz-panel:#fffaf1;--gnz-ink:#102a33;--gnz-teal:#063f4c;--gnz-red:#a51e22;--gnz-gold:#c9a46a;--gnz-line:rgba(6,63,76,.16);}
+    body{background:linear-gradient(180deg,#fbf5e9 0%,#efe2cf 100%);color:var(--gnz-ink);}
+    .topbar,.panel,.login,.card,.stat{background:rgba(255,250,241,.96);border-color:var(--gnz-line);box-shadow:0 20px 55px rgba(28,20,8,.18);}
+    .topbar{background:linear-gradient(135deg,rgba(6,63,76,.95),rgba(16,42,51,.94));color:#fffaf1;}
+    .brand{display:flex;align-items:center;gap:13px;}
+    .brand-logo{width:58px;height:58px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,250,241,.9);box-shadow:0 10px 24px rgba(0,0,0,.25);}
+    .brand h1,.panel h2,.login h2,.card-title strong,.stat strong{color:var(--gnz-teal);}
+    .topbar .brand h1{color:#fffaf1;}
+    .brand p,.login p,.details span,.stat span{color:#7c5555;}
+    .topbar .brand p{color:#f1d7a2;}
+    .login-logo{width:112px;height:112px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 14px;border:3px solid rgba(255,250,241,.9);box-shadow:0 16px 34px rgba(6,63,76,.28);}
+    .login-icon{background:none;box-shadow:none;width:auto;height:auto;margin:0;}
+    .field input,.field select,.field textarea{background:#fffdf8;color:var(--gnz-ink);border:1px solid rgba(6,63,76,.12);box-shadow:0 1px 0 rgba(255,255,255,.8);}
+    .field input:focus,.field select:focus,.field textarea:focus{box-shadow:0 0 0 2px rgba(6,63,76,.22),0 10px 24px rgba(6,63,76,.10);}
+    .field i{color:var(--gnz-red);}
+    .btn.primary{background:linear-gradient(120deg,var(--gnz-red),#d64235);box-shadow:0 14px 30px rgba(165,30,34,.25);}
+    .btn{background:#123f4b;color:#fffaf1;border-color:rgba(255,255,255,.14);}
+    .btn:hover{background:#0b303a;}
+    .btn.review{background:#9a3412;color:#fffaf1;}
+    .form-switch{background:rgba(6,63,76,.06);border-color:rgba(6,63,76,.12);}
+    .tab-btn{color:#31515a;}
+    .tab-btn.active{background:var(--gnz-teal);color:#fffaf1;box-shadow:0 12px 24px rgba(6,63,76,.18);}
+    .service-tag{background:rgba(165,30,34,.1);color:var(--gnz-red);}
+    .price-box{background:rgba(6,63,76,.08);border-color:rgba(6,63,76,.18);color:var(--gnz-teal);}
+    .badge.Pendiente{background:#f8e3a4;color:#77510b;}
+    .badge.Confirmada{background:#d9f0df;color:#0f5a31;}
+    .badge.Cancelada{background:#f7d8d4;color:#8a1418;}
+    .badge.Completada{background:#d6e7ef;color:#0f4e66;}
+    .empty,.message,.checkline,.details{color:#344b52;}
+    @media(max-width:640px){.brand{align-items:flex-start}.brand-logo{width:52px;height:52px}.login-logo{width:96px;height:96px}}
   </style>
 </head>
 <body>
   <div id="loginView" class="login">
-    <div class="login-icon"><i class="fa-solid fa-lock"></i></div>
+    <div class="language-switch" aria-label="Language">
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+      <button type="button" class="lang-btn" data-lang="es">ES</button>
+    </div>
+    <div class="login-icon"><img class="login-logo" src="assets/img/gnz-logo.png" alt="GNZ Oil Services logo"></div>
     <h2>GNZ Admin</h2>
-    <p>Private appointment manager for GNZ Oil Services.</p>
+    <p data-i18n="loginSubtitle">Private appointment manager for GNZ Oil Services.</p>
     <div class="field">
       <i class="fa-solid fa-key"></i>
-      <input type="password" id="adminPassword" placeholder="Admin password" autocomplete="current-password">
+      <input type="password" id="adminPassword" placeholder="Admin password" autocomplete="current-password" data-i18n-placeholder="adminPassword">
     </div>
-    <button class="btn primary" id="loginBtn" style="width:100%;">Log In</button>
+    <button class="btn primary" id="loginBtn" style="width:100%;" data-i18n="loginButton">Log In</button>
     <div class="message" id="loginMessage"></div>
   </div>
 
   <div id="appView" class="app hidden">
     <div class="topbar">
       <div class="brand">
+        <img class="brand-logo" src="assets/img/gnz-logo.png" alt="GNZ Oil Services logo">
+        <div>
         <h1>GNZ Admin</h1>
-        <p>Reservations, scheduling, pricing, reminders and status updates.</p>
+        <p data-i18n="adminSubtitle">Reservations, scheduling, pricing, reminders and status updates.</p>
+        </div>
       </div>
-      <button class="btn" id="refreshBtn"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      <div class="top-actions">
+        <div class="language-switch" aria-label="Language">
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="es">ES</button>
+        </div>
+        <button class="btn" id="refreshBtn"><i class="fa-solid fa-rotate"></i> <span data-i18n="refresh">Refresh</span></button>
+      </div>
     </div>
 
     <div class="stats">
-      <div class="stat"><strong id="statTotal">0</strong><span>Total</span></div>
-      <div class="stat"><strong id="statPendientes">0</strong><span>Pending</span></div>
-      <div class="stat"><strong id="statConfirmadas">0</strong><span>Confirmed</span></div>
-      <div class="stat"><strong id="statCompletadas">0</strong><span>Completed</span></div>
-      <div class="stat"><strong id="statHoy">0</strong><span>Today</span></div>
+      <div class="stat"><strong id="statTotal">0</strong><span data-i18n="statTotal">Total</span></div>
+      <div class="stat"><strong id="statPendientes">0</strong><span data-i18n="statPending">Pending</span></div>
+      <div class="stat"><strong id="statConfirmadas">0</strong><span data-i18n="statConfirmed">Confirmed</span></div>
+      <div class="stat"><strong id="statCompletadas">0</strong><span data-i18n="statCompleted">Completed</span></div>
+      <div class="stat"><strong id="statHoy">0</strong><span data-i18n="statToday">Today</span></div>
     </div>
 
     <div class="grid">
       <section class="panel">
-        <h2>Appointments</h2>
+        <h2 data-i18n="appointments">Appointments</h2>
         <div class="filters">
-          <div class="field"><i class="fa-solid fa-magnifying-glass"></i><input id="searchInput" placeholder="Search by ID, name, phone, email" inputmode="search"></div>
+          <div class="field"><i class="fa-solid fa-magnifying-glass"></i><input id="searchInput" placeholder="Search by ID, name, phone, email" inputmode="search" data-i18n-placeholder="searchPlaceholder"></div>
           <div class="field"><i class="fa-solid fa-calendar"></i><input type="date" id="filterDate"></div>
           <div class="field">
             <i class="fa-solid fa-filter"></i>
             <select id="filterStatus">
-              <option value="">All statuses</option>
-              <option>Pendiente</option>
-              <option>Confirmada</option>
-              <option>Cancelada</option>
-              <option>Completada</option>
+              <option value="" data-i18n="allStatuses">All statuses</option>
+              <option value="Pendiente" data-i18n="statusPending">Pending</option>
+              <option value="Confirmada" data-i18n="statusConfirmed">Confirmed</option>
+              <option value="Cancelada" data-i18n="statusCanceled">Canceled</option>
+              <option value="Completada" data-i18n="statusCompleted">Completed</option>
             </select>
           </div>
-          <button class="btn primary" id="searchBtn">Search</button>
+          <button class="btn primary" id="searchBtn" data-i18n="search">Search</button>
         </div>
         <div id="reservasList" class="list"></div>
       </section>
 
       <section class="panel">
-        <h2 id="formTitle">Schedule Appointment</h2>
-        <form id="adminForm">
+        <h2 id="formTitle">Schedule Oil Appointment</h2>
+        <div class="form-switch" aria-label="Appointment type">
+          <button class="tab-btn active" type="button" data-admin-form="oil"><i class="fa-solid fa-oil-can"></i> <span data-i18n="oilTab">Oil</span></button>
+          <button class="tab-btn" type="button" data-admin-form="brake"><i class="fa-solid fa-screwdriver-wrench"></i> <span data-i18n="brakeTab">Brakes / Flush</span></button>
+        </div>
+        <form id="adminForm" class="service-form">
+          <input type="hidden" name="idioma" id="adminLangField">
           <div class="form-grid">
-            <div class="field"><i class="fa-solid fa-user"></i><input name="nombre" id="nombre" placeholder="Full name" autocomplete="name" required></div>
-            <div class="field"><i class="fa-solid fa-phone"></i><input name="telefono" id="telefono" placeholder="Phone" inputmode="tel" autocomplete="tel" required></div>
-            <div class="field full"><i class="fa-solid fa-envelope"></i><input name="correo" id="correo" type="email" placeholder="Email" autocomplete="email" required></div>
-            <div class="field"><i class="fa-solid fa-car"></i><select name="marca" id="marcaSelect" required><option value="">Select Make</option></select></div>
-            <div class="field"><i class="fa-solid fa-car-side"></i><select name="modelo" id="modeloSelect" required><option value="">Select Model</option></select></div>
-            <div class="field"><i class="fa-solid fa-calendar-days"></i><select name="ano" id="anoSelect" required><option value="">Select Year</option></select></div>
+            <div class="field"><i class="fa-solid fa-user"></i><input name="nombre" id="nombre" placeholder="Full name" autocomplete="name" required data-i18n-placeholder="fullName"></div>
+            <div class="field"><i class="fa-solid fa-phone"></i><input name="telefono" id="telefono" placeholder="Phone" inputmode="tel" autocomplete="tel" required data-i18n-placeholder="phone"></div>
+            <div class="field full"><i class="fa-solid fa-envelope"></i><input name="correo" id="correo" type="email" placeholder="Email" autocomplete="email" required data-i18n-placeholder="email"></div>
+            <div class="field"><i class="fa-solid fa-car"></i><select name="marca" id="marcaSelect" required><option value="" data-i18n="selectMake">Select Make</option></select></div>
+            <div class="field"><i class="fa-solid fa-car-side"></i><select name="modelo" id="modeloSelect" required><option value="" data-i18n="selectModel">Select Model</option></select></div>
+            <div class="field"><i class="fa-solid fa-calendar-days"></i><select name="ano" id="anoSelect" required><option value="" data-i18n="selectYear">Select Year</option></select></div>
             <div class="field" id="motorGroup" style="display:none;"><i class="fa-solid fa-gears"></i><select name="motor" id="motorSelect"></select></div>
-            <div class="field full"><i class="fa-solid fa-oil-can"></i><select name="marcaAceite" id="marcaAceite" required><option value="">Select Engine Oil</option></select></div>
-            <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="direccion" id="direccion" placeholder="Service address" autocomplete="street-address" required></div>
+            <div class="field full"><i class="fa-solid fa-oil-can"></i><select name="marcaAceite" id="marcaAceite" required><option value="" data-i18n="selectOil">Select Engine Oil</option></select></div>
+            <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="direccion" id="direccion" placeholder="Service address" autocomplete="street-address" required data-i18n-placeholder="serviceAddress"></div>
             <div class="field"><i class="fa-solid fa-calendar-day"></i><input type="date" name="fecha" id="fecha" required></div>
             <div class="field"><i class="fa-solid fa-clock"></i><input type="time" name="hora" id="hora" required></div>
-            <div class="field full"><i class="fa-solid fa-list-check"></i><select name="estado" id="estado"><option>Confirmada</option><option>Pendiente</option></select></div>
-            <div class="field full"><i class="fa-solid fa-comment"></i><textarea name="comentarios" id="comentarios" placeholder="Notes"></textarea></div>
+            <div class="field full"><i class="fa-solid fa-list-check"></i><select name="estado" id="estado"><option value="Confirmada" data-i18n="statusConfirmed">Confirmed</option><option value="Pendiente" data-i18n="statusPending">Pending</option></select></div>
+            <div class="field full"><i class="fa-solid fa-comment"></i><textarea name="comentarios" id="comentarios" placeholder="Notes" data-i18n-placeholder="notes"></textarea></div>
           </div>
           <div class="price-box" id="priceBox">Estimated price: N/A</div>
-          <label class="checkline"><input type="checkbox" name="aceptoAcuerdo" id="aceptoAcuerdo" value="SI" checked> Agreement accepted verbally or by the customer.</label>
-          <label class="checkline"><input type="checkbox" name="notificarCliente" id="notificarCliente" value="SI" checked> Send confirmation email and PDF receipt to customer.</label>
-          <button class="btn primary" type="submit" id="saveBtn" style="width:100%;">Create Appointment</button>
-          <button class="btn hidden" type="button" id="cancelEditBtn" style="width:100%;margin-top:8px;">Cancel Edit</button>
+          <label class="checkline"><input type="checkbox" name="aceptoAcuerdo" id="aceptoAcuerdo" value="SI" checked> <span data-i18n="agreementAdmin">Agreement accepted verbally or by the customer.</span></label>
+          <label class="checkline"><input type="checkbox" name="notificarCliente" id="notificarCliente" value="SI" checked> <span data-i18n="notifyAdmin">Send confirmation email and PDF receipt to customer.</span></label>
+          <button class="btn primary" type="submit" id="saveBtn" style="width:100%;" data-i18n="createAppointment">Create Appointment</button>
+          <button class="btn hidden" type="button" id="cancelEditBtn" style="width:100%;margin-top:8px;" data-i18n="cancelEdit">Cancel Edit</button>
           <div class="message" id="formMessage"></div>
+        </form>
+
+        <form id="adminBrakeForm" class="service-form hidden">
+          <input type="hidden" name="Language" id="adminBrakeLangField">
+          <div class="form-grid">
+            <div class="field"><i class="fa-solid fa-user"></i><input name="Full Name" id="brakeFullName" placeholder="Full name" autocomplete="name" required data-i18n-placeholder="fullName"></div>
+            <div class="field"><i class="fa-solid fa-phone"></i><input name="Phone" id="brakePhone" placeholder="Phone" inputmode="tel" autocomplete="tel" required data-i18n-placeholder="phone"></div>
+            <div class="field full"><i class="fa-solid fa-envelope"></i><input name="Email" id="brakeEmail" type="email" placeholder="Email" autocomplete="email" required data-i18n-placeholder="email"></div>
+            <div class="field"><i class="fa-solid fa-screwdriver-wrench"></i><select name="Service" id="adminBrakeService" required>
+              <option value="" data-i18n="selectService">Select Service</option>
+              <option value="pads" data-i18n="servicePads">Brake Pads Only</option>
+              <option value="combo" data-i18n="serviceCombo">Rotors + Pads</option>
+              <option value="flush" data-i18n="serviceFlush">Flush Service</option>
+            </select></div>
+            <div class="field" id="adminBrakeAxleBox" style="display:none;"><i class="fa-solid fa-circle-dot"></i><select name="Axles" id="adminBrakeAxles">
+              <option value="1" data-i18n="axle1">1 axle</option>
+              <option value="2" data-i18n="axle2">2 axles</option>
+              <option value="3" data-i18n="axle3">3 axles</option>
+              <option value="4" data-i18n="axle4">4 axles</option>
+            </select></div>
+            <div class="field" id="adminBrakeFlushBox" style="display:none;"><i class="fa-solid fa-droplet"></i><select name="FlushType" id="adminBrakeFlushType">
+              <option value="regular" data-i18n="flushRegular">Regular Flush</option>
+              <option value="complete" data-i18n="flushComplete">Complete Flush</option>
+            </select></div>
+            <div class="field"><i class="fa-solid fa-car-side"></i><select name="Body" id="adminBrakeBody" required>
+              <option value="" data-i18n="bodyStyle">Body Style</option>
+              <option value="sedan">Sedan / Coupe</option>
+              <option value="suv">SUV / Truck</option>
+            </select></div>
+            <div class="field"><i class="fa-solid fa-calendar-days"></i><input name="Year" id="brakeYear" placeholder="Year" inputmode="numeric" required data-i18n-placeholder="year"></div>
+            <div class="field"><i class="fa-solid fa-car"></i><input name="Make" id="brakeMake" placeholder="Make" required data-i18n-placeholder="make"></div>
+            <div class="field"><i class="fa-solid fa-car-rear"></i><input name="Model" id="brakeModel" placeholder="Model" required data-i18n-placeholder="model"></div>
+            <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="Address" id="brakeAddress" placeholder="Service address" autocomplete="street-address" required data-i18n-placeholder="serviceAddress"></div>
+            <div class="field"><i class="fa-solid fa-calendar-day"></i><input type="date" name="Date" id="brakeDate" required></div>
+            <div class="field"><i class="fa-solid fa-clock"></i><input type="time" name="Time" id="brakeTime" required></div>
+            <div class="field full"><i class="fa-solid fa-list-check"></i><select name="Estado" id="brakeEstado"><option value="Confirmada" data-i18n="statusConfirmed">Confirmed</option><option value="Pendiente" data-i18n="statusPending">Pending</option></select></div>
+            <div class="field full"><i class="fa-solid fa-comment"></i><textarea name="Comment" id="brakeComment" placeholder="Notes" data-i18n-placeholder="notes"></textarea></div>
+          </div>
+          <div class="price-box" id="brakePriceBox">Estimated price: N/A</div>
+          <label class="checkline"><input type="checkbox" name="AgreementAccepted" id="brakeAgreement" value="SI" checked> <span data-i18n="agreementAdmin">Agreement accepted verbally or by the customer.</span></label>
+          <label class="checkline"><input type="checkbox" name="NotificarCliente" id="brakeNotify" value="SI" checked> <span data-i18n="notifyAdmin">Send confirmation email and PDF receipt to customer.</span></label>
+          <button class="btn primary" type="submit" id="saveBrakeBtn" style="width:100%;" data-i18n="createBrakeAppointment">Create Brake / Flush Appointment</button>
+          <div class="message" id="brakeFormMessage"></div>
         </form>
       </section>
     </div>
@@ -188,6 +292,292 @@
     let reservasCache = [];
     let editingId = "";
     let typingTimer = null;
+    let activeFormType = "oil";
+    const translations = {
+      en: {
+        loginSubtitle: "Private appointment manager for GNZ Oil Services.",
+        adminPassword: "Admin password",
+        loginButton: "Log In",
+        adminSubtitle: "Reservations, scheduling, pricing, reminders and status updates.",
+        refresh: "Refresh",
+        statTotal: "Total",
+        statPending: "Pending",
+        statConfirmed: "Confirmed",
+        statCompleted: "Completed",
+        statToday: "Today",
+        appointments: "Appointments",
+        searchPlaceholder: "Search by ID, name, phone, email",
+        allStatuses: "All statuses",
+        statusPending: "Pending",
+        statusConfirmed: "Confirmed",
+        statusCanceled: "Canceled",
+        statusCompleted: "Completed",
+        search: "Search",
+        oilTab: "Oil",
+        brakeTab: "Brakes / Flush",
+        scheduleOil: "Schedule Oil Appointment",
+        scheduleBrake: "Schedule Brake / Flush Appointment",
+        editAppointment: "Edit Appointment",
+        fullName: "Full name",
+        phone: "Phone",
+        email: "Email",
+        selectMake: "Select Make",
+        selectModel: "Select Model",
+        selectYear: "Select Year",
+        selectOil: "Select Engine Oil",
+        selectEngine: "Select Engine / Code",
+        serviceAddress: "Service address",
+        notes: "Notes",
+        estimatedPrice: "Estimated price",
+        notAvailable: "N/A",
+        oil: "Oil",
+        filter: "Filter",
+        labor: "Labor",
+        disposal: "Disposal",
+        agreementAdmin: "Agreement accepted verbally or by the customer.",
+        notifyAdmin: "Send confirmation email and PDF receipt to customer.",
+        createAppointment: "Create Appointment",
+        updateAppointment: "Update Appointment",
+        cancelEdit: "Cancel Edit",
+        selectService: "Select Service",
+        servicePads: "Brake Pads Only",
+        serviceCombo: "Rotors + Pads",
+        serviceFlush: "Flush Service",
+        axle1: "1 axle",
+        axle2: "2 axles",
+        axle3: "3 axles",
+        axle4: "4 axles",
+        flushRegular: "Regular Flush",
+        flushComplete: "Complete Flush",
+        bodyStyle: "Body Style",
+        year: "Year",
+        make: "Make",
+        model: "Model",
+        createBrakeAppointment: "Create Brake / Flush Appointment",
+        checkingAccess: "Checking access...",
+        loginFailed: "Login failed.",
+        unableLogin: "Unable to log in.",
+        saving: "Saving appointment...",
+        updating: "Updating appointment...",
+        savedFail: "Appointment was not saved.",
+        appointmentUpdated: "Appointment updated:",
+        appointmentCreated: "Appointment created:",
+        brakeIncomplete: "Please complete the service, body style and axle/flush options.",
+        savingBrake: "Saving brake / flush appointment...",
+        brakeSavedFail: "Brake / flush appointment was not saved.",
+        brakeCreated: "Brake / flush appointment created:",
+        brakeFailed: "Brake / flush appointment failed.",
+        loadingAppointments: "Loading appointments...",
+        unableAppointments: "Unable to load appointments.",
+        noAppointments: "No appointments found.",
+        oilService: "Oil Service",
+        brakeFlush: "Brake / Flush",
+        details: "Details",
+        noName: "No name",
+        vehicle: "Vehicle",
+        address: "Address",
+        edit: "Edit",
+        confirm: "Confirm",
+        pending: "Pending",
+        cancel: "Cancel",
+        complete: "Complete",
+        review: "Review",
+        notFound: "Appointment was not found in the current list.",
+        editingExisting: "Editing existing appointment.",
+        statusFail: "Status was not updated.",
+        statusError: "Status update failed.",
+        reviewConfirm: "Send Google review email to this customer?",
+        reviewFail: "Review email was not sent.",
+        reviewSent: "Review email sent to",
+        customer: "customer",
+        reviewError: "Review email failed.",
+        somethingWrong: "Something went wrong."
+      },
+      es: {
+        loginSubtitle: "Administrador privado de citas para GNZ Oil Services.",
+        adminPassword: "Contrasena de admin",
+        loginButton: "Entrar",
+        adminSubtitle: "Reservas, agenda, precios, recordatorios y estados.",
+        refresh: "Actualizar",
+        statTotal: "Total",
+        statPending: "Pendientes",
+        statConfirmed: "Confirmadas",
+        statCompleted: "Completadas",
+        statToday: "Hoy",
+        appointments: "Citas",
+        searchPlaceholder: "Buscar por ID, nombre, telefono o correo",
+        allStatuses: "Todos los estados",
+        statusPending: "Pendiente",
+        statusConfirmed: "Confirmada",
+        statusCanceled: "Cancelada",
+        statusCompleted: "Completada",
+        search: "Buscar",
+        oilTab: "Aceite",
+        brakeTab: "Frenos / Fluidos",
+        scheduleOil: "Programar cita de aceite",
+        scheduleBrake: "Programar cita de frenos / fluidos",
+        editAppointment: "Editar cita",
+        fullName: "Nombre completo",
+        phone: "Telefono",
+        email: "Correo",
+        selectMake: "Selecciona marca",
+        selectModel: "Selecciona modelo",
+        selectYear: "Selecciona ano",
+        selectOil: "Selecciona aceite de motor",
+        selectEngine: "Selecciona motor / codigo",
+        serviceAddress: "Direccion del servicio",
+        notes: "Notas",
+        estimatedPrice: "Precio estimado",
+        notAvailable: "N/D",
+        oil: "Aceite",
+        filter: "Filtro",
+        labor: "Mano de obra",
+        disposal: "Desecho",
+        agreementAdmin: "Acuerdo aceptado verbalmente o por el cliente.",
+        notifyAdmin: "Enviar correo de confirmacion y recibo PDF al cliente.",
+        createAppointment: "Crear cita",
+        updateAppointment: "Actualizar cita",
+        cancelEdit: "Cancelar edicion",
+        selectService: "Selecciona servicio",
+        servicePads: "Solo pastillas de freno",
+        serviceCombo: "Rotores + pastillas",
+        serviceFlush: "Servicio de fluido",
+        axle1: "1 eje",
+        axle2: "2 ejes",
+        axle3: "3 ejes",
+        axle4: "4 ejes",
+        flushRegular: "Fluido regular",
+        flushComplete: "Fluido completo",
+        bodyStyle: "Tipo de vehiculo",
+        year: "Ano",
+        make: "Marca",
+        model: "Modelo",
+        createBrakeAppointment: "Crear cita de frenos / fluidos",
+        checkingAccess: "Verificando acceso...",
+        loginFailed: "No se pudo entrar.",
+        unableLogin: "No se pudo iniciar sesion.",
+        saving: "Guardando cita...",
+        updating: "Actualizando cita...",
+        savedFail: "La cita no fue guardada.",
+        appointmentUpdated: "Cita actualizada:",
+        appointmentCreated: "Cita creada:",
+        brakeIncomplete: "Completa el servicio, tipo de vehiculo y opciones de ejes/fluido.",
+        savingBrake: "Guardando cita de frenos / fluidos...",
+        brakeSavedFail: "La cita de frenos / fluidos no fue guardada.",
+        brakeCreated: "Cita de frenos / fluidos creada:",
+        brakeFailed: "Fallo la cita de frenos / fluidos.",
+        loadingAppointments: "Cargando citas...",
+        unableAppointments: "No se pudieron cargar las citas.",
+        noAppointments: "No se encontraron citas.",
+        oilService: "Servicio de aceite",
+        brakeFlush: "Frenos / Fluidos",
+        details: "Detalles",
+        noName: "Sin nombre",
+        vehicle: "Vehiculo",
+        address: "Direccion",
+        edit: "Editar",
+        confirm: "Confirmar",
+        pending: "Pendiente",
+        cancel: "Cancelar",
+        complete: "Completar",
+        review: "Review",
+        notFound: "No se encontro la cita en la lista actual.",
+        editingExisting: "Editando cita existente.",
+        statusFail: "No se actualizo el estado.",
+        statusError: "Fallo al actualizar el estado.",
+        reviewConfirm: "Enviar correo de valoracion de Google a este cliente?",
+        reviewFail: "No se envio el correo de valoracion.",
+        reviewSent: "Correo de valoracion enviado a",
+        customer: "cliente",
+        reviewError: "Fallo el correo de valoracion.",
+        somethingWrong: "Algo salio mal."
+      }
+    };
+    let currentLang = getPreferredLanguage();
+
+    function getPreferredLanguage() {
+      const saved = localStorage.getItem("gnzLang");
+      if (saved === "es" || saved === "en") return saved;
+      return (navigator.language || "en").toLowerCase().startsWith("es") ? "es" : "en";
+    }
+
+    function t(key) {
+      return (translations[currentLang] && translations[currentLang][key]) || translations.en[key] || key;
+    }
+
+    function statusLabel(status) {
+      const map = {
+        Pendiente: "statusPending",
+        Confirmada: "statusConfirmed",
+        Cancelada: "statusCanceled",
+        Completada: "statusCompleted"
+      };
+      return t(map[status] || "") || status || t("notAvailable");
+    }
+
+    function setFormTitle() {
+      if (activeFormType === "oil") {
+        formTitle.textContent = editingId ? `${t("editAppointment")} ${editingId}` : t("scheduleOil");
+      } else {
+        formTitle.textContent = t("scheduleBrake");
+      }
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang === "es" ? "es" : "en";
+      localStorage.setItem("gnzLang", currentLang);
+      document.documentElement.lang = currentLang;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        el.textContent = t(el.dataset.i18n);
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        el.placeholder = t(el.dataset.i18nPlaceholder);
+      });
+      document.querySelectorAll("[data-lang]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.lang === currentLang);
+      });
+      document.getElementById("adminLangField").value = currentLang;
+      document.getElementById("adminBrakeLangField").value = currentLang;
+      setFormTitle();
+      updatePlaceholders();
+      calcularPrecio();
+      updateAdminBrakePrice();
+      if (reservasCache.length) renderReservas(reservasCache);
+    }
+
+    function placeholderOption(key) {
+      return `<option value="">${t(key)}</option>`;
+    }
+
+    function updatePlaceholders() {
+      [
+        [marcaSelect, "selectMake"],
+        [modeloSelect, "selectModel"],
+        [anoSelect, "selectYear"],
+        [marcaAceite, "selectOil"],
+        [adminBrakeService, "selectService"],
+        [document.getElementById("adminBrakeBody"), "bodyStyle"]
+      ].forEach(([select, key]) => {
+        if (select && select.options.length && select.options[0].value === "") {
+          select.options[0].textContent = t(key);
+        }
+      });
+    }
+
+    const brakePrices = {
+      pads: {
+        sedan: [70, 130, 180, 220],
+        suv: [90, 170, 240, 300]
+      },
+      combo: {
+        sedan: [110, 210, 300, 380],
+        suv: [135, 260, 370, 480]
+      },
+      flush: {
+        sedan: { regular: 107, complete: 119 },
+        suv: { regular: 138, complete: 150 }
+      }
+    };
 
     const loginView = document.getElementById("loginView");
     const appView = document.getElementById("appView");
@@ -204,6 +594,19 @@
     const formTitle = document.getElementById("formTitle");
     const saveBtn = document.getElementById("saveBtn");
     const cancelEditBtn = document.getElementById("cancelEditBtn");
+    const adminOilForm = document.getElementById("adminForm");
+    const adminBrakeForm = document.getElementById("adminBrakeForm");
+    const adminBrakeService = document.getElementById("adminBrakeService");
+    const adminBrakeAxleBox = document.getElementById("adminBrakeAxleBox");
+    const adminBrakeFlushBox = document.getElementById("adminBrakeFlushBox");
+    const brakePriceBox = document.getElementById("brakePriceBox");
+    const brakeFormMessage = document.getElementById("brakeFormMessage");
+    const saveBrakeBtn = document.getElementById("saveBrakeBtn");
+
+    document.querySelectorAll("[data-lang]").forEach(btn => {
+      btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
+    });
+    applyLanguage(currentLang);
 
     document.getElementById("loginBtn").addEventListener("click", login);
     document.getElementById("adminPassword").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
@@ -212,17 +615,23 @@
     document.getElementById("filterStatus").addEventListener("change", cargarReservas);
     document.getElementById("filterDate").addEventListener("change", cargarReservas);
     cancelEditBtn.addEventListener("click", resetFormMode);
+    document.querySelectorAll("[data-admin-form]").forEach(btn => {
+      btn.addEventListener("click", () => switchAdminForm(btn.dataset.adminForm));
+    });
+    adminBrakeService.addEventListener("change", updateAdminBrakeOptions);
+    adminBrakeForm.addEventListener("input", updateAdminBrakePrice);
+    adminBrakeForm.addEventListener("change", updateAdminBrakePrice);
     document.getElementById("searchInput").addEventListener("input", () => {
       clearTimeout(typingTimer);
       typingTimer = setTimeout(cargarReservas, 350);
     });
 
     function login() {
-      loginMessage.textContent = "Checking access...";
+      loginMessage.textContent = t("checkingAccess");
       google.script.run
         .withSuccessHandler(res => {
           if (!res || !res.success) {
-            loginMessage.textContent = (res && res.error) || "Unable to log in.";
+            loginMessage.textContent = (res && res.error) || t("unableLogin");
             return;
           }
           adminToken = res.token;
@@ -232,9 +641,28 @@
           cargarReservas();
         })
         .withFailureHandler(err => {
-          loginMessage.textContent = err.message || "Login failed.";
+          loginMessage.textContent = err.message || t("loginFailed");
         })
         .adminLogin(document.getElementById("adminPassword").value);
+    }
+
+    function switchAdminForm(type) {
+      activeFormType = type === "brake" ? "brake" : "oil";
+
+      document.querySelectorAll("[data-admin-form]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.adminForm === activeFormType);
+      });
+
+      adminOilForm.classList.toggle("hidden", activeFormType !== "oil");
+      adminBrakeForm.classList.toggle("hidden", activeFormType !== "brake");
+
+      if (activeFormType === "oil") {
+        setFormTitle();
+      } else {
+        if (editingId) resetFormMode();
+        setFormTitle();
+        updateAdminBrakeOptions();
+      }
     }
 
     function cargarVehiculos() {
@@ -256,13 +684,13 @@
 
     function renderMarcas() {
       const marcas = [...new Set(vehiculos.map(v => String(v.marca || "").trim().toLowerCase()).filter(Boolean))].sort();
-      marcaSelect.innerHTML = '<option value="">Select Make</option>';
+      marcaSelect.innerHTML = placeholderOption("selectMake");
       marcas.forEach(m => addOption(marcaSelect, m, m));
     }
 
     marcaSelect.addEventListener("change", () => {
-      modeloSelect.innerHTML = '<option value="">Select Model</option>';
-      anoSelect.innerHTML = '<option value="">Select Year</option>';
+      modeloSelect.innerHTML = placeholderOption("selectModel");
+      anoSelect.innerHTML = placeholderOption("selectYear");
       resetMotor();
       resetOil();
       const modelos = vehiculos
@@ -273,7 +701,7 @@
     });
 
     modeloSelect.addEventListener("change", () => {
-      anoSelect.innerHTML = '<option value="">Select Year</option>';
+      anoSelect.innerHTML = placeholderOption("selectYear");
       resetMotor();
       resetOil();
       const anos = vehiculos
@@ -317,7 +745,7 @@
       motorGroup.style.display = "block";
       motorSelect.required = true;
       motorSelect.innerHTML = "";
-      if (list.length > 1) addOption(motorSelect, "", "Select Engine / Code");
+      if (list.length > 1) addOption(motorSelect, "", t("selectEngine"));
       list.forEach(m => addOption(motorSelect, m, m));
 
       if (selectedMotor && list.some(m => normalizarMotor(m) === normalizarMotor(selectedMotor))) {
@@ -342,7 +770,7 @@
         .filter(Boolean))]
         .sort();
 
-      marcaAceite.innerHTML = '<option value="">Select Engine Oil</option>';
+      marcaAceite.innerHTML = placeholderOption("selectOil");
       aceites.forEach(a => addOption(marcaAceite, a, a));
 
       if (selectedOil) {
@@ -358,19 +786,65 @@
 
       const estimate = calcularPrecioLocal();
       if (!estimate) {
-        priceBox.textContent = "Estimated price: N/A";
+        priceBox.textContent = `${t("estimatedPrice")}: ${t("notAvailable")}`;
         return;
       }
 
-      priceBox.textContent = `Estimated price: $${estimate.total} | Oil $${estimate.aceite} | Filter $${estimate.filtro} | Labor $${estimate.manoObra} | Disposal $${estimate.desecho}`;
+      priceBox.textContent = `${t("estimatedPrice")}: $${estimate.total} | ${t("oil")} $${estimate.aceite} | ${t("filter")} $${estimate.filtro} | ${t("labor")} $${estimate.manoObra} | ${t("disposal")} $${estimate.desecho}`;
+    }
+
+    function updateAdminBrakeOptions() {
+      const service = adminBrakeService.value;
+      adminBrakeAxleBox.style.display = (service === "pads" || service === "combo") ? "block" : "none";
+      adminBrakeFlushBox.style.display = service === "flush" ? "block" : "none";
+      updateAdminBrakePrice();
+    }
+
+    function getAdminBrakeQuote() {
+      const form = new FormData(adminBrakeForm);
+      const service = form.get("Service");
+      const body = form.get("Body");
+      const axles = Number(form.get("Axles"));
+      const flushType = form.get("FlushType");
+
+      if (!service || !body) return null;
+
+      if (service === "pads" || service === "combo") {
+        if (!axles || axles < 1 || axles > 4) return null;
+        const serviceName = service === "pads" ? t("servicePads") : t("serviceCombo");
+        return {
+          service: service,
+          serviceName: serviceName,
+          price: brakePrices[service][body][axles - 1]
+        };
+      }
+
+      if (service === "flush") {
+        if (flushType !== "regular" && flushType !== "complete") return null;
+        return {
+          service: service,
+          serviceName: flushType === "regular" ? t("flushRegular") : t("flushComplete"),
+          price: brakePrices.flush[body][flushType]
+        };
+      }
+
+      return null;
+    }
+
+    function updateAdminBrakePrice() {
+      const quote = getAdminBrakeQuote();
+      brakePriceBox.textContent = quote
+        ? `${t("estimatedPrice")}: $${quote.price} | ${quote.serviceName}`
+        : `${t("estimatedPrice")}: ${t("notAvailable")}`;
     }
 
     document.getElementById("adminForm").addEventListener("submit", e => {
       e.preventDefault();
-      formMessage.textContent = editingId ? "Updating appointment..." : "Saving appointment...";
+      formMessage.textContent = editingId ? t("updating") : t("saving");
       saveBtn.disabled = true;
 
       const data = Object.fromEntries(new FormData(e.target).entries());
+      data.idioma = currentLang;
       data.aceptoAcuerdo = document.getElementById("aceptoAcuerdo").checked ? "SI" : "ADMIN";
       data.notificarCliente = document.getElementById("notificarCliente").checked ? "SI" : "NO";
 
@@ -378,10 +852,10 @@
         .withSuccessHandler(res => {
           saveBtn.disabled = false;
           if (!res || !res.success) {
-            formMessage.textContent = (res && res.error) || "Appointment was not saved.";
+            formMessage.textContent = (res && res.error) || t("savedFail");
             return;
           }
-          formMessage.textContent = editingId ? `Appointment updated: ${res.id}` : `Appointment created: ${res.id}`;
+          formMessage.textContent = editingId ? `${t("appointmentUpdated")} ${res.id}` : `${t("appointmentCreated")} ${res.id}`;
           resetFormMode();
           cargarReservas();
         })
@@ -397,6 +871,49 @@
       }
     });
 
+    adminBrakeForm.addEventListener("submit", e => {
+      e.preventDefault();
+
+      const quote = getAdminBrakeQuote();
+      if (!quote) {
+        brakeFormMessage.textContent = t("brakeIncomplete");
+        return;
+      }
+
+      brakeFormMessage.textContent = t("savingBrake");
+      saveBrakeBtn.disabled = true;
+
+      const payload = Object.fromEntries(new FormData(adminBrakeForm).entries());
+      payload.AgreementAccepted = document.getElementById("brakeAgreement").checked ? "SI" : "NO";
+      payload.NotificarCliente = document.getElementById("brakeNotify").checked ? "SI" : "NO";
+      payload.Language = currentLang;
+      payload.price = quote.price;
+      payload.serviceLabel = quote.serviceName;
+
+      google.script.run
+        .withSuccessHandler(res => {
+          saveBrakeBtn.disabled = false;
+          if (!res || !res.success) {
+            brakeFormMessage.textContent = (res && (res.error || res.message)) || t("brakeSavedFail");
+            return;
+          }
+
+          const warning = res.warning ? ` ${res.warning}` : "";
+          brakeFormMessage.textContent = `${t("brakeCreated")} ${res.id}.${warning}`;
+          adminBrakeForm.reset();
+          document.getElementById("adminBrakeLangField").value = currentLang;
+          document.getElementById("brakeAgreement").checked = true;
+          document.getElementById("brakeNotify").checked = true;
+          updateAdminBrakeOptions();
+          cargarReservas();
+        })
+        .withFailureHandler(err => {
+          saveBrakeBtn.disabled = false;
+          brakeFormMessage.textContent = err.message || t("brakeFailed");
+        })
+        .adminCrearReservaFrenosFluidos(adminToken, payload);
+    });
+
     function cargarReservas() {
       const filtros = {
         query: document.getElementById("searchInput").value,
@@ -405,11 +922,11 @@
         limit: 300
       };
 
-      reservasList.innerHTML = '<div class="empty">Loading appointments...</div>';
+      reservasList.innerHTML = `<div class="empty">${t("loadingAppointments")}</div>`;
       google.script.run
         .withSuccessHandler(res => {
           if (!res || !res.success) {
-            reservasList.innerHTML = '<div class="empty">Unable to load appointments.</div>';
+            reservasList.innerHTML = `<div class="empty">${t("unableAppointments")}</div>`;
             return;
           }
           renderStats(res.resumen || {});
@@ -417,7 +934,7 @@
           renderReservas(reservasCache);
         })
         .withFailureHandler(err => {
-          reservasList.innerHTML = `<div class="empty">${escapeHtml(err.message || "Unable to load appointments.")}</div>`;
+          reservasList.innerHTML = `<div class="empty">${escapeHtml(err.message || t("unableAppointments"))}</div>`;
         })
         .adminListarReservas(adminToken, filtros);
     }
@@ -432,49 +949,64 @@
 
     function renderReservas(reservas) {
       if (!reservas.length) {
-        reservasList.innerHTML = '<div class="empty">No appointments found.</div>';
+        reservasList.innerHTML = `<div class="empty">${t("noAppointments")}</div>`;
         return;
       }
 
-      reservasList.innerHTML = reservas.map(r => `
-        <article class="card">
-          <div class="card-head">
-            <div class="card-title">
-              <strong>${escapeHtml(r.nombre || "No name")}</strong>
-              <span>${escapeHtml(r.id || "")} | ${escapeHtml(r.fecha || "")} ${escapeHtml(r.hora || "")}</span>
+      reservasList.innerHTML = reservas.map(r => {
+        const tipo = r.tipoServicio || "oil";
+        const servicio = r.servicioResumen || (tipo === "oil" ? t("oilService") : t("brakeFlush"));
+        const extraLabel = tipo === "oil" ? t("oil") : t("details");
+        const extraValue = tipo === "oil"
+          ? (r.marcaAceite || "")
+          : [r.bodyStyle, r.axles && r.axles !== "N/A" ? `${r.axles} axle(s)` : ""].filter(Boolean).join(" | ");
+        const editButton = tipo === "oil"
+          ? `<button class="btn" onclick="editarReserva('${escapeAttr(r.id)}')">${t("edit")}</button>`
+          : "";
+
+        return `
+          <article class="card">
+            <div class="service-tag"><i class="fa-solid ${tipo === "oil" ? "fa-oil-can" : "fa-screwdriver-wrench"}"></i>${escapeHtml(servicio)}</div>
+            <div class="card-head">
+              <div class="card-title">
+                <strong>${escapeHtml(r.nombre || t("noName"))}</strong>
+                <span>${escapeHtml(r.id || "")} | ${escapeHtml(r.fecha || "")} ${escapeHtml(r.hora || "")}</span>
+              </div>
+              <span class="badge ${escapeHtml(r.estado || "")}">${escapeHtml(statusLabel(r.estado))}</span>
             </div>
-            <span class="badge ${escapeHtml(r.estado || "")}">${escapeHtml(r.estado || "N/A")}</span>
-          </div>
-          <div class="details">
-            <div><span>Phone</span><br>${escapeHtml(r.telefono || "")}</div>
-            <div><span>Email</span><br>${escapeHtml(r.correo || "")}</div>
-            <div><span>Vehicle</span><br>${escapeHtml(`${r.marca || ""} ${r.modelo || ""} ${r.ano || ""}`)}</div>
-            <div><span>Oil</span><br>${escapeHtml(r.marcaAceite || "")}</div>
-            <div class="full"><span>Address</span><br>${escapeHtml(r.direccion || "")}</div>
-          </div>
-          <div class="actions">
-            <button class="btn" onclick="editarReserva('${escapeAttr(r.id)}')">Edit</button>
-            <button class="btn success" onclick="actualizarEstado('${escapeAttr(r.id)}','Confirmada')">Confirm</button>
-            <button class="btn warn" onclick="actualizarEstado('${escapeAttr(r.id)}','Pendiente')">Pending</button>
-            <button class="btn danger" onclick="actualizarEstado('${escapeAttr(r.id)}','Cancelada')">Cancel</button>
-            <button class="btn info" onclick="actualizarEstado('${escapeAttr(r.id)}','Completada')">Complete</button>
-          </div>
-        </article>
-      `).join("");
+            <div class="details">
+              <div><span>${t("phone")}</span><br>${escapeHtml(r.telefono || "")}</div>
+              <div><span>${t("email")}</span><br>${escapeHtml(r.correo || "")}</div>
+              <div><span>${t("vehicle")}</span><br>${escapeHtml(`${r.marca || ""} ${r.modelo || ""} ${r.ano || ""}`)}</div>
+              <div><span>${escapeHtml(extraLabel)}</span><br>${escapeHtml(extraValue || t("notAvailable"))}</div>
+              <div class="full"><span>${t("address")}</span><br>${escapeHtml(r.direccion || "")}</div>
+            </div>
+            <div class="actions">
+              ${editButton}
+              <button class="btn success" onclick="actualizarEstado('${escapeAttr(r.id)}','Confirmada')">${t("confirm")}</button>
+              <button class="btn warn" onclick="actualizarEstado('${escapeAttr(r.id)}','Pendiente')">${t("pending")}</button>
+              <button class="btn danger" onclick="actualizarEstado('${escapeAttr(r.id)}','Cancelada')">${t("cancel")}</button>
+              <button class="btn info" onclick="actualizarEstado('${escapeAttr(r.id)}','Completada')">${t("complete")}</button>
+              <button class="btn review" onclick="enviarReview('${escapeAttr(r.id)}')">${t("review")}</button>
+            </div>
+          </article>
+        `;
+      }).join("");
     }
 
     window.editarReserva = function(id) {
       const r = reservasCache.find(item => String(item.id) === String(id));
       if (!r) {
-        alert("Appointment was not found in the current list.");
+        alert(t("notFound"));
         return;
       }
 
+      switchAdminForm("oil");
       editingId = r.id;
-      formTitle.textContent = `Edit Appointment ${r.id}`;
-      saveBtn.textContent = "Update Appointment";
+      setFormTitle();
+      saveBtn.textContent = t("updateAppointment");
       cancelEditBtn.classList.remove("hidden");
-      formMessage.textContent = "Editing existing appointment.";
+      formMessage.textContent = t("editingExisting");
 
       document.getElementById("nombre").value = r.nombre || "";
       document.getElementById("telefono").value = r.telefono || "";
@@ -501,35 +1033,52 @@
       google.script.run
         .withSuccessHandler(res => {
           if (!res || !res.success) {
-            alert((res && res.error) || "Status was not updated.");
+            alert((res && res.error) || t("statusFail"));
             return;
           }
           cargarReservas();
         })
-        .withFailureHandler(err => alert(err.message || "Status update failed."))
+        .withFailureHandler(err => alert(err.message || t("statusError")))
         .adminActualizarEstado(adminToken, id, estado);
+    };
+
+    window.enviarReview = function(id) {
+      if (!confirm(t("reviewConfirm"))) return;
+
+      google.script.run
+        .withSuccessHandler(res => {
+          if (!res || !res.success) {
+            alert((res && res.error) || t("reviewFail"));
+            return;
+          }
+
+          alert(`${t("reviewSent")} ${res.email || t("customer")}.`);
+        })
+        .withFailureHandler(err => alert(err.message || t("reviewError")))
+        .adminEnviarCorreoReview(adminToken, id);
     };
 
     function resetFormMode() {
       editingId = "";
-      formTitle.textContent = "Schedule Appointment";
-      saveBtn.textContent = "Create Appointment";
+      setFormTitle();
+      saveBtn.textContent = t("createAppointment");
       saveBtn.disabled = false;
       cancelEditBtn.classList.add("hidden");
       document.getElementById("adminForm").reset();
+      document.getElementById("adminLangField").value = currentLang;
       document.getElementById("aceptoAcuerdo").checked = true;
       document.getElementById("notificarCliente").checked = true;
       formMessage.textContent = "";
       resetMotor();
       resetOil();
-      modeloSelect.innerHTML = '<option value="">Select Model</option>';
-      anoSelect.innerHTML = '<option value="">Select Year</option>';
+      modeloSelect.innerHTML = placeholderOption("selectModel");
+      anoSelect.innerHTML = placeholderOption("selectYear");
       renderMarcas();
     }
 
     function populateModelos() {
-      modeloSelect.innerHTML = '<option value="">Select Model</option>';
-      anoSelect.innerHTML = '<option value="">Select Year</option>';
+      modeloSelect.innerHTML = placeholderOption("selectModel");
+      anoSelect.innerHTML = placeholderOption("selectYear");
       resetMotor();
       resetOil();
 
@@ -541,7 +1090,7 @@
     }
 
     function populateAnos() {
-      anoSelect.innerHTML = '<option value="">Select Year</option>';
+      anoSelect.innerHTML = placeholderOption("selectYear");
       resetMotor();
       resetOil();
 
@@ -560,8 +1109,8 @@
     }
 
     function resetOil() {
-      marcaAceite.innerHTML = '<option value="">Select Engine Oil</option>';
-      priceBox.textContent = "Estimated price: N/A";
+      marcaAceite.innerHTML = placeholderOption("selectOil");
+      priceBox.textContent = `${t("estimatedPrice")}: ${t("notAvailable")}`;
     }
 
     function addOption(select, value, text) {
@@ -669,7 +1218,7 @@
     }
 
     function showFormError(err) {
-      formMessage.textContent = err.message || String(err || "Something went wrong.");
+      formMessage.textContent = err.message || String(err || t("somethingWrong"));
     }
 
     function escapeHtml(value) {
