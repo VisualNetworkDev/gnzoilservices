@@ -462,7 +462,7 @@
   }
   .subtitle{color:#f1d7a2;}
   .disclaimer{color:#f7ead4;}
-  .header-actions{margin-top:14px;display:flex;justify-content:center;}
+  .header-actions{margin-top:14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;}
   .language-switch{margin:12px auto 0;display:flex;justify-content:center;gap:6px;}
   .lang-btn{width:auto;min-width:44px;min-height:34px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#f6efe2;font-size:12px;font-weight:800;letter-spacing:.04em;cursor:pointer;transition:.2s ease;}
   .lang-btn.active{background:#a51e22;border-color:#c9a46a;color:#fffaf1;box-shadow:0 10px 22px rgba(165,30,34,.25);}
@@ -558,7 +558,9 @@
     <p class="disclaimer" data-i18n="disclaimer">
       Labor only. Parts are NOT included.
     </p>
-    <div class="header-actions"><a class="btn-home" href="index.html" data-i18n="oilHome">GNZ Oil Services</a></div>
+    <div class="header-actions">
+      <a class="btn-home" href="index.html" data-i18n="oilHome">GNZ Oil Services</a>
+    </div>
   </header>
 
   <section class="discounts-panel" id="discountsPanel" hidden>
@@ -1141,15 +1143,11 @@ function loadPublicDiscounts() {
       if (discountsPanel) discountsPanel.hidden = true;
       console.error(err);
     })
-    .obtenerDescuentosPublicos();
+    .obtenerDescuentosPublicos("brake");
 }
 
-discountsList.addEventListener("click", e => {
-  const button = e.target.closest("[data-discount-code]");
-  if (!button || !commentField) return;
-
-  const code = button.dataset.discountCode || "";
-  if (!code) return;
+function applyDiscountCodeToBrakeComment(code) {
+  if (!code || !commentField) return;
 
   const current = commentField.value || "";
   if (current.toLowerCase().indexOf(code.toLowerCase()) === -1) {
@@ -1158,10 +1156,18 @@ discountsList.addEventListener("click", e => {
 
   commentField.focus();
   updatePriceEstimate();
+}
+
+discountsList.addEventListener("click", e => {
+  const button = e.target.closest("[data-discount-code]");
+  if (!button || !commentField) return;
+
+  applyDiscountCodeToBrakeComment(button.dataset.discountCode || "");
   showToast(t("discountApplied"));
 });
 
 loadPublicDiscounts();
+applyDiscountCodeToBrakeComment(new URLSearchParams(window.location.search).get("promo") || "");
 
 setMinAppointmentDate();
 
