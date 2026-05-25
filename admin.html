@@ -43,6 +43,17 @@
     .stat{padding:12px;border-radius:14px;background:#151722;border:1px solid rgba(255,255,255,.06);}
     .stat strong{display:block;font-size:20px;color:#fff;}
     .stat span{font-size:12px;color:#9fb7ff;text-transform:uppercase;letter-spacing:.05em;}
+    .dashboard-panel{margin-bottom:14px;padding:14px;border-radius:18px;background:rgba(18,18,28,.96);border:1px solid rgba(255,255,255,.09);box-shadow:0 18px 40px rgba(0,0,0,.35);}
+    .dashboard-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+    .dashboard-card{padding:12px;border-radius:14px;background:#151722;border:1px solid rgba(255,255,255,.06);}
+    .dashboard-card strong{display:block;color:#fff;font-size:20px;}
+    .dashboard-card span{display:block;color:#9fb7ff;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
+    .dashboard-columns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .dashboard-box{padding:12px;border-radius:14px;background:#fffdf8;border:1px solid rgba(6,63,76,.14);color:var(--gnz-ink);}
+    .dashboard-box h3{font-size:14px;color:var(--gnz-teal);margin-bottom:8px;}
+    .metric-row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid rgba(6,63,76,.10);font-size:13px;}
+    .metric-row:last-child{border-bottom:none;}
+    .metric-row strong{color:var(--gnz-red);}
     .list{display:flex;flex-direction:column;gap:10px;max-height:72vh;overflow:auto;padding-right:4px;}
     .view-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
     .view-btn{border:none;border-radius:10px;padding:10px 12px;background:rgba(6,63,76,.08);color:var(--gnz-teal);font-weight:900;cursor:pointer;}
@@ -71,7 +82,7 @@
     .checkline{display:flex;gap:10px;align-items:flex-start;color:#c9d3f6;font-size:13px;line-height:1.45;margin:8px 0 12px;}
     .checkline input{margin-top:3px;}
     .message{margin-top:12px;color:#cfe2ff;font-weight:700;font-size:14px;}
-    .form-switch{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;padding:5px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
+    .form-switch{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;padding:5px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
     .tab-btn{border:none;border-radius:10px;padding:10px 12px;background:transparent;color:#c9d3f6;font-weight:800;cursor:pointer;}
     .tab-btn.active{background:#0b5ed7;color:#fff;box-shadow:0 10px 22px rgba(11,94,215,.24);}
     .service-tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:6px;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;background:rgba(10,132,255,.12);color:#cfe2ff;}
@@ -81,6 +92,10 @@
     .discount-admin-card p{margin:5px 0 0;color:#5d6d72;font-size:13px;line-height:1.4;}
     .discount-flags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
     .discount-flag{padding:4px 8px;border-radius:999px;background:rgba(6,63,76,.08);color:var(--gnz-teal);font-size:11px;font-weight:900;text-transform:uppercase;}
+    .block-admin-list{display:flex;flex-direction:column;gap:9px;margin-top:12px;}
+    .block-admin-card{border-radius:13px;background:#fffdf8;border:1px solid rgba(6,63,76,.14);padding:12px;color:var(--gnz-ink);}
+    .block-admin-card strong{display:block;color:var(--gnz-teal);font-size:15px;}
+    .block-admin-card p{margin:5px 0 0;color:#5d6d72;font-size:13px;line-height:1.4;}
     .hidden{display:none!important;}
     .empty{text-align:center;color:#8f9ac5;padding:24px;}
     @media(max-width:980px){.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
@@ -98,7 +113,7 @@
       .panel{padding:12px;border-radius:16px;}
       .panel h2{font-size:17px;}
       .filters,.form-grid{grid-template-columns:1fr;gap:8px;}
-      .stats{grid-template-columns:1fr 1fr;gap:8px;}
+      .stats,.dashboard-grid,.dashboard-columns{grid-template-columns:1fr 1fr;gap:8px;}
       .stat{padding:10px;border-radius:12px;}
       .stat strong{font-size:18px;}
       .field{margin-bottom:9px;}
@@ -113,6 +128,7 @@
       .details{grid-template-columns:1fr;font-size:13px;}
       .actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
       .actions .btn{width:100%;font-size:12px;padding:10px 8px;}
+      .form-switch{grid-template-columns:1fr 1fr;}
       .price-box{font-size:14px;line-height:1.45;}
       .checkline{font-size:13px;}
       #saveBtn,#cancelEditBtn{min-height:48px;}
@@ -191,6 +207,25 @@
       <div class="stat"><strong id="statHoy">0</strong><span data-i18n="statToday">Today</span></div>
     </div>
 
+    <section class="dashboard-panel">
+      <div class="dashboard-grid">
+        <div class="dashboard-card"><strong id="dashSales">$0.00</strong><span data-i18n="dashSales">Completed sales</span></div>
+        <div class="dashboard-card"><strong id="dashCompleted">0</strong><span data-i18n="dashCompleted">Completed jobs</span></div>
+        <div class="dashboard-card"><strong id="dashAverage">$0.00</strong><span data-i18n="dashAverage">Average ticket</span></div>
+        <div class="dashboard-card"><strong id="dashDiscounted">0</strong><span data-i18n="dashDiscounted">Discounted jobs</span></div>
+      </div>
+      <div class="dashboard-columns">
+        <div class="dashboard-box">
+          <h3 data-i18n="salesByService">Sales by service</h3>
+          <div id="dashboardServiceBreakdown"></div>
+        </div>
+        <div class="dashboard-box">
+          <h3 data-i18n="discountUsageTitle">Discount usage</h3>
+          <div id="dashboardDiscountBreakdown"></div>
+        </div>
+      </div>
+    </section>
+
     <div class="grid">
       <section class="panel">
         <h2 data-i18n="appointments">Appointments</h2>
@@ -223,6 +258,7 @@
           <button class="tab-btn active" type="button" data-admin-form="oil"><i class="fa-solid fa-oil-can"></i> <span data-i18n="oilTab">Oil</span></button>
           <button class="tab-btn" type="button" data-admin-form="brake"><i class="fa-solid fa-screwdriver-wrench"></i> <span data-i18n="brakeTab">Brakes / Flush</span></button>
           <button class="tab-btn" type="button" data-admin-form="discounts"><i class="fa-solid fa-percent"></i> <span data-i18n="discountTab">Discounts</span></button>
+          <button class="tab-btn" type="button" data-admin-form="blocks"><i class="fa-solid fa-lock"></i> <span data-i18n="blocksTab">Blocks</span></button>
         </div>
         <form id="adminForm" class="service-form">
           <input type="hidden" name="idioma" id="adminLangField">
@@ -304,12 +340,35 @@
               <div class="field"><i class="fa-solid fa-hashtag"></i><input name="usageLimit" id="discountUsageLimit" type="number" min="0" step="1" placeholder="Usage limit" data-i18n-placeholder="discountUsageLimit"></div>
               <div class="field"><i class="fa-solid fa-toggle-on"></i><select name="active" id="discountActive"><option value="SI" data-i18n="activeYes">Active</option><option value="NO" data-i18n="activeNo">Inactive</option></select></div>
               <div class="field"><i class="fa-solid fa-eye"></i><select name="public" id="discountPublic"><option value="SI" data-i18n="publicYes">Public</option><option value="NO" data-i18n="publicNo">Private</option></select></div>
+              <div class="field full"><i class="fa-solid fa-screwdriver-wrench"></i><select name="service" id="discountService"><option value="all" data-i18n="discountBoth">Oil and Brakes / Flush</option><option value="oil" data-i18n="discountOilOnly">Oil only</option><option value="brake" data-i18n="discountBrakeOnly">Brakes / Flush only</option></select></div>
             </div>
             <button class="btn primary" type="submit" id="saveDiscountBtn" style="width:100%;" data-i18n="saveDiscount">Save Discount</button>
             <button class="btn" type="button" id="resetDiscountBtn" style="width:100%;margin-top:8px;" data-i18n="newDiscount">New Discount</button>
             <div class="message" id="discountMessage"></div>
           </form>
           <div class="discount-admin-list" id="discountList"></div>
+        </section>
+
+        <section id="adminBlocksSection" class="service-form hidden">
+          <form id="blockForm">
+            <input type="hidden" name="id" id="blockId">
+            <div class="form-grid">
+              <div class="field"><i class="fa-solid fa-calendar-day"></i><input name="date" id="blockDate" type="date" required></div>
+              <div class="field"><i class="fa-solid fa-clock"></i><input name="start" id="blockStart" type="time" required></div>
+              <div class="field"><i class="fa-solid fa-clock"></i><input name="end" id="blockEnd" type="time" required></div>
+              <div class="field"><i class="fa-solid fa-screwdriver-wrench"></i><select name="service" id="blockService">
+                <option value="all" data-i18n="blockAll">All services</option>
+                <option value="oil" data-i18n="blockOil">Oil only</option>
+                <option value="brake" data-i18n="blockBrake">Brakes / Flush only</option>
+              </select></div>
+              <div class="field"><i class="fa-solid fa-toggle-on"></i><select name="active" id="blockActive"><option value="SI" data-i18n="activeYes">Active</option><option value="NO" data-i18n="activeNo">Inactive</option></select></div>
+              <div class="field full"><i class="fa-solid fa-note-sticky"></i><input name="reason" id="blockReason" placeholder="Reason" data-i18n-placeholder="blockReason"></div>
+            </div>
+            <button class="btn primary" type="submit" id="saveBlockBtn" style="width:100%;" data-i18n="saveBlock">Save Block</button>
+            <button class="btn" type="button" id="resetBlockBtn" style="width:100%;margin-top:8px;" data-i18n="newBlock">New Block</button>
+            <div class="message" id="blockMessage"></div>
+          </form>
+          <div class="block-admin-list" id="blockList"></div>
         </section>
       </section>
     </div>
@@ -332,6 +391,7 @@
     let preciosAceite = [];
     let reservasCache = [];
     let descuentosCache = [];
+    let bloqueosCache = [];
     let editingId = "";
     let editingBrakeId = "";
     let typingTimer = null;
@@ -362,9 +422,17 @@
         oilTab: "Oil",
         brakeTab: "Brakes / Flush",
         discountTab: "Discounts",
+        blocksTab: "Blocks",
         scheduleOil: "Schedule Oil Appointment",
         scheduleBrake: "Schedule Brake / Flush Appointment",
         manageDiscounts: "Manage Discounts",
+        manageBlocks: "Schedule Blocks",
+        dashSales: "Completed sales",
+        dashCompleted: "Completed jobs",
+        dashAverage: "Average ticket",
+        dashDiscounted: "Discounted jobs",
+        salesByService: "Sales by service",
+        discountUsageTitle: "Discount usage",
         editAppointment: "Edit Appointment",
         fullName: "Full name",
         phone: "Phone",
@@ -411,6 +479,9 @@
         discountExpires: "Expiration date",
         discountUsageLimit: "Usage limit",
         discountUsage: "Used",
+        discountBoth: "Oil and Brakes / Flush",
+        discountOilOnly: "Oil only",
+        discountBrakeOnly: "Brakes / Flush only",
         activeYes: "Active",
         activeNo: "Inactive",
         publicYes: "Public",
@@ -428,6 +499,21 @@
         privateDiscount: "Private",
         activeDiscount: "Active",
         inactiveDiscount: "Inactive",
+        blockAll: "All services",
+        blockOil: "Oil only",
+        blockBrake: "Brakes / Flush only",
+        blockReason: "Reason",
+        saveBlock: "Save Block",
+        newBlock: "New Block",
+        blockSaved: "Block saved:",
+        blockDeleted: "Block deleted:",
+        blockSaveFail: "Block was not saved.",
+        blockDeleteFail: "Block was not deleted.",
+        deleteBlockConfirm: "Delete this block?",
+        loadingBlocks: "Loading blocks...",
+        noBlocks: "No blocked times found.",
+        completedRevenue: "Completed revenue",
+        noDiscountUsage: "No discount usage yet.",
         checkingAccess: "Checking access...",
         loginFailed: "Login failed.",
         unableLogin: "Unable to log in.",
@@ -485,9 +571,17 @@
         oilTab: "Aceite",
         brakeTab: "Frenos / Fluidos",
         discountTab: "Descuentos",
+        blocksTab: "Bloqueos",
         scheduleOil: "Programar cita de aceite",
         scheduleBrake: "Programar cita de frenos / fluidos",
         manageDiscounts: "Administrar descuentos",
+        manageBlocks: "Bloqueo de horarios",
+        dashSales: "Ventas completadas",
+        dashCompleted: "Trabajos completados",
+        dashAverage: "Ticket promedio",
+        dashDiscounted: "Trabajos con descuento",
+        salesByService: "Ventas por servicio",
+        discountUsageTitle: "Uso de descuentos",
         editAppointment: "Editar cita",
         fullName: "Nombre completo",
         phone: "Telefono",
@@ -534,6 +628,9 @@
         discountExpires: "Fecha de expiracion",
         discountUsageLimit: "Limite de usos",
         discountUsage: "Usado",
+        discountBoth: "Aceite y frenos / fluidos",
+        discountOilOnly: "Solo aceite",
+        discountBrakeOnly: "Solo frenos / fluidos",
         activeYes: "Activo",
         activeNo: "Inactivo",
         publicYes: "Publico",
@@ -551,6 +648,21 @@
         privateDiscount: "Privado",
         activeDiscount: "Activo",
         inactiveDiscount: "Inactivo",
+        blockAll: "Todos los servicios",
+        blockOil: "Solo aceite",
+        blockBrake: "Solo frenos / fluidos",
+        blockReason: "Motivo",
+        saveBlock: "Guardar bloqueo",
+        newBlock: "Nuevo bloqueo",
+        blockSaved: "Bloqueo guardado:",
+        blockDeleted: "Bloqueo eliminado:",
+        blockSaveFail: "No se guardo el bloqueo.",
+        blockDeleteFail: "No se elimino el bloqueo.",
+        deleteBlockConfirm: "Eliminar este bloqueo?",
+        loadingBlocks: "Cargando bloqueos...",
+        noBlocks: "No hay horarios bloqueados.",
+        completedRevenue: "Ingresos completados",
+        noDiscountUsage: "Todavia no hay uso de descuentos.",
         checkingAccess: "Verificando acceso...",
         loginFailed: "No se pudo entrar.",
         unableLogin: "No se pudo iniciar sesion.",
@@ -612,6 +724,8 @@
         formTitle.textContent = editingId ? `${t("editAppointment")} ${editingId}` : t("scheduleOil");
       } else if (activeFormType === "brake") {
         formTitle.textContent = editingBrakeId ? `${t("editAppointment")} ${editingBrakeId}` : t("scheduleBrake");
+      } else if (activeFormType === "blocks") {
+        formTitle.textContent = t("manageBlocks");
       } else {
         formTitle.textContent = t("manageDiscounts");
       }
@@ -640,6 +754,8 @@
       updateAdminBrakePrice();
       if (reservasCache.length) renderAppointmentView();
       renderDescuentos(descuentosCache);
+      renderBloqueos(bloqueosCache);
+      renderDashboard();
     }
 
     function placeholderOption(key) {
@@ -707,6 +823,12 @@
     const discountMessage = document.getElementById("discountMessage");
     const saveDiscountBtn = document.getElementById("saveDiscountBtn");
     const resetDiscountBtn = document.getElementById("resetDiscountBtn");
+    const adminBlocksSection = document.getElementById("adminBlocksSection");
+    const blockForm = document.getElementById("blockForm");
+    const blockList = document.getElementById("blockList");
+    const blockMessage = document.getElementById("blockMessage");
+    const saveBlockBtn = document.getElementById("saveBlockBtn");
+    const resetBlockBtn = document.getElementById("resetBlockBtn");
 
     document.querySelectorAll("[data-lang]").forEach(btn => {
       btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
@@ -735,6 +857,8 @@
     adminBrakeForm.addEventListener("change", updateAdminBrakePrice);
     discountForm.addEventListener("submit", guardarDescuento);
     resetDiscountBtn.addEventListener("click", resetDiscountForm);
+    blockForm.addEventListener("submit", guardarBloqueo);
+    resetBlockBtn.addEventListener("click", resetBlockForm);
     document.getElementById("searchInput").addEventListener("input", () => {
       clearTimeout(typingTimer);
       typingTimer = setTimeout(cargarReservas, 350);
@@ -754,6 +878,7 @@
           cargarVehiculos();
           cargarReservas();
           cargarDescuentos();
+          cargarBloqueos();
         })
         .withFailureHandler(err => {
           loginMessage.textContent = err.message || t("loginFailed");
@@ -762,7 +887,7 @@
     }
 
     function switchAdminForm(type) {
-      activeFormType = type === "brake" ? "brake" : type === "discounts" ? "discounts" : "oil";
+      activeFormType = type === "brake" ? "brake" : type === "discounts" ? "discounts" : type === "blocks" ? "blocks" : "oil";
 
       document.querySelectorAll("[data-admin-form]").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.adminForm === activeFormType);
@@ -771,6 +896,7 @@
       adminOilForm.classList.toggle("hidden", activeFormType !== "oil");
       adminBrakeForm.classList.toggle("hidden", activeFormType !== "brake");
       adminDiscountSection.classList.toggle("hidden", activeFormType !== "discounts");
+      adminBlocksSection.classList.toggle("hidden", activeFormType !== "blocks");
 
       if (activeFormType === "oil") {
         if (editingBrakeId) resetBrakeFormMode();
@@ -779,11 +905,17 @@
         if (editingId) resetFormMode();
         setFormTitle();
         updateAdminBrakeOptions();
-      } else {
+      } else if (activeFormType === "discounts") {
         if (editingId) resetFormMode();
         if (editingBrakeId) resetBrakeFormMode();
         setFormTitle();
         cargarDescuentos();
+      } else {
+        if (editingId) resetFormMode();
+        if (editingBrakeId) resetBrakeFormMode();
+        setFormTitle();
+        if (!document.getElementById("blockStart").value) resetBlockForm(false);
+        cargarBloqueos();
       }
     }
 
@@ -952,7 +1084,7 @@
 
       if (!price) return null;
 
-      const discountRate = getAdminDiscountRateFromText(document.getElementById("brakeComment").value);
+      const discountRate = getAdminDiscountRateFromText(document.getElementById("brakeComment").value, "brake");
       const finalPrice = applyAdminDiscount(price, discountRate);
 
       return {
@@ -1071,6 +1203,7 @@
           }
           descuentosCache = res.discounts || [];
           renderDescuentos(descuentosCache);
+          renderDashboard();
           calcularPrecio();
           updateAdminBrakePrice();
         })
@@ -1096,6 +1229,7 @@
           <div class="discount-flags">
             <span class="discount-flag">${d.active ? t("activeDiscount") : t("inactiveDiscount")}</span>
             <span class="discount-flag">${d.public ? t("publicDiscount") : t("privateDiscount")}</span>
+            <span class="discount-flag">${escapeHtml(discountServiceLabel(d.service))}</span>
             ${d.expired ? `<span class="discount-flag">${escapeHtml(t("discountExpires"))}</span>` : ""}
             ${d.limitReached ? `<span class="discount-flag">${escapeHtml(t("discountUsageLimit"))}</span>` : ""}
           </div>
@@ -1135,6 +1269,7 @@
       discountForm.reset();
       document.getElementById("discountActive").value = "SI";
       document.getElementById("discountPublic").value = "SI";
+      document.getElementById("discountService").value = "all";
       document.getElementById("discountExpires").value = "";
       document.getElementById("discountUsageLimit").value = "";
       document.getElementById("discountCode").readOnly = false;
@@ -1153,9 +1288,16 @@
       document.getElementById("discountUsageLimit").value = discount.usageLimit || "";
       document.getElementById("discountActive").value = discount.active ? "SI" : "NO";
       document.getElementById("discountPublic").value = discount.public ? "SI" : "NO";
+      document.getElementById("discountService").value = discount.service || "all";
       discountMessage.textContent = "";
       discountForm.scrollIntoView({ behavior: "smooth", block: "start" });
     };
+
+    function discountServiceLabel(service) {
+      if (service === "oil") return t("discountOilOnly");
+      if (service === "brake") return t("discountBrakeOnly");
+      return t("discountBoth");
+    }
 
     window.eliminarDescuento = function(code) {
       if (!confirm(t("deleteDiscountConfirm"))) return;
@@ -1171,6 +1313,115 @@
         })
         .withFailureHandler(err => alert(err.message || t("discountDeleteFail")))
         .adminEliminarDescuento(adminToken, code);
+    };
+
+    function cargarBloqueos() {
+      if (!adminToken || !blockList) return;
+      blockList.innerHTML = `<div class="empty">${t("loadingBlocks")}</div>`;
+      google.script.run
+        .withSuccessHandler(res => {
+          if (!res || !res.success) {
+            blockList.innerHTML = `<div class="empty">${escapeHtml((res && res.error) || t("blockSaveFail"))}</div>`;
+            return;
+          }
+          bloqueosCache = res.blocks || [];
+          renderBloqueos(bloqueosCache);
+        })
+        .withFailureHandler(err => {
+          blockList.innerHTML = `<div class="empty">${escapeHtml(err.message || t("blockSaveFail"))}</div>`;
+        })
+        .adminListarBloqueos(adminToken);
+    }
+
+    function renderBloqueos(blocks) {
+      if (!blockList) return;
+      if (!blocks || !blocks.length) {
+        blockList.innerHTML = `<div class="empty">${t("noBlocks")}</div>`;
+        return;
+      }
+
+      blockList.innerHTML = blocks.map(block => `
+        <article class="block-admin-card">
+          <strong>${escapeHtml(block.date)} | ${escapeHtml(block.start)} - ${escapeHtml(block.end)}</strong>
+          <p>${escapeHtml(blockServiceLabel(block.service))} | ${block.active ? t("activeDiscount") : t("inactiveDiscount")}</p>
+          <p>${escapeHtml(block.reason || t("notAvailable"))}</p>
+          <div class="actions" style="margin-top:10px;">
+            <button class="btn" type="button" onclick="editarBloqueo('${escapeAttr(block.id)}')">${t("edit")}</button>
+            <button class="btn danger" type="button" onclick="eliminarBloqueo('${escapeAttr(block.id)}')">${t("cancel")}</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function blockServiceLabel(service) {
+      if (service === "oil") return t("blockOil");
+      if (service === "brake") return t("blockBrake");
+      return t("blockAll");
+    }
+
+    function guardarBloqueo(e) {
+      e.preventDefault();
+      blockMessage.textContent = t("saving");
+      saveBlockBtn.disabled = true;
+
+      const payload = Object.fromEntries(new FormData(blockForm).entries());
+      google.script.run
+        .withSuccessHandler(res => {
+          saveBlockBtn.disabled = false;
+          if (!res || !res.success) {
+            blockMessage.textContent = (res && res.error) || t("blockSaveFail");
+            return;
+          }
+          blockMessage.textContent = `${t("blockSaved")} ${res.block.id}`;
+          resetBlockForm(false);
+          cargarBloqueos();
+        })
+        .withFailureHandler(err => {
+          saveBlockBtn.disabled = false;
+          blockMessage.textContent = err.message || t("blockSaveFail");
+        })
+        .adminGuardarBloqueo(adminToken, payload);
+    }
+
+    function resetBlockForm(clearMessage) {
+      blockForm.reset();
+      document.getElementById("blockId").value = "";
+      document.getElementById("blockStart").value = "09:00";
+      document.getElementById("blockEnd").value = "17:00";
+      document.getElementById("blockService").value = "all";
+      document.getElementById("blockActive").value = "SI";
+      saveBlockBtn.disabled = false;
+      if (clearMessage !== false) blockMessage.textContent = "";
+    }
+
+    window.editarBloqueo = function(id) {
+      const block = bloqueosCache.find(item => String(item.id) === String(id));
+      if (!block) return;
+      document.getElementById("blockId").value = block.id || "";
+      document.getElementById("blockDate").value = block.date || "";
+      document.getElementById("blockStart").value = toInputTime(block.start || "");
+      document.getElementById("blockEnd").value = toInputTime(block.end || "");
+      document.getElementById("blockService").value = block.service || "all";
+      document.getElementById("blockActive").value = block.active ? "SI" : "NO";
+      document.getElementById("blockReason").value = block.reason || "";
+      blockMessage.textContent = "";
+      blockForm.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    window.eliminarBloqueo = function(id) {
+      if (!confirm(t("deleteBlockConfirm"))) return;
+      google.script.run
+        .withSuccessHandler(res => {
+          if (!res || !res.success) {
+            alert((res && res.error) || t("blockDeleteFail"));
+            return;
+          }
+          blockMessage.textContent = `${t("blockDeleted")} ${res.id}`;
+          resetBlockForm(false);
+          cargarBloqueos();
+        })
+        .withFailureHandler(err => alert(err.message || t("blockDeleteFail")))
+        .adminEliminarBloqueo(adminToken, id);
     };
 
     function cargarReservas() {
@@ -1190,6 +1441,7 @@
           }
           renderStats(res.resumen || {});
           reservasCache = res.reservas || [];
+          renderDashboard();
           renderAppointmentView();
         })
         .withFailureHandler(err => {
@@ -1204,6 +1456,74 @@
       document.getElementById("statConfirmadas").textContent = s.confirmadas || 0;
       document.getElementById("statCompletadas").textContent = s.completadas || 0;
       document.getElementById("statHoy").textContent = s.hoy || 0;
+    }
+
+    function renderDashboard() {
+      const completed = reservasCache.filter(r => r.estado === "Completada");
+      const revenue = completed.reduce((sum, r) => sum + reservationAmount(r), 0);
+      const discounted = reservasCache.filter(r => Number(r.discountPercent || 0) > 0 || r.discountCode).length;
+      const average = completed.length ? revenue / completed.length : 0;
+      const byService = {
+        oil: { label: t("oilService"), count: 0, total: 0 },
+        brake: { label: t("brakeFlush"), count: 0, total: 0 },
+        flush: { label: t("serviceFlush"), count: 0, total: 0 }
+      };
+
+      completed.forEach(r => {
+        const key = r.tipoServicio === "flush" ? "flush" : r.tipoServicio === "brake" ? "brake" : "oil";
+        byService[key].count += 1;
+        byService[key].total += reservationAmount(r);
+      });
+
+      document.getElementById("dashSales").textContent = "$" + formatMoney(revenue);
+      document.getElementById("dashCompleted").textContent = completed.length;
+      document.getElementById("dashAverage").textContent = "$" + formatMoney(average);
+      document.getElementById("dashDiscounted").textContent = discounted;
+
+      document.getElementById("dashboardServiceBreakdown").innerHTML = Object.keys(byService).map(key => `
+        <div class="metric-row">
+          <span>${escapeHtml(byService[key].label)} (${byService[key].count})</span>
+          <strong>$${escapeHtml(formatMoney(byService[key].total))}</strong>
+        </div>
+      `).join("");
+
+      const discountUsage = buildDiscountUsage();
+      document.getElementById("dashboardDiscountBreakdown").innerHTML = discountUsage.length
+        ? discountUsage.map(d => `
+          <div class="metric-row">
+            <span>${escapeHtml(d.code)} (${escapeHtml(d.percent)}%)</span>
+            <strong>${escapeHtml(d.uses)}</strong>
+          </div>
+        `).join("")
+        : `<div class="metric-row"><span>${t("noDiscountUsage")}</span><strong>0</strong></div>`;
+    }
+
+    function reservationAmount(r) {
+      return Number(String(r.totalFinal || r.subtotal || "").replace(/[^0-9.]/g, "")) || 0;
+    }
+
+    function buildDiscountUsage() {
+      const usageMap = new Map();
+      descuentosCache.forEach(d => {
+        if (!d.code) return;
+        usageMap.set(d.code, {
+          code: d.code,
+          percent: d.percent || 0,
+          uses: Number(d.uses || 0)
+        });
+      });
+
+      reservasCache.forEach(r => {
+        const code = String(r.discountCode || "").trim().toUpperCase();
+        if (!code) return;
+        if (!usageMap.has(code)) {
+          usageMap.set(code, { code: code, percent: r.discountPercent || 0, uses: 0 });
+        }
+      });
+
+      return Array.from(usageMap.values())
+        .filter(d => Number(d.uses || 0) > 0 || reservasCache.some(r => String(r.discountCode || "").trim().toUpperCase() === d.code))
+        .sort((a, b) => Number(b.uses || 0) - Number(a.uses || 0));
     }
 
     function renderAppointmentView() {
@@ -1520,16 +1840,23 @@
       );
     }
 
-    function getAdminDiscountRateFromText(text) {
+    function getAdminDiscountRateFromText(text, service) {
       const haystack = String(text || "").toLowerCase();
       if (!haystack || !descuentosCache.length) return 0;
+      const targetService = service || "all";
 
       return descuentosCache.reduce((best, discount) => {
         const code = String(discount.code || "").toLowerCase();
         const rate = Number(discount.rate || 0);
-        if (!discount.active || !code || !rate || haystack.indexOf(code) === -1) return best;
+        if (!discount.active || !code || !rate || !discountAppliesToService(discount, targetService) || haystack.indexOf(code) === -1) return best;
         return Math.max(best, rate);
       }, 0);
+    }
+
+    function discountAppliesToService(discount, service) {
+      const discountService = discount && discount.service ? discount.service : "all";
+      const targetService = service || "all";
+      return discountService === "all" || targetService === "all" || discountService === targetService;
     }
 
     function applyAdminDiscount(price, discountRate) {
@@ -1570,7 +1897,7 @@
       const aceiteExtra = extraCantidad * precio1L;
       const aceite = aceiteBase + aceiteExtra;
       const total = aceite + filtro + manoObra + desecho;
-      const discountRate = getAdminDiscountRateFromText(document.getElementById("comentarios").value);
+      const discountRate = getAdminDiscountRateFromText(document.getElementById("comentarios").value, "oil");
       const finalTotal = applyAdminDiscount(total, discountRate);
 
       return {
