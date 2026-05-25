@@ -64,6 +64,8 @@
       margin-top:16px;
       display:flex;
       justify-content:center;
+      gap:8px;
+      flex-wrap:wrap;
     }
     .language-switch{
       margin:12px auto 0;
@@ -1542,25 +1544,31 @@
           discountsPanel.hidden = true;
           console.warn("Discounts not available:", err);
         })
-        .obtenerDescuentosPublicos();
+        .obtenerDescuentosPublicos("oil");
     }
 
-    discountsList.addEventListener("click", e => {
-      const button = e.target.closest("[data-discount-code]");
-      if (!button) return;
-      const code = button.dataset.discountCode || "";
+    function applyDiscountCodeToComment(code) {
+      if (!code) return;
       const comments = document.getElementById("comentarios");
       const current = comments.value.trim();
       if (!current.toLowerCase().includes(code.toLowerCase())) {
         comments.value = current ? `${current} ${code}` : code;
       }
       comments.focus();
+    }
+
+    discountsList.addEventListener("click", e => {
+      const button = e.target.closest("[data-discount-code]");
+      if (!button) return;
+      const code = button.dataset.discountCode || "";
+      applyDiscountCodeToComment(code);
       if (typeof mostrarAlertaGNZ === "function") {
         mostrarAlertaGNZ(t("discountsTitle"), t("discountApplied"), "success", "OK", null, 1300);
       }
     });
 
     cargarDescuentosPublicos();
+    applyDiscountCodeToComment(new URLSearchParams(window.location.search).get("promo") || "");
 
     function resetMotorOptions() {
       motorSelect.innerHTML = "";
