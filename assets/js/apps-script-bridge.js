@@ -96,9 +96,22 @@
 
   function sendRequest(fn, args) {
     if (jsonpMethods[fn]) {
-      return sendJsonpRequest(fn, args);
+      return sendJsonpFetchRequest(fn, args)
+        .catch(function () {
+          return sendJsonpRequest(fn, args);
+        })
+        .catch(function (jsonpError) {
+          return sendPostRequest(fn, args)
+            .catch(function () {
+              throw jsonpError;
+            });
+        });
     }
 
+    return sendPostRequest(fn, args);
+  }
+
+  function sendPostRequest(fn, args) {
     return new Promise(function (resolve, reject) {
       var requestId = "gnz_" + Date.now() + "_" + (++counter);
       var iframeName = requestId + "_frame";
@@ -139,6 +152,57 @@
     });
   }
 
+  function sendJsonpFetchRequest(fn, args) {
+    if (!window.fetch) {
+      return Promise.reject(new Error("Fetch transport is not available."));
+    }
+
+    return new Promise(function (resolve, reject) {
+      var requestId = "gnz_" + Date.now() + "_" + (++counter);
+      var callbackName = "__gnzBridgeFetch_" + requestId.replace(/[^a-zA-Z0-9_]/g, "_");
+      var query = [
+        "api=1",
+        "jsonp=1",
+        "requestId=" + encodeURIComponent(requestId),
+        "fn=" + encodeURIComponent(fn),
+        "args=" + encodeURIComponent(JSON.stringify(args || [])),
+        "callback=" + encodeURIComponent(callbackName)
+      ].join("&");
+      var controller = window.AbortController ? new AbortController() : null;
+      var completed = false;
+      var timer = window.setTimeout(function () {
+        completed = true;
+        if (controller) controller.abort();
+        reject(new Error("Apps Script request timed out."));
+      }, timeoutMs);
+
+      fetch(endpoint + (endpoint.indexOf("?") === -1 ? "?" : "&") + query, {
+        method: "GET",
+        cache: "no-store",
+        credentials: "omit",
+        signal: controller ? controller.signal : undefined
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("Apps Script request failed with status " + response.status + ".");
+          }
+          return response.text();
+        })
+        .then(function (text) {
+          if (completed) return;
+          completed = true;
+          window.clearTimeout(timer);
+          handleJsonpPayload(parseJsonpPayload(text, callbackName), resolve, reject);
+        })
+        .catch(function (error) {
+          if (completed) return;
+          completed = true;
+          window.clearTimeout(timer);
+          reject(error);
+        });
+    });
+  }
+
   function sendJsonpRequest(fn, args) {
     return new Promise(function (resolve, reject) {
       var requestId = "gnz_" + Date.now() + "_" + (++counter);
@@ -155,11 +219,7 @@
 
       window[callbackName] = function (data) {
         cleanupJsonp(callbackName, script, timer);
-        if (data && data.ok) {
-          resolve(data.result);
-        } else {
-          reject(new Error((data && data.error) || "Apps Script request failed."));
-        }
+        handleJsonpPayload(data, resolve, reject);
       };
 
       var timer = window.setTimeout(function () {
@@ -175,6 +235,24 @@
       script.src = endpoint + (endpoint.indexOf("?") === -1 ? "?" : "&") + query;
       document.body.appendChild(script);
     });
+  }
+
+  function parseJsonpPayload(text, callbackName) {
+    var source = String(text || "").trim();
+    var prefix = callbackName + "(";
+    if (source.indexOf(prefix) !== 0 || source.slice(-2) !== ");") {
+      throw new Error("Invalid Apps Script response.");
+    }
+
+    return JSON.parse(source.slice(prefix.length, -2));
+  }
+
+  function handleJsonpPayload(data, resolve, reject) {
+    if (data && data.ok) {
+      resolve(data.result);
+    } else {
+      reject(new Error((data && data.error) || "Apps Script request failed."));
+    }
   }
 
   function pollPostResult(requestId) {
