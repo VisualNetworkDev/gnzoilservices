@@ -79,6 +79,9 @@
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
     .full{grid-column:1/-1;}
     .price-box{margin:4px 0 12px;padding:12px;border-radius:14px;background:rgba(10,132,255,.1);border:1px solid rgba(10,132,255,.24);color:#cfe2ff;font-weight:800;}
+    .vehicle-filter-box{margin:4px 0 12px;padding:12px;border-radius:14px;background:rgba(165,30,34,.08);border:1px solid rgba(165,30,34,.18);color:var(--gnz-ink);font-size:13px;line-height:1.45;}
+    .vehicle-filter-box strong{display:block;color:var(--gnz-red);font-size:13px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;}
+    .vehicle-filter-box span{display:block;color:#344b52;}
     .checkline{display:flex;gap:10px;align-items:flex-start;color:#c9d3f6;font-size:13px;line-height:1.45;margin:8px 0 12px;}
     .checkline input{margin-top:3px;}
     .message{margin-top:12px;color:#cfe2ff;font-weight:700;font-size:14px;}
@@ -278,6 +281,7 @@
             <div class="field full"><i class="fa-solid fa-comment"></i><textarea name="comentarios" id="comentarios" placeholder="Notes" data-i18n-placeholder="notes"></textarea></div>
           </div>
           <div class="price-box" id="priceBox">Estimated price: N/A</div>
+          <div class="vehicle-filter-box hidden" id="vehicleFilterBox"></div>
           <label class="checkline"><input type="checkbox" name="aceptoAcuerdo" id="aceptoAcuerdo" value="SI" checked> <span data-i18n="agreementAdmin">Agreement accepted verbally or by the customer.</span></label>
           <label class="checkline"><input type="checkbox" name="notificarCliente" id="notificarCliente" value="SI" checked> <span data-i18n="notifyAdmin">Send confirmation email and PDF receipt to customer.</span></label>
           <button class="btn primary" type="submit" id="saveBtn" style="width:100%;" data-i18n="createAppointment">Create Appointment</button>
@@ -448,6 +452,9 @@
         notAvailable: "N/A",
         oil: "Oil",
         filter: "Filter",
+        vehicleFilterInfo: "Vehicle filter",
+        oilFilterType: "Oil filter type",
+        alternateFilter: "Alternate filter",
         labor: "Labor",
         disposal: "Disposal",
         subtotal: "Subtotal",
@@ -597,6 +604,9 @@
         notAvailable: "N/D",
         oil: "Aceite",
         filter: "Filtro",
+        vehicleFilterInfo: "Filtro del vehiculo",
+        oilFilterType: "Tipo de filtro",
+        alternateFilter: "Filtro alternativo",
         labor: "Mano de obra",
         disposal: "Desecho",
         subtotal: "Subtotal",
@@ -804,6 +814,7 @@
     const motorGroup = document.getElementById("motorGroup");
     const marcaAceite = document.getElementById("marcaAceite");
     const priceBox = document.getElementById("priceBox");
+    const vehicleFilterBox = document.getElementById("vehicleFilterBox");
     const formMessage = document.getElementById("formMessage");
     const formTitle = document.getElementById("formTitle");
     const saveBtn = document.getElementById("saveBtn");
@@ -1018,6 +1029,7 @@
       if (motorSelect.required && !motorSelect.value) return;
 
       const matches = getVehicleMatches();
+      updateVehicleFilterInfo(matches);
       const tipos = [...new Set(matches.map(v => normalizar(v.aceite)).filter(Boolean))];
       const aceites = [...new Set(preciosAceite
         .filter(p => tipos.indexOf(normalizar(p.tipo)) !== -1)
@@ -1581,6 +1593,13 @@
         const extraValue = tipo === "oil"
           ? (r.marcaAceite || "")
           : [r.bodyStyle, r.axles && r.axles !== "N/A" ? `${r.axles} axle(s)` : ""].filter(Boolean).join(" | ");
+        const vehicleValue = [`${r.marca || ""} ${r.modelo || ""} ${r.ano || ""}`.trim(), r.motor || ""].filter(Boolean).join(" | ");
+        const oilFilterDetails = tipo === "oil" && (r.tipoFiltro || r.tipoFiltroAlternativo)
+          ? `
+              <div><span>${t("oilFilterType")}</span><br>${escapeHtml(r.tipoFiltro || t("notAvailable"))}</div>
+              <div><span>${t("alternateFilter")}</span><br>${escapeHtml(r.tipoFiltroAlternativo || t("notAvailable"))}</div>
+            `
+          : "";
         const editButton = tipo === "oil"
           ? `<button class="btn" onclick="editarReserva('${escapeAttr(r.id)}')">${t("edit")}</button>`
           : `<button class="btn" onclick="editarReservaFrenos('${escapeAttr(r.id)}')">${t("edit")}</button>`;
@@ -1598,8 +1617,9 @@
             <div class="details">
               <div><span>${t("phone")}</span><br>${escapeHtml(r.telefono || "")}</div>
               <div><span>${t("email")}</span><br>${escapeHtml(r.correo || "")}</div>
-              <div><span>${t("vehicle")}</span><br>${escapeHtml(`${r.marca || ""} ${r.modelo || ""} ${r.ano || ""}`)}</div>
+              <div><span>${t("vehicle")}</span><br>${escapeHtml(vehicleValue)}</div>
               <div><span>${escapeHtml(extraLabel)}</span><br>${escapeHtml(extraValue || t("notAvailable"))}</div>
+              ${oilFilterDetails}
               <div><span>${t("subtotal")}</span><br>${r.totalFinal ? "$" + escapeHtml(r.totalFinal) : t("notAvailable")}</div>
               <div><span>${t("discountLabel")}</span><br>${r.discountPercent ? escapeHtml(r.discountPercent) + "%" : t("notAvailable")}</div>
               ${r.clientFee ? `<div><span>Fee</span><br>$${escapeHtml(r.clientFee)}</div>` : ""}
@@ -1648,7 +1668,7 @@
       setSelectValue(modeloSelect, String(r.modelo || "").trim().toLowerCase());
       populateAnos();
       setSelectValue(anoSelect, String(r.ano || "").trim());
-      cargarMotores("", r.marcaAceite || "");
+      cargarMotores(r.motor || "", r.marcaAceite || "");
 
       document.getElementById("adminForm").scrollIntoView({ behavior: "smooth", block: "start" });
     };
@@ -1815,6 +1835,7 @@
     function resetOil() {
       marcaAceite.innerHTML = placeholderOption("selectOil");
       priceBox.textContent = `${t("estimatedPrice")}: ${t("notAvailable")}`;
+      resetVehicleFilterInfo();
     }
 
     function addOption(select, value, text) {
@@ -1838,6 +1859,42 @@
         normalizar(v.modelo) === normalizar(modeloSelect.value) &&
         (!motorSelect.value || normalizarMotor(v.motor) === normalizarMotor(motorSelect.value))
       );
+    }
+
+    function resetVehicleFilterInfo() {
+      vehicleFilterBox.classList.add("hidden");
+      vehicleFilterBox.innerHTML = "";
+    }
+
+    function getSelectedVehicleMatch(matches) {
+      const list = Array.isArray(matches) ? matches : getVehicleMatches();
+      if (!list.length) return null;
+      if (list.length === 1) return list[0];
+
+      const filterKeys = [...new Set(list.map(v => [
+        String(v.tipoFiltro || "").trim(),
+        String(v.tipoFiltroAlternativo || "").trim()
+      ].join("|")))];
+
+      return filterKeys.length === 1 ? list[0] : null;
+    }
+
+    function updateVehicleFilterInfo(matches) {
+      const match = getSelectedVehicleMatch(matches);
+      const tipoFiltro = String(match && match.tipoFiltro || "").trim();
+      const alternativo = String(match && match.tipoFiltroAlternativo || "").trim();
+
+      if (!tipoFiltro && !alternativo) {
+        resetVehicleFilterInfo();
+        return;
+      }
+
+      vehicleFilterBox.classList.remove("hidden");
+      vehicleFilterBox.innerHTML = `
+        <strong>${escapeHtml(t("vehicleFilterInfo"))}</strong>
+        <span>${escapeHtml(t("oilFilterType"))}: ${escapeHtml(tipoFiltro || t("notAvailable"))}</span>
+        <span>${escapeHtml(t("alternateFilter"))}: ${escapeHtml(alternativo || t("notAvailable"))}</span>
+      `;
     }
 
     function getAdminDiscountRateFromText(text, service) {
