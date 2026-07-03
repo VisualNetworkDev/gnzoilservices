@@ -47,6 +47,14 @@
     .fact{border-radius:12px;background:#f8efe0;padding:10px;}
     .fact span{display:block;color:#647276;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;}
     .fact strong{display:block;margin-top:3px;color:var(--ink);font-size:14px;}
+    .customer-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0;}
+    .maintenance-card{margin-top:12px;border-radius:14px;background:linear-gradient(135deg,#063f4c,#0a5869);color:#fffaf1;padding:14px;border-bottom:4px solid var(--red);}
+    .maintenance-card h3{font-size:16px;margin-bottom:10px;}
+    .maintenance-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+    .maintenance-item{border-radius:11px;background:rgba(255,255,255,.09);padding:10px;border:1px solid rgba(255,255,255,.14);}
+    .maintenance-item span{display:block;color:#f4dfbd;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;}
+    .maintenance-item strong{display:block;margin-top:3px;color:#fff;font-size:14px;}
+    .empty.compact{padding:12px;}
     .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
     .actions a{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:var(--teal);color:#fffaf1;text-decoration:none;padding:9px 12px;font-size:12px;font-weight:900;}
     .history{display:grid;gap:9px;}
@@ -55,7 +63,7 @@
     .history-item strong{display:block;color:var(--teal);}
     .history-item span{display:block;color:#647276;font-size:12px;margin-top:2px;}
     .empty{padding:14px;border-radius:13px;background:#fffdf8;border:1px dashed rgba(6,63,76,.20);color:#647276;}
-    @media(max-width:760px){body{padding:14px 10px}.hero-top{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr}.facts{grid-template-columns:1fr}.appointment-head{flex-direction:column}.brand img{width:72px}}
+    @media(max-width:760px){body{padding:10px}.hero{padding:16px;border-radius:18px}.hero-top{align-items:flex-start;flex-direction:column;margin-bottom:10px}.hero p{font-size:14px}.grid{grid-template-columns:1fr}.facts,.customer-summary,.maintenance-grid{grid-template-columns:1fr}.appointment-head{flex-direction:column}.brand img{width:72px}.panel{padding:16px}}
   </style>
 </head>
 <body>
@@ -73,8 +81,8 @@
           <button type="button" class="lang-btn" data-lang="es">ES</button>
         </nav>
       </div>
-      <h1 data-i18n="heroTitle">Review your appointment and service history.</h1>
-      <p data-i18n="heroText">Enter your appointment ID plus the phone or email used when booking. If you have previous services with GNZ, they will show here after verification.</p>
+      <h1 data-i18n="heroTitle">Appointment status, service history and oil change reminder.</h1>
+      <p data-i18n="heroText">Use your appointment ID with the phone or email from the reservation.</p>
     </section>
 
     <section class="grid">
@@ -109,16 +117,17 @@
     const gnzEndpointFromUrl = new URLSearchParams(window.location.search).get("endpoint");
     const gnzDefaultEndpoint = "https://script.google.com/macros/s/AKfycbzIjm2vj89cpRw5mzwYRVLAO4XPBRBSBoTFm5eing4vd0MQVWRj62hVd_Ghex0wN4pLsw/exec";
     window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl || gnzDefaultEndpoint;
+    window.GNZ_APPS_SCRIPT_TIMEOUT_MS = 20000;
   </script>
-  <script src="assets/js/apps-script-bridge.js?v=20260703"></script>
+  <script src="assets/js/apps-script-bridge.js?v=20260703b"></script>
   <script>
     const translations = {
       en: {
         brandSub: "Appointment tracking",
         oilLink: "Oil Change",
         brakeLink: "Brakes / Flush",
-        heroTitle: "Review your appointment and service history.",
-        heroText: "Enter your appointment ID plus the phone or email used when booking. If you have previous services with GNZ, they will show here after verification.",
+        heroTitle: "Appointment status, service history and oil change reminder.",
+        heroText: "Use your appointment ID with the phone or email from the reservation.",
         lookupTitle: "Find appointment",
         lookupText: "Use the ID from your confirmation receipt. For privacy, the contact must match the reservation.",
         appointmentId: "Appointment ID",
@@ -132,12 +141,23 @@
         historyEmpty: "No service history loaded yet.",
         returning: "Returning customer",
         firstVisit: "First appointment found for this contact",
+        customer: "Customer",
+        phone: "Phone",
+        email: "Email",
         service: "Service",
         vehicle: "Vehicle",
         date: "Date",
         time: "Time",
         total: "Total",
         oil: "Oil",
+        currentMileage: "Current mileage",
+        nextOilChange: "Next oil change",
+        nextOilDate: "Next oil date",
+        nextOilMileage: "Next oil mileage",
+        oilInterval: "Oil interval",
+        oilTypeUsed: "Oil type used",
+        oilBrandUsed: "Oil brand used",
+        maintenanceMissing: "Maintenance reminder will appear after the current mileage is added by GNZ.",
         nextStep: "Next step",
         reschedule: "Reschedule",
         cancel: "Cancel",
@@ -148,8 +168,8 @@
         brandSub: "Seguimiento de cita",
         oilLink: "Cambio de aceite",
         brakeLink: "Frenos / Fluidos",
-        heroTitle: "Revisa tu cita y tu historial de servicios.",
-        heroText: "Escribe el ID de la cita y el telefono o correo usado al reservar. Si ya tienes servicios anteriores con GNZ, apareceran despues de verificar.",
+        heroTitle: "Estado de cita, historial y proximo cambio de aceite.",
+        heroText: "Usa el ID de la cita con el telefono o correo de la reservacion.",
         lookupTitle: "Buscar cita",
         lookupText: "Usa el ID del recibo de confirmacion. Por privacidad, el contacto debe coincidir con la reserva.",
         appointmentId: "ID de cita",
@@ -163,12 +183,23 @@
         historyEmpty: "No hay historial cargado todavia.",
         returning: "Cliente recurrente",
         firstVisit: "Primera cita encontrada para este contacto",
+        customer: "Cliente",
+        phone: "Telefono",
+        email: "Correo",
         service: "Servicio",
         vehicle: "Vehiculo",
         date: "Fecha",
         time: "Hora",
         total: "Total",
         oil: "Aceite",
+        currentMileage: "Millas actuales",
+        nextOilChange: "Proximo cambio de aceite",
+        nextOilDate: "Proxima fecha",
+        nextOilMileage: "Proximas millas",
+        oilInterval: "Intervalo",
+        oilTypeUsed: "Tipo de aceite usado",
+        oilBrandUsed: "Marca de aceite usada",
+        maintenanceMissing: "El recordatorio aparecera cuando GNZ agregue las millas actuales.",
         nextStep: "Proximo paso",
         reschedule: "Reprogramar",
         cancel: "Cancelar",
@@ -221,14 +252,64 @@
       }[ch]));
     }
 
+    function formatMiles(value) {
+      const n = Number(String(value || "").replace(/[^0-9.-]/g, ""));
+      if (!n) return "N/A";
+      return Math.round(n).toLocaleString("en-US") + " mi";
+    }
+
+    function formatInterval(miles, months) {
+      const parts = [];
+      if (miles) parts.push(formatMiles(miles));
+      if (months) parts.push(String(months) + " mo");
+      return parts.join(" / ") || "N/A";
+    }
+
+    function renderFact(label, value) {
+      return `<div class="fact"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value || "N/A")}</strong></div>`;
+    }
+
+    function renderMaintenance(appointment) {
+      const next = appointment.nextOilChange || {};
+      const hasMaintenance = next.currentMileage || next.nextMileage || next.nextDate;
+      if (appointment.serviceType !== "oil") return "";
+
+      if (!hasMaintenance) {
+        return `<div class="empty compact">${escapeHtml(t("maintenanceMissing"))}</div>`;
+      }
+
+      const items = [
+        [t("currentMileage"), formatMiles(next.currentMileage)],
+        [t("nextOilMileage"), formatMiles(next.nextMileage)],
+        [t("nextOilDate"), next.nextDate || "N/A"],
+        [t("oilInterval"), formatInterval(next.intervalMiles, next.intervalMonths)],
+        [t("oilTypeUsed"), next.oilType || "N/A"],
+        [t("oilBrandUsed"), next.oilBrand || "N/A"]
+      ];
+
+      return `
+        <section class="maintenance-card">
+          <h3>${escapeHtml(t("nextOilChange"))}</h3>
+          <div class="maintenance-grid">
+            ${items.map(row => `<div class="maintenance-item"><span>${escapeHtml(row[0])}</span><strong>${escapeHtml(row[1])}</strong></div>`).join("")}
+          </div>
+        </section>
+      `;
+    }
+
     function renderAppointment(data, returningCustomer) {
       const appointment = data || {};
+      const customerFacts = [
+        [t("customer"), appointment.customerName || ""],
+        [t("phone"), appointment.phone || ""],
+        [t("email"), appointment.email || ""]
+      ];
       const facts = [
         [t("service"), appointment.serviceSummary || appointment.serviceLabel || ""],
         [t("vehicle"), appointment.vehicle || ""],
         [t("date"), appointment.date || ""],
         [t("time"), appointment.time || ""],
-        [t("oil"), appointment.oil || "N/A"],
+        [t("oil"), appointment.oil || ""],
         [t("total"), appointment.total ? "$" + appointment.total : "N/A"]
       ];
       const actions = [];
@@ -244,9 +325,13 @@
             </div>
             <span class="status ${escapeHtml(appointment.status || "")}">${escapeHtml(appointment.status || "")}</span>
           </div>
-          <div class="facts">
-            ${facts.map(row => `<div class="fact"><span>${escapeHtml(row[0])}</span><strong>${escapeHtml(row[1] || "N/A")}</strong></div>`).join("")}
+          <div class="customer-summary">
+            ${customerFacts.map(row => renderFact(row[0], row[1])).join("")}
           </div>
+          <div class="facts">
+            ${facts.map(row => renderFact(row[0], row[1])).join("")}
+          </div>
+          ${renderMaintenance(appointment)}
           <div class="notice"><strong>${t("nextStep")}:</strong> ${escapeHtml(appointment.nextStep || "")}</div>
           ${actions.length ? `<div class="actions">${actions.join("")}</div>` : ""}
         </article>
@@ -264,7 +349,7 @@
           <div class="history-icon"><i class="fa-solid fa-wrench"></i></div>
           <div>
             <strong>${escapeHtml(item.serviceSummary || item.serviceLabel || "")}</strong>
-            <span>${escapeHtml(item.vehicle || "N/A")} | ${escapeHtml(item.date || "")} ${escapeHtml(item.time || "")}</span>
+            <span>${escapeHtml(item.vehicle || "N/A")} | ${escapeHtml(item.date || "")} ${escapeHtml(item.time || "")}${item.nextOilDate ? " | " + escapeHtml(t("nextOilDate")) + ": " + escapeHtml(item.nextOilDate) : ""}</span>
           </div>
           <span class="status ${escapeHtml(item.status || "")}">${escapeHtml(item.status || "")}</span>
         </article>
@@ -297,6 +382,7 @@
           lookupBtn.disabled = false;
           lookupBtn.textContent = t("lookupButton");
           resultBox.innerHTML = `<div class="empty">${escapeHtml((error && error.message) || t("connectionError"))}</div>`;
+          historyBox.innerHTML = `<div class="empty">${t("historyEmpty")}</div>`;
         })
         .consultarCitaCliente(payload);
     });

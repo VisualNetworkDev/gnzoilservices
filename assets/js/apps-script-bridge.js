@@ -23,7 +23,6 @@
     obtenerMotoresDisponibles: true,
     obtenerAceitesCompatibles: true,
     obtenerDescuentosPublicos: true,
-    consultarCitaCliente: true,
     calcularPrecio: true,
     adminObtenerVehiculos: true,
     adminObtenerCatalogo: true,

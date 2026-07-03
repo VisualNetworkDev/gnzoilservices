@@ -305,6 +305,11 @@
             <div class="field"><i class="fa-solid fa-calendar-days"></i><select name="ano" id="anoSelect" required><option value="" data-i18n="selectYear">Select Year</option></select></div>
             <div class="field" id="motorGroup" style="display:none;"><i class="fa-solid fa-gears"></i><select name="motor" id="motorSelect"></select></div>
             <div class="field full"><i class="fa-solid fa-oil-can"></i><select name="marcaAceite" id="marcaAceite" required><option value="" data-i18n="selectOil">Select Engine Oil</option></select></div>
+            <div class="field"><i class="fa-solid fa-gauge-high"></i><input name="millasActuales" id="millasActuales" type="number" min="0" step="1" inputmode="numeric" placeholder="Current mileage" data-i18n-placeholder="currentMileage"></div>
+            <div class="field"><i class="fa-solid fa-road"></i><input name="intervaloMillasAceite" id="intervaloMillasAceite" type="number" min="1" step="1" inputmode="numeric" value="7000" placeholder="Oil interval miles" data-i18n-placeholder="oilIntervalMiles"></div>
+            <div class="field"><i class="fa-solid fa-calendar-plus"></i><input name="intervaloMesesAceite" id="intervaloMesesAceite" type="number" min="1" step="1" inputmode="numeric" value="3" placeholder="Oil interval months" data-i18n-placeholder="oilIntervalMonths"></div>
+            <div class="field"><i class="fa-solid fa-flask"></i><input name="tipoAceiteUsado" id="tipoAceiteUsado" placeholder="Oil type used" data-i18n-placeholder="oilTypeUsed"></div>
+            <div class="field"><i class="fa-solid fa-tag"></i><input name="marcaAceiteUsada" id="marcaAceiteUsada" placeholder="Oil brand used" data-i18n-placeholder="oilBrandUsed"></div>
             <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="direccion" id="direccion" placeholder="Service address" autocomplete="street-address" required data-i18n-placeholder="serviceAddress"></div>
             <div class="field"><i class="fa-solid fa-calendar-day"></i><input type="date" name="fecha" id="fecha" required></div>
             <div class="field"><i class="fa-solid fa-clock"></i><input type="time" name="hora" id="hora" required></div>
@@ -434,7 +439,7 @@
     }
     window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl || gnzDefaultEndpoint;
   </script>
-  <script src="assets/js/apps-script-bridge.js?v=20260703"></script>
+  <script src="assets/js/apps-script-bridge.js?v=20260703b"></script>
   <script>
     let adminToken = "";
     let vehiculos = [];
@@ -498,6 +503,14 @@
         selectYear: "Select Year",
         selectOil: "Select Engine Oil",
         selectEngine: "Select Engine / Code",
+        currentMileage: "Current mileage",
+        oilIntervalMiles: "Oil interval miles",
+        oilIntervalMonths: "Oil interval months",
+        nextOilChange: "Next oil change",
+        nextOilDate: "Next oil date",
+        nextOilMileage: "Next oil mileage",
+        oilTypeUsed: "Oil type used",
+        oilBrandUsed: "Oil brand used",
         serviceAddress: "Service address",
         notes: "Notes",
         estimatedPrice: "Estimated price",
@@ -686,6 +699,14 @@
         selectYear: "Selecciona ano",
         selectOil: "Selecciona aceite de motor",
         selectEngine: "Selecciona motor / codigo",
+        currentMileage: "Millas actuales",
+        oilIntervalMiles: "Intervalo en millas",
+        oilIntervalMonths: "Intervalo en meses",
+        nextOilChange: "Proximo cambio",
+        nextOilDate: "Proxima fecha",
+        nextOilMileage: "Proximas millas",
+        oilTypeUsed: "Tipo de aceite usado",
+        oilBrandUsed: "Marca de aceite usada",
         serviceAddress: "Direccion del servicio",
         notes: "Notas",
         estimatedPrice: "Precio estimado",
@@ -1119,7 +1140,10 @@
 
     anoSelect.addEventListener("change", () => cargarMotores());
     motorSelect.addEventListener("change", () => cargarAceites());
-    marcaAceite.addEventListener("change", calcularPrecio);
+    marcaAceite.addEventListener("change", () => {
+      syncMaintenanceOilFields(false);
+      calcularPrecio();
+    });
     document.getElementById("comentarios").addEventListener("input", calcularPrecio);
 
     function cargarMotores(selectedMotor, selectedOil) {
@@ -1184,6 +1208,7 @@
         setSelectValue(marcaAceite, selectedOil);
       }
 
+      syncMaintenanceOilFields(false);
       if (marcaAceite.value) calcularPrecio();
     }
 
@@ -1201,6 +1226,7 @@
         ? ` | ${t("subtotal")} $${estimate.baseTotal} | ${t("discountLabel")} -${formatPercent(estimate.discountRate)}`
         : "";
       priceBox.textContent = `${t("estimatedPrice")}: $${estimate.total}${discountText} | ${t("oil")} $${estimate.aceite} | ${t("filter")} $${estimate.filtro} | ${t("labor")} $${estimate.manoObra} | ${t("disposal")} $${estimate.desecho}`;
+      syncMaintenanceOilFields(false);
     }
 
     function updateAdminBrakeOptions() {
@@ -1271,6 +1297,10 @@
       data.idioma = currentLang;
       data.aceptoAcuerdo = document.getElementById("aceptoAcuerdo").checked ? "SI" : "ADMIN";
       data.notificarCliente = document.getElementById("notificarCliente").checked ? "SI" : "NO";
+      data.intervaloMillasAceite = data.intervaloMillasAceite || "7000";
+      data.intervaloMesesAceite = data.intervaloMesesAceite || "3";
+      data.tipoAceiteUsado = data.tipoAceiteUsado || getRecommendedOilType();
+      data.marcaAceiteUsada = data.marcaAceiteUsada || data.marcaAceite || "";
 
       const runner = google.script.run
         .withSuccessHandler(res => {
@@ -1841,6 +1871,15 @@
           ? (r.marcaAceite || "")
           : [r.bodyStyle, r.axles && r.axles !== "N/A" ? `${r.axles} axle(s)` : ""].filter(Boolean).join(" | ");
         const vehicleValue = [`${r.marca || ""} ${r.modelo || ""} ${r.ano || ""}`.trim(), r.motor || ""].filter(Boolean).join(" | ");
+        const maintenanceDetails = tipo === "oil" && (r.currentMileage || r.nextOilMileage || r.nextOilDate)
+          ? `
+              <div><span>${t("currentMileage")}</span><br>${escapeHtml(formatMiles(r.currentMileage))}</div>
+              <div><span>${t("nextOilMileage")}</span><br>${escapeHtml(formatMiles(r.nextOilMileage))}</div>
+              <div><span>${t("nextOilDate")}</span><br>${escapeHtml(r.nextOilDate || t("notAvailable"))}</div>
+              <div><span>${t("oilTypeUsed")}</span><br>${escapeHtml(r.oilTypeUsed || t("notAvailable"))}</div>
+              <div><span>${t("oilBrandUsed")}</span><br>${escapeHtml(r.oilBrandUsed || t("notAvailable"))}</div>
+            `
+          : "";
         const oilFilterDetails = tipo === "oil" && (r.tipoFiltro || r.tipoFiltroAlternativo)
           ? `
               <div><span>${t("oilFilterType")}</span><br>${escapeHtml(r.tipoFiltro || t("notAvailable"))}</div>
@@ -1867,6 +1906,7 @@
               <div><span>${t("email")}</span><br>${escapeHtml(r.correo || "")}</div>
               <div><span>${t("vehicle")}</span><br>${escapeHtml(vehicleValue)}</div>
               <div><span>${escapeHtml(extraLabel)}</span><br>${escapeHtml(extraValue || t("notAvailable"))}</div>
+              ${maintenanceDetails}
               ${oilFilterDetails}
               <div><span>${t("subtotal")}</span><br>${r.totalFinal ? "$" + escapeHtml(r.totalFinal) : t("notAvailable")}</div>
               <div><span>${t("discountLabel")}</span><br>${r.discountPercent ? escapeHtml(r.discountPercent) + "%" : t("notAvailable")}</div>
@@ -1942,6 +1982,11 @@
       document.getElementById("hora").value = toInputTime(r.hora || "");
       document.getElementById("estado").value = r.estado || "Pendiente";
       document.getElementById("comentarios").value = r.comentarios || "";
+      document.getElementById("millasActuales").value = r.currentMileage || "";
+      document.getElementById("intervaloMillasAceite").value = r.oilIntervalMiles || "7000";
+      document.getElementById("intervaloMesesAceite").value = r.oilIntervalMonths || "3";
+      document.getElementById("tipoAceiteUsado").value = r.oilTypeUsed || "";
+      document.getElementById("marcaAceiteUsada").value = r.oilBrandUsed || r.marcaAceite || "";
       document.getElementById("aceptoAcuerdo").checked = String(r.aceptoAcuerdo || "").toUpperCase() === "SI";
       document.getElementById("notificarCliente").checked = false;
 
@@ -2060,6 +2105,8 @@
       document.getElementById("adminLangField").value = currentLang;
       document.getElementById("aceptoAcuerdo").checked = true;
       document.getElementById("notificarCliente").checked = true;
+      document.getElementById("intervaloMillasAceite").value = "7000";
+      document.getElementById("intervaloMesesAceite").value = "3";
       formMessage.textContent = "";
       resetMotor();
       resetOil();
@@ -2252,6 +2299,27 @@
         discountPercent: Number((discountRate * 100).toFixed(2)),
         total: finalTotal.toFixed(2)
       };
+    }
+
+    function getRecommendedOilType() {
+      const matches = getVehicleMatches();
+      return matches.length ? String(matches[0].aceite || "").trim() : "";
+    }
+
+    function syncMaintenanceOilFields(force) {
+      const typeInput = document.getElementById("tipoAceiteUsado");
+      const brandInput = document.getElementById("marcaAceiteUsada");
+      if (!typeInput || !brandInput) return;
+
+      const recommended = getRecommendedOilType();
+      if ((force || !typeInput.value) && recommended) typeInput.value = recommended;
+      if ((force || !brandInput.value) && marcaAceite.value) brandInput.value = marcaAceite.value;
+    }
+
+    function formatMiles(value) {
+      const n = toNumber(value);
+      if (!n) return t("notAvailable");
+      return Math.round(n).toLocaleString("en-US") + " mi";
     }
 
     function normalizar(value) {
