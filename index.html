@@ -180,6 +180,79 @@
       font-weight:800;
       cursor:pointer;
     }
+    .trust-strip{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin:0 0 22px;
+    }
+    .trust-item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px;
+      border-radius:14px;
+      background:rgba(255,250,241,.94);
+      border:1px solid rgba(6,63,76,.14);
+      color:var(--gnz-ink);
+      box-shadow:0 12px 26px rgba(28,20,8,.10);
+    }
+    .trust-item i{
+      width:34px;
+      height:34px;
+      flex:0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:50%;
+      background:rgba(165,30,34,.10);
+      color:var(--gnz-red);
+    }
+    .trust-item strong{
+      display:block;
+      color:var(--gnz-teal);
+      font-size:13px;
+      line-height:1.2;
+    }
+    .trust-item span{
+      display:block;
+      margin-top:2px;
+      color:#52656b;
+      font-size:12px;
+      line-height:1.25;
+    }
+    .booking-progress{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin:0 0 18px;
+    }
+    .progress-step{
+      padding:10px 8px;
+      border-radius:12px;
+      background:#fffdf8;
+      border:1px solid rgba(6,63,76,.12);
+      color:#63777d;
+      font-size:12px;
+      font-weight:800;
+      text-align:center;
+    }
+    .progress-step.active{
+      background:var(--gnz-teal);
+      border-color:var(--gnz-teal);
+      color:#fffaf1;
+      box-shadow:0 12px 24px rgba(6,63,76,.18);
+    }
+    .professional-note{
+      margin:0 0 18px;
+      padding:13px 14px;
+      border-left:4px solid var(--gnz-red);
+      border-radius:12px;
+      background:#fffdf8;
+      color:#344b52;
+      font-size:13px;
+      line-height:1.45;
+    }
 
     h2{
       text-align:center;
@@ -858,6 +931,9 @@
       .receipt-modal{
         padding:12px 10px 24px;
       }
+      .trust-strip,.booking-progress{
+        grid-template-columns:1fr;
+      }
 
       .receipt-modal-shell{
         min-height:calc(100vh - 36px);
@@ -1030,6 +1106,32 @@
         </a>
       </div>
     </header>
+
+    <section class="trust-strip" aria-label="Service highlights">
+      <div class="trust-item">
+        <i class="fas fa-house-chimney"></i>
+        <div><strong data-i18n="trustMobile">Mobile service</strong><span data-i18n="trustMobileText">We come to your location.</span></div>
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-clipboard-check"></i>
+        <div><strong data-i18n="trustQuote">Clear estimate</strong><span data-i18n="trustQuoteText">Review price before sending.</span></div>
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-bell"></i>
+        <div><strong data-i18n="trustReminder">Smart reminders</strong><span data-i18n="trustReminderText">Confirmation and appointment reminders.</span></div>
+      </div>
+    </section>
+
+    <div class="booking-progress" aria-label="Booking progress">
+      <div class="progress-step active" data-progress-step="vehicle" data-i18n="stepVehicle">Vehicle</div>
+      <div class="progress-step" data-progress-step="service" data-i18n="stepService">Oil</div>
+      <div class="progress-step" data-progress-step="schedule" data-i18n="stepSchedule">Schedule</div>
+      <div class="progress-step" data-progress-step="confirm" data-i18n="stepConfirm">Confirm</div>
+    </div>
+
+    <div class="professional-note" data-i18n="bookingNote">
+      Complete the details below and review the estimate before sending your appointment request.
+    </div>
 
     <section class="discounts-panel" id="discountsPanel" hidden>
       <h2 data-i18n="discountsTitle">Current Discounts</h2>
@@ -1246,6 +1348,7 @@
     const agreementStatus = document.getElementById("agreementStatus");
     const discountsPanel = document.getElementById("discountsPanel");
     const discountsList = document.getElementById("discountsList");
+    const progressSteps = Array.from(document.querySelectorAll("[data-progress-step]"));
     const precioBox = document.createElement("div");
     precioBox.id = "precioBox";
     precioBox.style.marginTop = "10px";
@@ -1339,7 +1442,18 @@
         discountsTitle: "Current Discounts",
         discountsHelp: "Use the discount code in Additional Comments when booking your appointment.",
         useDiscount: "Use code",
-        discountApplied: "Discount code added to comments."
+        discountApplied: "Discount code added to comments.",
+        trustMobile: "Mobile service",
+        trustMobileText: "We come to your location.",
+        trustQuote: "Clear estimate",
+        trustQuoteText: "Review price before sending.",
+        trustReminder: "Smart reminders",
+        trustReminderText: "Confirmation and appointment reminders.",
+        stepVehicle: "Vehicle",
+        stepService: "Oil",
+        stepSchedule: "Schedule",
+        stepConfirm: "Confirm",
+        bookingNote: "Complete the details below and review the estimate before sending your appointment request."
       },
       es: {
         subtitle: "Cambio de aceite y mantenimiento movil en tu ubicacion",
@@ -1419,7 +1533,18 @@
         discountsTitle: "Descuentos disponibles",
         discountsHelp: "Usa el codigo de descuento en Comentarios adicionales al reservar tu cita.",
         useDiscount: "Usar codigo",
-        discountApplied: "Codigo de descuento agregado a comentarios."
+        discountApplied: "Codigo de descuento agregado a comentarios.",
+        trustMobile: "Servicio movil",
+        trustMobileText: "Vamos hasta tu ubicacion.",
+        trustQuote: "Estimado claro",
+        trustQuoteText: "Revisa el precio antes de enviar.",
+        trustReminder: "Recordatorios",
+        trustReminderText: "Confirmacion y avisos de la cita.",
+        stepVehicle: "Vehiculo",
+        stepService: "Aceite",
+        stepSchedule: "Horario",
+        stepConfirm: "Confirmar",
+        bookingNote: "Completa los datos y revisa el estimado antes de enviar tu solicitud de cita."
       }
     };
     let currentLang = getPreferredLanguage();
@@ -1467,12 +1592,29 @@
       updateAgreementStatusText();
       if (!isSubmitting) submitButton.textContent = t("submitReservation");
       if (window.gnzPublicDiscounts) renderPublicDiscounts(window.gnzPublicDiscounts);
+      updateBookingProgress();
     }
 
     document.querySelectorAll("[data-lang]").forEach(btn => {
       btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
     });
     applyLanguage(currentLang);
+
+    function updateBookingProgress() {
+      const hasVehicle = Boolean(marcaSelect.value && modeloSelect.value && anoSelect.value);
+      const hasOil = hasVehicle && Boolean(marcaAceiteSelect.value);
+      const hasSchedule = hasOil && Boolean(document.getElementById("fecha").value && document.getElementById("hora").value);
+      const hasConfirm = hasSchedule && Boolean(acuerdoAceptadoActual || aceptoAcuerdoField.value === "SI");
+      const activeStep = hasConfirm ? "confirm" : hasSchedule ? "schedule" : hasOil ? "service" : "vehicle";
+
+      progressSteps.forEach(step => {
+        const key = step.dataset.progressStep;
+        step.classList.toggle("active", key === activeStep);
+      });
+    }
+
+    formCita.addEventListener("input", updateBookingProgress);
+    formCita.addEventListener("change", updateBookingProgress);
 
     function escapeHtml(value) {
       return String(value == null ? "" : value)
@@ -1905,6 +2047,7 @@
       link.classList.add("accepted");
       agreementStatus.classList.add("accepted");
       updateAgreementStatusText();
+      updateBookingProgress();
       cerrarAcuerdo();
 
       if (showMessage && !alreadyAccepted) {
@@ -1925,6 +2068,7 @@
       link.classList.remove("accepted");
       agreementStatus.classList.remove("accepted");
       updateAgreementStatusText();
+      updateBookingProgress();
     }
 
     function sincronizarAcuerdoAceptado() {

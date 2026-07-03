@@ -119,6 +119,61 @@
     border-radius:999px;
     font-size:12px;
   }
+  .trust-strip{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin:0 0 16px;
+  }
+  .trust-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px;
+    border-radius:14px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.10);
+  }
+  .trust-item i{
+    width:34px;
+    height:34px;
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(255,69,58,.16);
+    color:#fff;
+  }
+  .trust-item strong{display:block;color:#fff;font-size:13px;line-height:1.2;}
+  .trust-item span{display:block;margin-top:2px;color:#cbd5ff;font-size:12px;line-height:1.25;}
+  .booking-progress{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin:0 0 16px;
+  }
+  .progress-step{
+    padding:10px 8px;
+    border-radius:12px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.10);
+    color:#cbd5ff;
+    font-size:12px;
+    font-weight:800;
+    text-align:center;
+  }
+  .progress-step.active{background:var(--gnz-teal);border-color:var(--gnz-teal);color:#fffaf1;}
+  .professional-note{
+    margin:0 0 16px;
+    padding:13px 14px;
+    border-left:4px solid var(--gnz-red);
+    border-radius:12px;
+    background:#fffdf8;
+    color:#344b52;
+    font-size:13px;
+    line-height:1.45;
+  }
   .form-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -406,6 +461,7 @@
     .container{padding:18px 14px 22px;border-radius:16px;}
     h1{font-size:22px;}
     .form-grid{grid-template-columns:1fr;gap:12px;}
+    .trust-strip,.booking-progress{grid-template-columns:1fr;}
     .form-group.full,.price-live,.agreement-line,.button-row{grid-column:auto;}
     input,select,textarea{font-size:16px;min-height:48px;}
     .form-group i{top:38px;}
@@ -488,6 +544,22 @@
     background:var(--gnz-teal);
     color:#fffaf1;
   }
+  .trust-item{
+    background:#fffdf8;
+    border-color:rgba(6,63,76,.14);
+    box-shadow:0 12px 26px rgba(28,20,8,.10);
+  }
+  .trust-item i{
+    background:rgba(165,30,34,.10);
+    color:var(--gnz-red);
+  }
+  .trust-item strong{color:var(--gnz-teal);}
+  .trust-item span{color:#52656b;}
+  .progress-step{
+    background:#fffdf8;
+    border-color:rgba(6,63,76,.12);
+    color:#63777d;
+  }
   input,select,textarea{
     background:#fffdf8;
     color:var(--gnz-ink);
@@ -562,6 +634,32 @@
       <a class="btn-home" href="index.html" data-i18n="oilHome">GNZ Oil Services</a>
     </div>
   </header>
+
+  <section class="trust-strip" aria-label="Service highlights">
+    <div class="trust-item">
+      <i class="fa-solid fa-screwdriver-wrench"></i>
+      <div><strong data-i18n="trustLabor">Labor focused</strong><span data-i18n="trustLaborText">Clear labor pricing before sending.</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fa-solid fa-calendar-check"></i>
+      <div><strong data-i18n="trustSchedule">Scheduled service</strong><span data-i18n="trustScheduleText">Choose your preferred date and time.</span></div>
+    </div>
+    <div class="trust-item">
+      <i class="fa-solid fa-receipt"></i>
+      <div><strong data-i18n="trustReceipt">Digital receipt</strong><span data-i18n="trustReceiptText">Summary and confirmation after booking.</span></div>
+    </div>
+  </section>
+
+  <div class="booking-progress" aria-label="Booking progress">
+    <div class="progress-step active" data-progress-step="service" data-i18n="stepService">Service</div>
+    <div class="progress-step" data-progress-step="vehicle" data-i18n="stepVehicle">Vehicle</div>
+    <div class="progress-step" data-progress-step="schedule" data-i18n="stepSchedule">Schedule</div>
+    <div class="progress-step" data-progress-step="confirm" data-i18n="stepConfirm">Confirm</div>
+  </div>
+
+  <div class="professional-note" data-i18n="bookingNote">
+    Complete the service details, review the estimate, then confirm the reservation summary.
+  </div>
 
   <section class="discounts-panel" id="discountsPanel" hidden>
     <h2 data-i18n="discountsTitle">Current Discounts</h2>
@@ -900,7 +998,18 @@ const translations = {
     discountsTitle: "Current Discounts",
     discountsHelp: "Use the discount code in Additional Comments when booking your appointment.",
     useDiscount: "Use code",
-    discountApplied: "Discount code added to comments."
+    discountApplied: "Discount code added to comments.",
+    trustLabor: "Labor focused",
+    trustLaborText: "Clear labor pricing before sending.",
+    trustSchedule: "Scheduled service",
+    trustScheduleText: "Choose your preferred date and time.",
+    trustReceipt: "Digital receipt",
+    trustReceiptText: "Summary and confirmation after booking.",
+    stepService: "Service",
+    stepVehicle: "Vehicle",
+    stepSchedule: "Schedule",
+    stepConfirm: "Confirm",
+    bookingNote: "Complete the service details, review the estimate, then confirm the reservation summary."
   },
   es: {
     subtitle: "Por GNZ Oil Services",
@@ -980,7 +1089,18 @@ const translations = {
     discountsTitle: "Descuentos disponibles",
     discountsHelp: "Usa el codigo de descuento en Comentarios adicionales al reservar tu cita.",
     useDiscount: "Usar codigo",
-    discountApplied: "Codigo de descuento agregado a comentarios."
+    discountApplied: "Codigo de descuento agregado a comentarios.",
+    trustLabor: "Mano de obra",
+    trustLaborText: "Precio claro antes de enviar.",
+    trustSchedule: "Servicio agendado",
+    trustScheduleText: "Elige fecha y hora preferida.",
+    trustReceipt: "Recibo digital",
+    trustReceiptText: "Resumen y confirmacion al reservar.",
+    stepService: "Servicio",
+    stepVehicle: "Vehiculo",
+    stepSchedule: "Horario",
+    stepConfirm: "Confirmar",
+    bookingNote: "Completa el servicio, revisa el estimado y confirma el resumen de la reserva."
   }
 };
 
@@ -1031,6 +1151,7 @@ const commentField = brakeForm.querySelector('textarea[name="Comment"]');
 const discountsPanel = document.getElementById("discountsPanel");
 const discountsList = document.getElementById("discountsList");
 const languageField = document.getElementById("languageField");
+const progressSteps = Array.from(document.querySelectorAll("[data-progress-step]"));
 let currentLang = getPreferredLanguage();
 window.gnzPublicDiscounts = [];
 
@@ -1096,6 +1217,7 @@ function applyLanguage(lang) {
   document.getElementById("agreementText").innerHTML = agreementBodies[currentLang] || agreementBodies.en;
   updateAgreementStatusText();
   updatePriceEstimate();
+  updateBookingProgress();
   renderPublicDiscounts(window.gnzPublicDiscounts || []);
   if (window.lastReceiptData) {
     document.getElementById("fullscreenReceiptContent").innerHTML = buildReceiptHtml(window.lastReceiptData);
@@ -1106,6 +1228,22 @@ document.querySelectorAll("[data-lang]").forEach(btn => {
   btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
 });
 applyLanguage(currentLang);
+
+function updateBookingProgress() {
+  const form = new FormData(brakeForm);
+  const hasService = Boolean(form.get("Service"));
+  const hasVehicle = hasService && Boolean(form.get("Body") && form.get("Year") && form.get("Make") && form.get("Model"));
+  const hasSchedule = hasVehicle && Boolean(form.get("Date") && form.get("Time"));
+  const hasConfirm = hasSchedule && agreementAccepted;
+  const activeStep = hasConfirm ? "confirm" : hasSchedule ? "schedule" : hasVehicle ? "vehicle" : "service";
+
+  progressSteps.forEach(step => {
+    step.classList.toggle("active", step.dataset.progressStep === activeStep);
+  });
+}
+
+brakeForm.addEventListener("input", updateBookingProgress);
+brakeForm.addEventListener("change", updateBookingProgress);
 
 function renderPublicDiscounts(discounts) {
   window.gnzPublicDiscounts = Array.isArray(discounts) ? discounts : [];
@@ -1190,6 +1328,7 @@ document.getElementById("closeReceipt").onclick = () => closeModal("receiptModal
 document.getElementById("acceptAgreement").onclick = () => {
   agreementAccepted = true;
   updateAgreementStatusText();
+  updateBookingProgress();
   agreementStatus.classList.add("accepted");
   closeModal("agreementModal");
   showToast(t("agreementToast"));
@@ -1385,6 +1524,7 @@ function sendReservationToServer(data) {
       axleBox.style.display = "none";
       flushBox.style.display = "none";
       updatePriceEstimate();
+      updateBookingProgress();
     })
     .withFailureHandler(function(err) {
       confirmBtn.disabled = false;

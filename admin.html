@@ -85,7 +85,7 @@
     .checkline{display:flex;gap:10px;align-items:flex-start;color:#c9d3f6;font-size:13px;line-height:1.45;margin:8px 0 12px;}
     .checkline input{margin-top:3px;}
     .message{margin-top:12px;color:#cfe2ff;font-weight:700;font-size:14px;}
-    .form-switch{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;padding:5px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
+    .form-switch{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px;padding:5px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);}
     .tab-btn{border:none;border-radius:10px;padding:10px 12px;background:transparent;color:#c9d3f6;font-weight:800;cursor:pointer;}
     .tab-btn.active{background:#0b5ed7;color:#fff;box-shadow:0 10px 22px rgba(11,94,215,.24);}
     .service-tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:6px;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;background:rgba(10,132,255,.12);color:#cfe2ff;}
@@ -99,6 +99,15 @@
     .block-admin-card{border-radius:13px;background:#fffdf8;border:1px solid rgba(6,63,76,.14);padding:12px;color:var(--gnz-ink);}
     .block-admin-card strong{display:block;color:var(--gnz-teal);font-size:15px;}
     .block-admin-card p{margin:5px 0 0;color:#5d6d72;font-size:13px;line-height:1.4;}
+    .inventory-admin-list{display:flex;flex-direction:column;gap:9px;margin-top:12px;}
+    .inventory-admin-card{border-radius:13px;background:#fffdf8;border:1px solid rgba(6,63,76,.14);padding:12px;color:var(--gnz-ink);}
+    .inventory-admin-card strong{display:block;color:var(--gnz-teal);font-size:15px;}
+    .inventory-admin-card p{margin:5px 0 0;color:#5d6d72;font-size:13px;line-height:1.4;}
+    .inventory-status{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;background:rgba(6,63,76,.08);color:var(--gnz-teal);}
+    .inventory-status.stock{background:#dcfce7;color:#166534;}
+    .inventory-status.low{background:#fef3c7;color:#92400e;}
+    .inventory-status.out,.inventory-status.missing{background:#fee2e2;color:#991b1b;}
+    .inventory-status.unknown{background:#e5e7eb;color:#374151;}
     .hidden{display:none!important;}
     .empty{text-align:center;color:#8f9ac5;padding:24px;}
     @media(max-width:980px){.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
@@ -262,6 +271,7 @@
           <button class="tab-btn" type="button" data-admin-form="brake"><i class="fa-solid fa-screwdriver-wrench"></i> <span data-i18n="brakeTab">Brakes / Flush</span></button>
           <button class="tab-btn" type="button" data-admin-form="discounts"><i class="fa-solid fa-percent"></i> <span data-i18n="discountTab">Discounts</span></button>
           <button class="tab-btn" type="button" data-admin-form="blocks"><i class="fa-solid fa-lock"></i> <span data-i18n="blocksTab">Blocks</span></button>
+          <button class="tab-btn" type="button" data-admin-form="inventory"><i class="fa-solid fa-boxes-stacked"></i> <span data-i18n="inventoryTab">Inventory</span></button>
         </div>
         <form id="adminForm" class="service-form">
           <input type="hidden" name="idioma" id="adminLangField">
@@ -374,6 +384,22 @@
           </form>
           <div class="block-admin-list" id="blockList"></div>
         </section>
+
+        <section id="adminInventorySection" class="service-form hidden">
+          <form id="inventoryForm">
+            <div class="form-grid">
+              <div class="field"><i class="fa-solid fa-filter"></i><input name="filter" id="inventoryFilter" placeholder="Filter code" required data-i18n-placeholder="inventoryFilter"></div>
+              <div class="field"><i class="fa-solid fa-box"></i><input name="quantity" id="inventoryQuantity" type="number" min="0" step="1" placeholder="Quantity" required data-i18n-placeholder="inventoryQuantity"></div>
+              <div class="field"><i class="fa-solid fa-triangle-exclamation"></i><input name="minimum" id="inventoryMinimum" type="number" min="0" step="1" placeholder="Minimum" data-i18n-placeholder="inventoryMinimum"></div>
+              <div class="field"><i class="fa-solid fa-location-dot"></i><input name="location" id="inventoryLocation" placeholder="Location" data-i18n-placeholder="inventoryLocation"></div>
+              <div class="field full"><i class="fa-solid fa-note-sticky"></i><input name="notes" id="inventoryNotes" placeholder="Notes" data-i18n-placeholder="inventoryNotes"></div>
+            </div>
+            <button class="btn primary" type="submit" id="saveInventoryBtn" style="width:100%;" data-i18n="saveInventory">Save Filter</button>
+            <button class="btn" type="button" id="resetInventoryBtn" style="width:100%;margin-top:8px;" data-i18n="newInventory">New Filter</button>
+            <div class="message" id="inventoryMessage"></div>
+          </form>
+          <div class="inventory-admin-list" id="inventoryList"></div>
+        </section>
       </section>
     </div>
   </div>
@@ -396,6 +422,7 @@
     let reservasCache = [];
     let descuentosCache = [];
     let bloqueosCache = [];
+    let inventoryCache = [];
     let editingId = "";
     let editingBrakeId = "";
     let typingTimer = null;
@@ -427,10 +454,12 @@
         brakeTab: "Brakes / Flush",
         discountTab: "Discounts",
         blocksTab: "Blocks",
+        inventoryTab: "Inventory",
         scheduleOil: "Schedule Oil Appointment",
         scheduleBrake: "Schedule Brake / Flush Appointment",
         manageDiscounts: "Manage Discounts",
         manageBlocks: "Schedule Blocks",
+        manageInventory: "Filter Inventory",
         dashSales: "Completed sales",
         dashCompleted: "Completed jobs",
         dashAverage: "Average ticket",
@@ -519,6 +548,27 @@
         deleteBlockConfirm: "Delete this block?",
         loadingBlocks: "Loading blocks...",
         noBlocks: "No blocked times found.",
+        inventoryFilter: "Filter code",
+        inventoryQuantity: "Quantity",
+        inventoryMinimum: "Minimum",
+        inventoryLocation: "Location",
+        inventoryNotes: "Notes",
+        saveInventory: "Save Filter",
+        newInventory: "New Filter",
+        inventorySaved: "Filter saved:",
+        inventoryDeleted: "Filter deleted:",
+        inventorySaveFail: "Filter was not saved.",
+        inventoryDeleteFail: "Filter was not deleted.",
+        deleteInventoryConfirm: "Delete this filter?",
+        loadingInventory: "Loading inventory...",
+        noInventory: "No filters in inventory.",
+        inventoryStock: "In stock",
+        inventoryLow: "Low stock",
+        inventoryOut: "Buy filter",
+        inventoryMissing: "Not in inventory",
+        inventoryUnknown: "No filter listed",
+        copy: "Copy",
+        copied: "Copied",
         completedRevenue: "Completed revenue",
         noDiscountUsage: "No discount usage yet.",
         checkingAccess: "Checking access...",
@@ -579,10 +629,12 @@
         brakeTab: "Frenos / Fluidos",
         discountTab: "Descuentos",
         blocksTab: "Bloqueos",
+        inventoryTab: "Inventario",
         scheduleOil: "Programar cita de aceite",
         scheduleBrake: "Programar cita de frenos / fluidos",
         manageDiscounts: "Administrar descuentos",
         manageBlocks: "Bloqueo de horarios",
+        manageInventory: "Inventario de filtros",
         dashSales: "Ventas completadas",
         dashCompleted: "Trabajos completados",
         dashAverage: "Ticket promedio",
@@ -671,6 +723,27 @@
         deleteBlockConfirm: "Eliminar este bloqueo?",
         loadingBlocks: "Cargando bloqueos...",
         noBlocks: "No hay horarios bloqueados.",
+        inventoryFilter: "Codigo de filtro",
+        inventoryQuantity: "Cantidad",
+        inventoryMinimum: "Minimo",
+        inventoryLocation: "Ubicacion",
+        inventoryNotes: "Notas",
+        saveInventory: "Guardar filtro",
+        newInventory: "Nuevo filtro",
+        inventorySaved: "Filtro guardado:",
+        inventoryDeleted: "Filtro eliminado:",
+        inventorySaveFail: "No se guardo el filtro.",
+        inventoryDeleteFail: "No se elimino el filtro.",
+        deleteInventoryConfirm: "Eliminar este filtro?",
+        loadingInventory: "Cargando inventario...",
+        noInventory: "No hay filtros en inventario.",
+        inventoryStock: "En stock",
+        inventoryLow: "Stock bajo",
+        inventoryOut: "Comprar filtro",
+        inventoryMissing: "No esta en inventario",
+        inventoryUnknown: "Sin filtro listado",
+        copy: "Copiar",
+        copied: "Copiado",
         completedRevenue: "Ingresos completados",
         noDiscountUsage: "Todavia no hay uso de descuentos.",
         checkingAccess: "Verificando acceso...",
@@ -736,6 +809,8 @@
         formTitle.textContent = editingBrakeId ? `${t("editAppointment")} ${editingBrakeId}` : t("scheduleBrake");
       } else if (activeFormType === "blocks") {
         formTitle.textContent = t("manageBlocks");
+      } else if (activeFormType === "inventory") {
+        formTitle.textContent = t("manageInventory");
       } else {
         formTitle.textContent = t("manageDiscounts");
       }
@@ -765,6 +840,7 @@
       if (reservasCache.length) renderAppointmentView();
       renderDescuentos(descuentosCache);
       renderBloqueos(bloqueosCache);
+      renderInventario(inventoryCache);
       renderDashboard();
     }
 
@@ -840,6 +916,12 @@
     const blockMessage = document.getElementById("blockMessage");
     const saveBlockBtn = document.getElementById("saveBlockBtn");
     const resetBlockBtn = document.getElementById("resetBlockBtn");
+    const adminInventorySection = document.getElementById("adminInventorySection");
+    const inventoryForm = document.getElementById("inventoryForm");
+    const inventoryList = document.getElementById("inventoryList");
+    const inventoryMessage = document.getElementById("inventoryMessage");
+    const saveInventoryBtn = document.getElementById("saveInventoryBtn");
+    const resetInventoryBtn = document.getElementById("resetInventoryBtn");
 
     document.querySelectorAll("[data-lang]").forEach(btn => {
       btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
@@ -870,6 +952,8 @@
     resetDiscountBtn.addEventListener("click", resetDiscountForm);
     blockForm.addEventListener("submit", guardarBloqueo);
     resetBlockBtn.addEventListener("click", resetBlockForm);
+    inventoryForm.addEventListener("submit", guardarInventario);
+    resetInventoryBtn.addEventListener("click", resetInventoryForm);
     document.getElementById("searchInput").addEventListener("input", () => {
       clearTimeout(typingTimer);
       typingTimer = setTimeout(cargarReservas, 350);
@@ -890,6 +974,7 @@
           cargarReservas();
           cargarDescuentos();
           cargarBloqueos();
+          cargarInventario();
         })
         .withFailureHandler(err => {
           loginMessage.textContent = err.message || t("loginFailed");
@@ -898,7 +983,7 @@
     }
 
     function switchAdminForm(type) {
-      activeFormType = type === "brake" ? "brake" : type === "discounts" ? "discounts" : type === "blocks" ? "blocks" : "oil";
+      activeFormType = type === "brake" ? "brake" : type === "discounts" ? "discounts" : type === "blocks" ? "blocks" : type === "inventory" ? "inventory" : "oil";
 
       document.querySelectorAll("[data-admin-form]").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.adminForm === activeFormType);
@@ -908,6 +993,7 @@
       adminBrakeForm.classList.toggle("hidden", activeFormType !== "brake");
       adminDiscountSection.classList.toggle("hidden", activeFormType !== "discounts");
       adminBlocksSection.classList.toggle("hidden", activeFormType !== "blocks");
+      adminInventorySection.classList.toggle("hidden", activeFormType !== "inventory");
 
       if (activeFormType === "oil") {
         if (editingBrakeId) resetBrakeFormMode();
@@ -921,12 +1007,17 @@
         if (editingBrakeId) resetBrakeFormMode();
         setFormTitle();
         cargarDescuentos();
-      } else {
+      } else if (activeFormType === "blocks") {
         if (editingId) resetFormMode();
         if (editingBrakeId) resetBrakeFormMode();
         setFormTitle();
         if (!document.getElementById("blockStart").value) resetBlockForm(false);
         cargarBloqueos();
+      } else {
+        if (editingId) resetFormMode();
+        if (editingBrakeId) resetBrakeFormMode();
+        setFormTitle();
+        cargarInventario();
       }
     }
 
@@ -1436,6 +1527,112 @@
         .adminEliminarBloqueo(adminToken, id);
     };
 
+    function cargarInventario() {
+      if (!adminToken || !inventoryList) return;
+      inventoryList.innerHTML = `<div class="empty">${t("loadingInventory")}</div>`;
+      google.script.run
+        .withSuccessHandler(res => {
+          if (!res || !res.success) {
+            inventoryList.innerHTML = `<div class="empty">${escapeHtml((res && res.error) || t("inventorySaveFail"))}</div>`;
+            return;
+          }
+          inventoryCache = res.inventory || [];
+          renderInventario(inventoryCache);
+          if (reservasCache.length) renderAppointmentView();
+        })
+        .withFailureHandler(err => {
+          inventoryList.innerHTML = `<div class="empty">${escapeHtml(err.message || t("inventorySaveFail"))}</div>`;
+        })
+        .adminListarInventarioFiltros(adminToken);
+    }
+
+    function renderInventario(items) {
+      if (!inventoryList) return;
+      if (!items || !items.length) {
+        inventoryList.innerHTML = `<div class="empty">${t("noInventory")}</div>`;
+        return;
+      }
+
+      inventoryList.innerHTML = items.map(item => {
+        const status = item.quantity <= 0 ? "out" : item.lowStock ? "low" : "stock";
+        const label = status === "stock" ? t("inventoryStock") : status === "low" ? t("inventoryLow") : t("inventoryOut");
+        return `
+          <article class="inventory-admin-card">
+            <strong>${escapeHtml(item.filter)}</strong>
+            <span class="inventory-status ${escapeAttr(status)}">${escapeHtml(label)} | ${escapeHtml(item.quantity)} / ${escapeHtml(item.minimum || 0)}</span>
+            <p>${escapeHtml(item.location || t("notAvailable"))}</p>
+            <p>${escapeHtml(item.notes || "")}</p>
+            <div class="actions" style="margin-top:10px;">
+              <button class="btn" type="button" onclick="editarInventario('${escapeAttr(item.filter)}')">${t("edit")}</button>
+              <button class="btn danger" type="button" onclick="eliminarInventario('${escapeAttr(item.filter)}')">${t("cancel")}</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function guardarInventario(e) {
+      e.preventDefault();
+      inventoryMessage.textContent = t("saving");
+      saveInventoryBtn.disabled = true;
+
+      const payload = Object.fromEntries(new FormData(inventoryForm).entries());
+      google.script.run
+        .withSuccessHandler(res => {
+          saveInventoryBtn.disabled = false;
+          if (!res || !res.success) {
+            inventoryMessage.textContent = (res && res.error) || t("inventorySaveFail");
+            return;
+          }
+          inventoryMessage.textContent = `${t("inventorySaved")} ${res.item.filter}`;
+          resetInventoryForm(false);
+          cargarInventario();
+          cargarReservas();
+        })
+        .withFailureHandler(err => {
+          saveInventoryBtn.disabled = false;
+          inventoryMessage.textContent = err.message || t("inventorySaveFail");
+        })
+        .adminGuardarInventarioFiltro(adminToken, payload);
+    }
+
+    function resetInventoryForm(clearMessage) {
+      inventoryForm.reset();
+      document.getElementById("inventoryFilter").readOnly = false;
+      saveInventoryBtn.disabled = false;
+      if (clearMessage !== false) inventoryMessage.textContent = "";
+    }
+
+    window.editarInventario = function(filter) {
+      const item = inventoryCache.find(entry => entry.filter === filter);
+      if (!item) return;
+      document.getElementById("inventoryFilter").value = item.filter || "";
+      document.getElementById("inventoryFilter").readOnly = true;
+      document.getElementById("inventoryQuantity").value = item.quantity || 0;
+      document.getElementById("inventoryMinimum").value = item.minimum || 0;
+      document.getElementById("inventoryLocation").value = item.location || "";
+      document.getElementById("inventoryNotes").value = item.notes || "";
+      inventoryMessage.textContent = "";
+      inventoryForm.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    window.eliminarInventario = function(filter) {
+      if (!confirm(t("deleteInventoryConfirm"))) return;
+      google.script.run
+        .withSuccessHandler(res => {
+          if (!res || !res.success) {
+            alert((res && res.error) || t("inventoryDeleteFail"));
+            return;
+          }
+          inventoryMessage.textContent = `${t("inventoryDeleted")} ${res.filter}`;
+          resetInventoryForm(false);
+          cargarInventario();
+          cargarReservas();
+        })
+        .withFailureHandler(err => alert(err.message || t("inventoryDeleteFail")))
+        .adminEliminarInventarioFiltro(adminToken, filter);
+    };
+
     function cargarReservas() {
       const filtros = {
         query: document.getElementById("searchInput").value,
@@ -1594,10 +1791,18 @@
           ? (r.marcaAceite || "")
           : [r.bodyStyle, r.axles && r.axles !== "N/A" ? `${r.axles} axle(s)` : ""].filter(Boolean).join(" | ");
         const vehicleValue = [`${r.marca || ""} ${r.modelo || ""} ${r.ano || ""}`.trim(), r.motor || ""].filter(Boolean).join(" | ");
+        const inventory = r.filterInventory || {};
+        const inventoryStatus = inventory.status || "unknown";
+        const inventoryLabel = inventoryStatus === "stock" ? t("inventoryStock")
+          : inventoryStatus === "low" ? t("inventoryLow")
+          : inventoryStatus === "out" ? t("inventoryOut")
+          : inventoryStatus === "missing" ? t("inventoryMissing")
+          : t("inventoryUnknown");
         const oilFilterDetails = tipo === "oil" && (r.tipoFiltro || r.tipoFiltroAlternativo)
           ? `
               <div><span>${t("oilFilterType")}</span><br>${escapeHtml(r.tipoFiltro || t("notAvailable"))}</div>
               <div><span>${t("alternateFilter")}</span><br>${escapeHtml(r.tipoFiltroAlternativo || t("notAvailable"))}</div>
+              <div><span>${t("inventoryTab")}</span><br><span class="inventory-status ${escapeAttr(inventoryStatus)}">${escapeHtml(inventoryLabel)}${inventory.quantity !== "" && inventory.quantity != null ? " | " + escapeHtml(inventory.quantity) : ""}</span></div>
             `
           : "";
         const editButton = tipo === "oil"
@@ -1628,6 +1833,9 @@
             </div>
             <div class="actions">
               ${editButton}
+              <button class="btn" onclick="copyText('${escapeAttr(r.telefono || "")}')">${t("copy")} ${t("phone")}</button>
+              <button class="btn" onclick="copyText('${escapeAttr(r.direccion || "")}')">${t("copy")} ${t("address")}</button>
+              ${tipo === "oil" && r.tipoFiltro ? `<button class="btn" onclick="copyText('${escapeAttr(r.tipoFiltro)}')">${t("copy")} ${t("filter")}</button>` : ""}
               <button class="btn success" onclick="actualizarEstado('${escapeAttr(r.id)}','Confirmada')">${t("confirm")}</button>
               <button class="btn warn" onclick="actualizarEstado('${escapeAttr(r.id)}','Pendiente')">${t("pending")}</button>
               <button class="btn danger" onclick="actualizarEstado('${escapeAttr(r.id)}','Cancelada')">${t("cancel")}</button>
@@ -1636,6 +1844,37 @@
           </article>
         `;
       }).join("");
+    }
+
+    window.copyText = function(value) {
+      const text = String(value || "").trim();
+      if (!text) return;
+
+      const done = () => {
+        formMessage.textContent = t("copied") + ": " + text;
+        setTimeout(() => {
+          if (formMessage.textContent.indexOf(text) !== -1) formMessage.textContent = "";
+        }, 1400);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopyText(text, done));
+      } else {
+        fallbackCopyText(text, done);
+      }
+    };
+
+    function fallbackCopyText(text, done) {
+      const input = document.createElement("textarea");
+      input.value = text;
+      input.style.position = "fixed";
+      input.style.left = "-9999px";
+      document.body.appendChild(input);
+      input.focus();
+      input.select();
+      try { document.execCommand("copy"); } catch (err) {}
+      input.remove();
+      done();
     }
 
     window.editarReserva = function(id) {
