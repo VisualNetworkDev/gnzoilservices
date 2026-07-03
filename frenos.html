@@ -538,7 +538,23 @@
     .container{padding:18px 14px 22px;border-radius:16px;}
     h1{font-size:22px;}
     .form-grid{grid-template-columns:1fr;gap:12px;}
-    .trust-strip,.booking-progress,.service-paths{grid-template-columns:1fr;}
+    .hero-headline{font-size:28px;margin-top:14px;}
+    .hero-copy{font-size:14px;}
+    .hero-actions{gap:7px;margin-top:14px;}
+    .hero-btn{min-height:40px;padding:9px 11px;font-size:12px;}
+    .service-paths{grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px;}
+    .service-path{min-height:88px;padding:10px 6px;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-radius:13px;}
+    .service-path i{width:30px;height:30px;font-size:13px;}
+    .service-path strong{font-size:11px;}
+    .service-path span{display:none;}
+    .trust-strip{grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;}
+    .trust-item{padding:8px 5px;justify-content:center;text-align:center;border-radius:12px;}
+    .trust-item i{display:none;}
+    .trust-item strong{font-size:10px;}
+    .trust-item span{display:none;}
+    .booking-progress{grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px;}
+    .progress-step{padding:8px 2px;font-size:10px;border-radius:10px;}
+    .professional-note{display:none;}
     .form-group.full,.price-live,.agreement-line,.button-row{grid-column:auto;}
     input,select,textarea{font-size:16px;min-height:48px;}
     .form-group i{top:38px;}
@@ -1095,27 +1111,27 @@ const translations = {
     discountsHelp: "Use the discount code in Additional Comments when booking your appointment.",
     useDiscount: "Use code",
     discountApplied: "Discount code added to comments.",
-    trustLabor: "Labor focused",
-    trustLaborText: "Clear labor pricing before sending.",
-    trustSchedule: "Scheduled service",
-    trustScheduleText: "Choose your preferred date and time.",
-    trustReceipt: "Digital receipt",
-    trustReceiptText: "Summary and confirmation after booking.",
+    trustLabor: "Clear labor",
+    trustLaborText: "Estimate before confirmation.",
+    trustSchedule: "Mobile visit",
+    trustScheduleText: "Choose date and location.",
+    trustReceipt: "Digital record",
+    trustReceiptText: "Receipt and status updates.",
     stepService: "Service",
     stepVehicle: "Vehicle",
     stepSchedule: "Schedule",
     stepConfirm: "Confirm",
-    bookingNote: "Complete the service details, review the estimate, then confirm the reservation summary.",
-    heroTitle: "Mobile brake and fluid service with clear labor pricing.",
-    heroText: "Choose the brake or fluid service, review the labor estimate, and request a mobile appointment for your vehicle.",
+    bookingNote: "Review the estimate, then confirm your service request.",
+    heroTitle: "Mobile brake and fluid service without the guesswork.",
+    heroText: "Choose the service, review the labor estimate, and request a mobile appointment.",
     bookService: "Book service",
     trackAppointment: "Track appointment",
-    pathPads: "Pads and rotors",
-    pathPadsText: "Labor estimate by axle and body style.",
-    pathFlush: "Fluid flush",
-    pathFlushText: "Brake fluid and other flush services by request.",
-    pathTracking: "Service history",
-    pathTrackingText: "Check appointment status and past services by ID."
+    pathPads: "Brake packages",
+    pathPadsText: "Pads, rotors and axle-based labor.",
+    pathFlush: "Fluid services",
+    pathFlushText: "Clear options for fluid maintenance.",
+    pathTracking: "My appointments",
+    pathTrackingText: "Status, receipts and service history."
   },
   es: {
     subtitle: "Por GNZ Oil Services",
@@ -1196,27 +1212,27 @@ const translations = {
     discountsHelp: "Usa el codigo de descuento en Comentarios adicionales al reservar tu cita.",
     useDiscount: "Usar codigo",
     discountApplied: "Codigo de descuento agregado a comentarios.",
-    trustLabor: "Mano de obra",
-    trustLaborText: "Precio claro antes de enviar.",
-    trustSchedule: "Servicio agendado",
-    trustScheduleText: "Elige fecha y hora preferida.",
-    trustReceipt: "Recibo digital",
-    trustReceiptText: "Resumen y confirmacion al reservar.",
+    trustLabor: "Precio claro",
+    trustLaborText: "Estimado antes de confirmar.",
+    trustSchedule: "Servicio movil",
+    trustScheduleText: "Elige fecha y ubicacion.",
+    trustReceipt: "Record digital",
+    trustReceiptText: "Recibo y actualizaciones.",
     stepService: "Servicio",
     stepVehicle: "Vehiculo",
     stepSchedule: "Horario",
     stepConfirm: "Confirmar",
-    bookingNote: "Completa el servicio, revisa el estimado y confirma el resumen de la reserva.",
-    heroTitle: "Servicio movil de frenos y fluidos con precio claro de mano de obra.",
-    heroText: "Elige el servicio de frenos o fluidos, revisa el estimado de mano de obra y solicita la cita movil para tu vehiculo.",
+    bookingNote: "Revisa el estimado y confirma tu solicitud de servicio.",
+    heroTitle: "Servicio movil de frenos y fluidos sin adivinar precios.",
+    heroText: "Elige el servicio, revisa el estimado de mano de obra y solicita tu cita movil.",
     bookService: "Reservar servicio",
     trackAppointment: "Ver mi cita",
-    pathPads: "Pastillas y rotores",
-    pathPadsText: "Estimado por ejes y tipo de vehiculo.",
-    pathFlush: "Fluidos",
-    pathFlushText: "Servicio de brake fluid y otros fluidos por solicitud.",
-    pathTracking: "Historial de servicios",
-    pathTrackingText: "Consulta estado e historial con el ID de cita."
+    pathPads: "Paquetes de frenos",
+    pathPadsText: "Pads, rotores y labor por eje.",
+    pathFlush: "Servicios de fluidos",
+    pathFlushText: "Opciones claras para mantenimiento.",
+    pathTracking: "Mis citas",
+    pathTrackingText: "Estado, recibos e historial."
   }
 };
 

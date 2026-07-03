@@ -1019,9 +1019,23 @@
       .receipt-modal{
         padding:12px 10px 24px;
       }
-      .trust-strip,.booking-progress,.service-paths{
-        grid-template-columns:1fr;
-      }
+      .hero-headline{font-size:28px;margin-top:14px;}
+      .hero-copy{font-size:14px;}
+      .hero-actions{gap:7px;margin-top:14px;}
+      .hero-btn{min-height:40px;padding:9px 11px;font-size:12px;}
+      .service-paths{grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px;}
+      .service-path{min-height:88px;padding:10px 6px;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-radius:13px;}
+      .service-path i{width:30px;height:30px;font-size:13px;}
+      .service-path strong{font-size:11px;}
+      .service-path span{display:none;}
+      .trust-strip{grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;}
+      .trust-item{padding:8px 5px;justify-content:center;text-align:center;border-radius:12px;}
+      .trust-item i{display:none;}
+      .trust-item strong{font-size:10px;}
+      .trust-item span{display:none;}
+      .booking-progress{grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:10px;}
+      .progress-step{padding:8px 2px;font-size:10px;border-radius:10px;}
+      .professional-note{display:none;}
 
       .receipt-modal-shell{
         min-height:calc(100vh - 36px);
@@ -1544,27 +1558,27 @@
         discountsHelp: "Use the discount code in Additional Comments when booking your appointment.",
         useDiscount: "Use code",
         discountApplied: "Discount code added to comments.",
-        trustMobile: "Mobile service",
-        trustMobileText: "We come to your location.",
+        trustMobile: "Mobile visit",
+        trustMobileText: "Service at your location.",
         trustQuote: "Clear estimate",
-        trustQuoteText: "Review price before sending.",
-        trustReminder: "Smart reminders",
-        trustReminderText: "Confirmation and appointment reminders.",
+        trustQuoteText: "Price before confirmation.",
+        trustReminder: "Digital record",
+        trustReminderText: "Receipts and service history.",
         stepVehicle: "Vehicle",
         stepService: "Oil",
         stepSchedule: "Schedule",
         stepConfirm: "Confirm",
-        bookingNote: "Complete the details below and review the estimate before sending your appointment request.",
-        heroTitle: "Mobile oil service with a clear estimate before you book.",
-        heroText: "Select your vehicle, review the oil service estimate, and request a mobile appointment without waiting on a phone call.",
+        bookingNote: "Review the estimate, then confirm your oil service request.",
+        heroTitle: "Mobile oil changes with the right filter and a clear estimate.",
+        heroText: "Select your vehicle, confirm the oil option, and request service at your location.",
         bookOil: "Book oil change",
         trackAppointment: "Track appointment",
-        pathOil: "Oil change",
-        pathOilText: "Vehicle-based oil capacity, filter and estimate.",
-        pathBrake: "Brakes and fluids",
-        pathBrakeText: "Labor pricing for pads, rotors and flush services.",
-        pathTracking: "Service history",
-        pathTrackingText: "Check appointment status and past services by ID."
+        pathOil: "Oil service",
+        pathOilText: "Capacity, filter and estimate by vehicle.",
+        pathBrake: "Brakes & fluids",
+        pathBrakeText: "Labor pricing for brakes and flush work.",
+        pathTracking: "My appointments",
+        pathTrackingText: "Status, receipts and service history."
       },
       es: {
         subtitle: "Cambio de aceite y mantenimiento movil en tu ubicacion",
@@ -1645,27 +1659,27 @@
         discountsHelp: "Usa el codigo de descuento en Comentarios adicionales al reservar tu cita.",
         useDiscount: "Usar codigo",
         discountApplied: "Codigo de descuento agregado a comentarios.",
-        trustMobile: "Servicio movil",
-        trustMobileText: "Vamos hasta tu ubicacion.",
+        trustMobile: "Visita movil",
+        trustMobileText: "Servicio en tu ubicacion.",
         trustQuote: "Estimado claro",
-        trustQuoteText: "Revisa el precio antes de enviar.",
-        trustReminder: "Recordatorios",
-        trustReminderText: "Confirmacion y avisos de la cita.",
+        trustQuoteText: "Precio antes de confirmar.",
+        trustReminder: "Record digital",
+        trustReminderText: "Recibos e historial.",
         stepVehicle: "Vehiculo",
         stepService: "Aceite",
         stepSchedule: "Horario",
         stepConfirm: "Confirmar",
-        bookingNote: "Completa los datos y revisa el estimado antes de enviar tu solicitud de cita.",
-        heroTitle: "Servicio movil de aceite con estimado claro antes de reservar.",
-        heroText: "Selecciona tu vehiculo, revisa el estimado del cambio de aceite y solicita la cita movil sin esperar una llamada.",
+        bookingNote: "Revisa el estimado y confirma tu solicitud de aceite.",
+        heroTitle: "Cambio de aceite movil con el filtro correcto y estimado claro.",
+        heroText: "Selecciona tu vehiculo, confirma el aceite y solicita servicio en tu ubicacion.",
         bookOil: "Reservar aceite",
         trackAppointment: "Ver mi cita",
-        pathOil: "Cambio de aceite",
-        pathOilText: "Capacidad, filtro y estimado segun el vehiculo.",
+        pathOil: "Servicio de aceite",
+        pathOilText: "Capacidad, filtro y estimado por vehiculo.",
         pathBrake: "Frenos y fluidos",
-        pathBrakeText: "Precios de mano de obra para pads, rotores y fluidos.",
-        pathTracking: "Historial de servicios",
-        pathTrackingText: "Consulta estado e historial con el ID de cita."
+        pathBrakeText: "Precios de labor para frenos y fluidos.",
+        pathTracking: "Mis citas",
+        pathTrackingText: "Estado, recibos e historial."
       }
     };
     let currentLang = getPreferredLanguage();
