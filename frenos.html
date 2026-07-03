@@ -59,6 +59,83 @@
     font-size:13px;
     line-height:1.4;
   }
+  .hero-headline{
+    max-width:720px;
+    margin:18px auto 10px;
+    color:#fffaf1;
+    font-size:clamp(28px,5.5vw,50px);
+    line-height:1.04;
+    text-align:center;
+    letter-spacing:0;
+    text-transform:none;
+  }
+  .hero-copy{
+    max-width:680px;
+    margin:0 auto;
+    color:#f1d7a2;
+    font-size:15px;
+    line-height:1.55;
+    text-align:center;
+  }
+  .hero-actions{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-top:18px;
+  }
+  .hero-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    min-height:42px;
+    padding:10px 14px;
+    border-radius:999px;
+    background:linear-gradient(120deg,var(--gnz-red),#d64235);
+    border:1px solid rgba(255,255,255,.18);
+    color:#fff;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:900;
+    box-shadow:0 14px 28px rgba(165,30,34,.25);
+  }
+  .hero-btn.secondary{
+    background:rgba(255,250,241,.10);
+    color:#fffaf1;
+    box-shadow:none;
+  }
+  .service-paths{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin:0 0 16px;
+  }
+  .service-path{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    padding:14px;
+    border-radius:16px;
+    background:#fffdf8;
+    border:1px solid rgba(6,63,76,.14);
+    box-shadow:0 12px 28px rgba(28,20,8,.10);
+    text-decoration:none;
+    color:var(--gnz-ink);
+  }
+  .service-path i{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(165,30,34,.10);
+    color:var(--gnz-red);
+    flex:0 0 auto;
+  }
+  .service-path strong{display:block;color:var(--gnz-teal);font-size:14px;line-height:1.2;}
+  .service-path span{display:block;margin-top:3px;color:#52656b;font-size:12px;line-height:1.35;}
   .discounts-panel{
     margin:0 0 16px;
     padding:14px;
@@ -461,7 +538,7 @@
     .container{padding:18px 14px 22px;border-radius:16px;}
     h1{font-size:22px;}
     .form-grid{grid-template-columns:1fr;gap:12px;}
-    .trust-strip,.booking-progress{grid-template-columns:1fr;}
+    .trust-strip,.booking-progress,.service-paths{grid-template-columns:1fr;}
     .form-group.full,.price-live,.agreement-line,.button-row{grid-column:auto;}
     input,select,textarea{font-size:16px;min-height:48px;}
     .form-group i{top:38px;}
@@ -630,10 +707,29 @@
     <p class="disclaimer" data-i18n="disclaimer">
       Labor only. Parts are NOT included.
     </p>
-    <div class="header-actions">
-      <a class="btn-home" href="index.html" data-i18n="oilHome">GNZ Oil Services</a>
+    <h1 class="hero-headline" data-i18n="heroTitle">Mobile brake and fluid service with clear labor pricing.</h1>
+    <p class="hero-copy" data-i18n="heroText">Choose the brake or fluid service, review the labor estimate, and request a mobile appointment for your vehicle.</p>
+    <div class="hero-actions">
+      <a href="#brakeForm" class="hero-btn"><i class="fa-solid fa-calendar-check"></i><span data-i18n="bookService">Book service</span></a>
+      <a href="index.html" class="hero-btn secondary"><i class="fa-solid fa-oil-can"></i><span data-i18n="oilHome">GNZ Oil Services</span></a>
+      <a href="tracking.html" class="hero-btn secondary"><i class="fa-solid fa-clipboard-list"></i><span data-i18n="trackAppointment">Track appointment</span></a>
     </div>
   </header>
+
+  <section class="service-paths" aria-label="Brake and fluid options">
+    <a class="service-path" href="#brakeForm">
+      <i class="fa-solid fa-circle-dot"></i>
+      <div><strong data-i18n="pathPads">Pads and rotors</strong><span data-i18n="pathPadsText">Labor estimate by axle and body style.</span></div>
+    </a>
+    <a class="service-path" href="#brakeForm">
+      <i class="fa-solid fa-droplet"></i>
+      <div><strong data-i18n="pathFlush">Fluid flush</strong><span data-i18n="pathFlushText">Brake fluid and other flush services by request.</span></div>
+    </a>
+    <a class="service-path" href="tracking.html">
+      <i class="fa-solid fa-clock-rotate-left"></i>
+      <div><strong data-i18n="pathTracking">Service history</strong><span data-i18n="pathTrackingText">Check appointment status and past services by ID.</span></div>
+    </a>
+  </section>
 
   <section class="trust-strip" aria-label="Service highlights">
     <div class="trust-item">
@@ -902,7 +998,7 @@ if (gnzEndpointFromUrl) {
 }
 window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl || gnzDefaultEndpoint;
 </script>
-<script src="assets/js/apps-script-bridge.js?v=20260701"></script>
+<script src="assets/js/apps-script-bridge.js?v=20260703"></script>
 <script>
 const prices = {
   pads: {
@@ -1009,7 +1105,17 @@ const translations = {
     stepVehicle: "Vehicle",
     stepSchedule: "Schedule",
     stepConfirm: "Confirm",
-    bookingNote: "Complete the service details, review the estimate, then confirm the reservation summary."
+    bookingNote: "Complete the service details, review the estimate, then confirm the reservation summary.",
+    heroTitle: "Mobile brake and fluid service with clear labor pricing.",
+    heroText: "Choose the brake or fluid service, review the labor estimate, and request a mobile appointment for your vehicle.",
+    bookService: "Book service",
+    trackAppointment: "Track appointment",
+    pathPads: "Pads and rotors",
+    pathPadsText: "Labor estimate by axle and body style.",
+    pathFlush: "Fluid flush",
+    pathFlushText: "Brake fluid and other flush services by request.",
+    pathTracking: "Service history",
+    pathTrackingText: "Check appointment status and past services by ID."
   },
   es: {
     subtitle: "Por GNZ Oil Services",
@@ -1100,7 +1206,17 @@ const translations = {
     stepVehicle: "Vehiculo",
     stepSchedule: "Horario",
     stepConfirm: "Confirmar",
-    bookingNote: "Completa el servicio, revisa el estimado y confirma el resumen de la reserva."
+    bookingNote: "Completa el servicio, revisa el estimado y confirma el resumen de la reserva.",
+    heroTitle: "Servicio movil de frenos y fluidos con precio claro de mano de obra.",
+    heroText: "Elige el servicio de frenos o fluidos, revisa el estimado de mano de obra y solicita la cita movil para tu vehiculo.",
+    bookService: "Reservar servicio",
+    trackAppointment: "Ver mi cita",
+    pathPads: "Pastillas y rotores",
+    pathPadsText: "Estimado por ejes y tipo de vehiculo.",
+    pathFlush: "Fluidos",
+    pathFlushText: "Servicio de brake fluid y otros fluidos por solicitud.",
+    pathTracking: "Historial de servicios",
+    pathTrackingText: "Consulta estado e historial con el ID de cita."
   }
 };
 

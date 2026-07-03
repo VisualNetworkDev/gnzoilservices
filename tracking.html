@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Appointment | GNZ Oil Services</title>
+  <link rel="icon" href="favicon.ico">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+    :root{--teal:#063f4c;--red:#a51e22;--cream:#f6efe2;--panel:#fffaf1;--ink:#102a33;--line:rgba(6,63,76,.16);--gold:#c9a46a;}
+    body{min-height:100vh;background:var(--cream);color:var(--ink);padding:24px 12px;}
+    .shell{width:100%;max-width:980px;margin:0 auto;}
+    .hero{border-radius:22px;background:var(--teal);color:#fffaf1;padding:24px;border-bottom:5px solid var(--red);box-shadow:0 22px 58px rgba(28,20,8,.22);}
+    .hero-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;}
+    .brand{display:flex;align-items:center;gap:12px;}
+    .brand img{width:82px;height:auto;}
+    .brand strong{display:block;font-size:20px;letter-spacing:.05em;text-transform:uppercase;}
+    .brand span{display:block;color:#f1d7a2;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;}
+    .nav{display:flex;flex-wrap:wrap;gap:8px;}
+    .nav a,.lang-btn{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fffaf1;text-decoration:none;border-radius:999px;padding:9px 12px;font-size:12px;font-weight:900;cursor:pointer;}
+    .lang-btn.active{background:var(--red);border-color:var(--gold);}
+    h1{font-size:clamp(28px,5vw,46px);line-height:1.02;max-width:720px;letter-spacing:0;margin-bottom:12px;}
+    .hero p{max-width:720px;color:#f4dfbd;line-height:1.55;}
+    .grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px;margin-top:16px;}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 14px 34px rgba(28,20,8,.10);}
+    .panel h2{font-size:20px;color:var(--teal);margin-bottom:8px;}
+    .panel p{color:#52656b;font-size:14px;line-height:1.55;}
+    form{display:grid;gap:12px;margin-top:14px;}
+    .field{position:relative;}
+    .field i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--red);}
+    input{width:100%;min-height:48px;border-radius:13px;border:1px solid rgba(6,63,76,.14);background:#fffdf8;color:var(--ink);padding:12px 12px 12px 40px;font-size:15px;outline:none;}
+    input:focus{box-shadow:0 0 0 3px rgba(6,63,76,.18);border-color:var(--teal);}
+    button.primary{width:100%;border:none;border-radius:13px;background:linear-gradient(120deg,var(--red),#d64235);color:#fff;min-height:50px;font-weight:900;font-size:15px;cursor:pointer;box-shadow:0 14px 30px rgba(165,30,34,.22);}
+    button.primary:disabled{opacity:.65;cursor:wait;}
+    .notice{margin-top:12px;border-radius:13px;padding:12px;background:#fffdf8;border:1px solid rgba(6,63,76,.14);font-size:14px;color:#52656b;}
+    .result{display:grid;gap:12px;}
+    .appointment-card{border-radius:16px;border:1px solid rgba(6,63,76,.14);background:#fffdf8;padding:16px;}
+    .appointment-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px;}
+    .appointment-head strong{display:block;font-size:18px;color:var(--teal);}
+    .status{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:900;text-transform:uppercase;white-space:nowrap;background:#e5e7eb;color:#374151;}
+    .status.Pendiente{background:#fef3c7;color:#92400e;}
+    .status.Confirmada{background:#dcfce7;color:#166534;}
+    .status.Cancelada{background:#fee2e2;color:#991b1b;}
+    .status.Completada{background:#dbeafe;color:#1e40af;}
+    .facts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px;}
+    .fact{border-radius:12px;background:#f8efe0;padding:10px;}
+    .fact span{display:block;color:#647276;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;}
+    .fact strong{display:block;margin-top:3px;color:var(--ink);font-size:14px;}
+    .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+    .actions a{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:var(--teal);color:#fffaf1;text-decoration:none;padding:9px 12px;font-size:12px;font-weight:900;}
+    .history{display:grid;gap:9px;}
+    .history-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border-radius:13px;background:#fffdf8;border:1px solid rgba(6,63,76,.12);padding:11px;}
+    .history-icon{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(165,30,34,.10);color:var(--red);}
+    .history-item strong{display:block;color:var(--teal);}
+    .history-item span{display:block;color:#647276;font-size:12px;margin-top:2px;}
+    .empty{padding:14px;border-radius:13px;background:#fffdf8;border:1px dashed rgba(6,63,76,.20);color:#647276;}
+    @media(max-width:760px){body{padding:14px 10px}.hero-top{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr}.facts{grid-template-columns:1fr}.appointment-head{flex-direction:column}.brand img{width:72px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-top">
+        <div class="brand">
+          <img src="assets/img/gnz-logo.png" alt="GNZ Oil Services logo">
+          <div><strong>GNZ Oil Services</strong><span data-i18n="brandSub">Appointment tracking</span></div>
+        </div>
+        <nav class="nav" aria-label="Navigation">
+          <a href="index.html" data-i18n="oilLink">Oil Change</a>
+          <a href="frenos.html" data-i18n="brakeLink">Brakes / Flush</a>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="es">ES</button>
+        </nav>
+      </div>
+      <h1 data-i18n="heroTitle">Review your appointment and service history.</h1>
+      <p data-i18n="heroText">Enter your appointment ID plus the phone or email used when booking. If you have previous services with GNZ, they will show here after verification.</p>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2 data-i18n="lookupTitle">Find appointment</h2>
+        <p data-i18n="lookupText">Use the ID from your confirmation receipt. For privacy, the contact must match the reservation.</p>
+        <form id="trackingForm">
+          <div class="field"><i class="fa-solid fa-hashtag"></i><input id="appointmentId" name="appointmentId" placeholder="Appointment ID" autocomplete="off" required data-i18n-placeholder="appointmentId"></div>
+          <div class="field"><i class="fa-solid fa-phone"></i><input id="contact" name="contact" placeholder="Phone or email" autocomplete="email tel" required data-i18n-placeholder="contact"></div>
+          <button class="primary" type="submit" id="lookupBtn" data-i18n="lookupButton">Check status</button>
+        </form>
+        <div class="notice" data-i18n="helpText">Need help? Reply to your confirmation email or contact GNZ Oil Services directly.</div>
+      </div>
+
+      <div class="panel">
+        <h2 data-i18n="resultTitle">Appointment status</h2>
+        <div class="result" id="resultBox">
+          <div class="empty" data-i18n="emptyState">Your appointment details will appear here.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:16px;">
+      <h2 data-i18n="historyTitle">Service history</h2>
+      <div class="history" id="historyBox">
+        <div class="empty" data-i18n="historyEmpty">No service history loaded yet.</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const gnzEndpointFromUrl = new URLSearchParams(window.location.search).get("endpoint");
+    const gnzDefaultEndpoint = "https://script.google.com/macros/s/AKfycbzIjm2vj89cpRw5mzwYRVLAO4XPBRBSBoTFm5eing4vd0MQVWRj62hVd_Ghex0wN4pLsw/exec";
+    window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl || gnzDefaultEndpoint;
+  </script>
+  <script src="assets/js/apps-script-bridge.js?v=20260703"></script>
+  <script>
+    const translations = {
+      en: {
+        brandSub: "Appointment tracking",
+        oilLink: "Oil Change",
+        brakeLink: "Brakes / Flush",
+        heroTitle: "Review your appointment and service history.",
+        heroText: "Enter your appointment ID plus the phone or email used when booking. If you have previous services with GNZ, they will show here after verification.",
+        lookupTitle: "Find appointment",
+        lookupText: "Use the ID from your confirmation receipt. For privacy, the contact must match the reservation.",
+        appointmentId: "Appointment ID",
+        contact: "Phone or email",
+        lookupButton: "Check status",
+        loading: "Checking...",
+        helpText: "Need help? Reply to your confirmation email or contact GNZ Oil Services directly.",
+        resultTitle: "Appointment status",
+        emptyState: "Your appointment details will appear here.",
+        historyTitle: "Service history",
+        historyEmpty: "No service history loaded yet.",
+        returning: "Returning customer",
+        firstVisit: "First appointment found for this contact",
+        service: "Service",
+        vehicle: "Vehicle",
+        date: "Date",
+        time: "Time",
+        total: "Total",
+        oil: "Oil",
+        nextStep: "Next step",
+        reschedule: "Reschedule",
+        cancel: "Cancel",
+        noHistory: "No previous services found for this contact.",
+        connectionError: "We could not connect right now. Please try again."
+      },
+      es: {
+        brandSub: "Seguimiento de cita",
+        oilLink: "Cambio de aceite",
+        brakeLink: "Frenos / Fluidos",
+        heroTitle: "Revisa tu cita y tu historial de servicios.",
+        heroText: "Escribe el ID de la cita y el telefono o correo usado al reservar. Si ya tienes servicios anteriores con GNZ, apareceran despues de verificar.",
+        lookupTitle: "Buscar cita",
+        lookupText: "Usa el ID del recibo de confirmacion. Por privacidad, el contacto debe coincidir con la reserva.",
+        appointmentId: "ID de cita",
+        contact: "Telefono o correo",
+        lookupButton: "Ver estado",
+        loading: "Consultando...",
+        helpText: "Necesitas ayuda? Responde al correo de confirmacion o contacta directamente a GNZ Oil Services.",
+        resultTitle: "Estado de la cita",
+        emptyState: "Los detalles de tu cita apareceran aqui.",
+        historyTitle: "Historial de servicios",
+        historyEmpty: "No hay historial cargado todavia.",
+        returning: "Cliente recurrente",
+        firstVisit: "Primera cita encontrada para este contacto",
+        service: "Servicio",
+        vehicle: "Vehiculo",
+        date: "Fecha",
+        time: "Hora",
+        total: "Total",
+        oil: "Aceite",
+        nextStep: "Proximo paso",
+        reschedule: "Reprogramar",
+        cancel: "Cancelar",
+        noHistory: "No se encontraron servicios anteriores para este contacto.",
+        connectionError: "No pudimos conectar ahora. Intenta otra vez."
+      }
+    };
+
+    let currentLang = localStorage.getItem("gnzLang") || "en";
+    if (!translations[currentLang]) currentLang = "en";
+
+    const form = document.getElementById("trackingForm");
+    const lookupBtn = document.getElementById("lookupBtn");
+    const resultBox = document.getElementById("resultBox");
+    const historyBox = document.getElementById("historyBox");
+
+    function t(key) {
+      return (translations[currentLang] && translations[currentLang][key]) || translations.en[key] || key;
+    }
+
+    function applyLanguage() {
+      document.documentElement.lang = currentLang;
+      document.querySelectorAll("[data-i18n]").forEach(node => {
+        node.textContent = t(node.dataset.i18n);
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(node => {
+        node.placeholder = t(node.dataset.i18nPlaceholder);
+      });
+      document.querySelectorAll("[data-lang]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.lang === currentLang);
+      });
+      lookupBtn.textContent = t("lookupButton");
+    }
+
+    document.querySelectorAll("[data-lang]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentLang = btn.dataset.lang;
+        localStorage.setItem("gnzLang", currentLang);
+        applyLanguage();
+      });
+    });
+
+    function escapeHtml(value) {
+      return String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[ch]));
+    }
+
+    function renderAppointment(data, returningCustomer) {
+      const appointment = data || {};
+      const facts = [
+        [t("service"), appointment.serviceSummary || appointment.serviceLabel || ""],
+        [t("vehicle"), appointment.vehicle || ""],
+        [t("date"), appointment.date || ""],
+        [t("time"), appointment.time || ""],
+        [t("oil"), appointment.oil || "N/A"],
+        [t("total"), appointment.total ? "$" + appointment.total : "N/A"]
+      ];
+      const actions = [];
+      if (appointment.rescheduleUrl) actions.push(`<a href="${escapeHtml(appointment.rescheduleUrl)}"><i class="fa-solid fa-calendar-days"></i>${t("reschedule")}</a>`);
+      if (appointment.cancelUrl) actions.push(`<a href="${escapeHtml(appointment.cancelUrl)}"><i class="fa-solid fa-ban"></i>${t("cancel")}</a>`);
+
+      resultBox.innerHTML = `
+        <article class="appointment-card">
+          <div class="appointment-head">
+            <div>
+              <strong>${escapeHtml(appointment.id || "")}</strong>
+              <span>${returningCustomer ? t("returning") : t("firstVisit")}</span>
+            </div>
+            <span class="status ${escapeHtml(appointment.status || "")}">${escapeHtml(appointment.status || "")}</span>
+          </div>
+          <div class="facts">
+            ${facts.map(row => `<div class="fact"><span>${escapeHtml(row[0])}</span><strong>${escapeHtml(row[1] || "N/A")}</strong></div>`).join("")}
+          </div>
+          <div class="notice"><strong>${t("nextStep")}:</strong> ${escapeHtml(appointment.nextStep || "")}</div>
+          ${actions.length ? `<div class="actions">${actions.join("")}</div>` : ""}
+        </article>
+      `;
+    }
+
+    function renderHistory(items) {
+      const history = Array.isArray(items) ? items : [];
+      if (!history.length) {
+        historyBox.innerHTML = `<div class="empty">${t("noHistory")}</div>`;
+        return;
+      }
+      historyBox.innerHTML = history.map(item => `
+        <article class="history-item">
+          <div class="history-icon"><i class="fa-solid fa-wrench"></i></div>
+          <div>
+            <strong>${escapeHtml(item.serviceSummary || item.serviceLabel || "")}</strong>
+            <span>${escapeHtml(item.vehicle || "N/A")} | ${escapeHtml(item.date || "")} ${escapeHtml(item.time || "")}</span>
+          </div>
+          <span class="status ${escapeHtml(item.status || "")}">${escapeHtml(item.status || "")}</span>
+        </article>
+      `).join("");
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const payload = {
+        id: document.getElementById("appointmentId").value.trim(),
+        contact: document.getElementById("contact").value.trim()
+      };
+      lookupBtn.disabled = true;
+      lookupBtn.textContent = t("loading");
+      resultBox.innerHTML = `<div class="empty">${t("loading")}</div>`;
+
+      google.script.run
+        .withSuccessHandler(response => {
+          lookupBtn.disabled = false;
+          lookupBtn.textContent = t("lookupButton");
+          if (!response || !response.success) {
+            resultBox.innerHTML = `<div class="empty">${escapeHtml((response && response.error) || t("connectionError"))}</div>`;
+            historyBox.innerHTML = `<div class="empty">${t("historyEmpty")}</div>`;
+            return;
+          }
+          renderAppointment(response.appointment, response.returningCustomer);
+          renderHistory(response.history || []);
+        })
+        .withFailureHandler(error => {
+          lookupBtn.disabled = false;
+          lookupBtn.textContent = t("lookupButton");
+          resultBox.innerHTML = `<div class="empty">${escapeHtml((error && error.message) || t("connectionError"))}</div>`;
+        })
+        .consultarCitaCliente(payload);
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("id")) document.getElementById("appointmentId").value = params.get("id");
+    if (params.get("contact")) document.getElementById("contact").value = params.get("contact");
+    applyLanguage();
+  </script>
+</body>
+</html>

@@ -115,6 +115,94 @@
       transform:translateY(-1px);
       box-shadow:0 10px 25px rgba(10,132,255,0.35);
     }
+    .hero-headline{
+      max-width:720px;
+      margin:18px auto 10px;
+      color:#fffaf1;
+      font-size:clamp(30px,6vw,54px);
+      line-height:1.02;
+      text-align:center;
+      letter-spacing:0;
+      text-transform:none;
+    }
+    .hero-copy{
+      max-width:680px;
+      margin:0 auto;
+      color:#f1d7a2;
+      font-size:15px;
+      line-height:1.55;
+      text-align:center;
+    }
+    .hero-actions{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:9px;
+      margin-top:18px;
+    }
+    .hero-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:42px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:linear-gradient(120deg,var(--gnz-red),#d64235);
+      border:1px solid rgba(255,255,255,.18);
+      color:#fff;
+      text-decoration:none;
+      font-size:13px;
+      font-weight:900;
+      box-shadow:0 14px 28px rgba(165,30,34,.25);
+    }
+    .hero-btn.secondary{
+      background:rgba(255,250,241,.10);
+      color:#fffaf1;
+      box-shadow:none;
+    }
+    .service-paths{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin:0 0 18px;
+    }
+    .service-path{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:14px;
+      border-radius:16px;
+      background:#fffdf8;
+      border:1px solid rgba(6,63,76,.14);
+      box-shadow:0 12px 28px rgba(28,20,8,.10);
+      text-decoration:none;
+      color:var(--gnz-ink);
+    }
+    .service-path i{
+      width:38px;
+      height:38px;
+      border-radius:50%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(165,30,34,.10);
+      color:var(--gnz-red);
+      flex:0 0 auto;
+    }
+    .service-path strong{
+      display:block;
+      color:var(--gnz-teal);
+      font-size:14px;
+      line-height:1.2;
+    }
+    .service-path span{
+      display:block;
+      margin-top:3px;
+      color:#52656b;
+      font-size:12px;
+      line-height:1.35;
+    }
     .discounts-panel{
       margin:0 0 22px;
       padding:16px;
@@ -931,7 +1019,7 @@
       .receipt-modal{
         padding:12px 10px 24px;
       }
-      .trust-strip,.booking-progress{
+      .trust-strip,.booking-progress,.service-paths{
         grid-template-columns:1fr;
       }
 
@@ -1096,16 +1184,29 @@
         <button type="button" class="lang-btn" data-lang="en">EN</button>
         <button type="button" class="lang-btn" data-lang="es">ES</button>
       </div>
-      <div class="header-actions">
-        <a
-          href="frenos.html"
-          class="btn-brake"
-        >
-          <span data-i18n="brakeLink">GNZ Brake & Flush Services</span>
-          <span style="font-size:11px;">&rarr;</span>
-        </a>
+      <h1 class="hero-headline" data-i18n="heroTitle">Mobile oil service with a clear estimate before you book.</h1>
+      <p class="hero-copy" data-i18n="heroText">Select your vehicle, review the oil service estimate, and request a mobile appointment without waiting on a phone call.</p>
+      <div class="hero-actions">
+        <a href="#formCita" class="hero-btn"><i class="fas fa-calendar-check"></i><span data-i18n="bookOil">Book oil change</span></a>
+        <a href="frenos.html" class="hero-btn secondary"><i class="fas fa-screwdriver-wrench"></i><span data-i18n="brakeLink">GNZ Brake & Flush Services</span></a>
+        <a href="tracking.html" class="hero-btn secondary"><i class="fas fa-clipboard-list"></i><span data-i18n="trackAppointment">Track appointment</span></a>
       </div>
     </header>
+
+    <section class="service-paths" aria-label="Service options">
+      <a class="service-path" href="#formCita">
+        <i class="fas fa-oil-can"></i>
+        <div><strong data-i18n="pathOil">Oil change</strong><span data-i18n="pathOilText">Vehicle-based oil capacity, filter and estimate.</span></div>
+      </a>
+      <a class="service-path" href="frenos.html">
+        <i class="fas fa-screwdriver-wrench"></i>
+        <div><strong data-i18n="pathBrake">Brakes and fluids</strong><span data-i18n="pathBrakeText">Labor pricing for pads, rotors and flush services.</span></div>
+      </a>
+      <a class="service-path" href="tracking.html">
+        <i class="fas fa-clock-rotate-left"></i>
+        <div><strong data-i18n="pathTracking">Service history</strong><span data-i18n="pathTrackingText">Check appointment status and past services by ID.</span></div>
+      </a>
+    </section>
 
     <section class="trust-strip" aria-label="Service highlights">
       <div class="trust-item">
@@ -1333,7 +1434,7 @@
     }
     window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl || gnzDefaultEndpoint;
   </script>
-  <script src="assets/js/apps-script-bridge.js?v=20260701"></script>
+  <script src="assets/js/apps-script-bridge.js?v=20260703"></script>
   <script>
   document.addEventListener("DOMContentLoaded", () => {
     const marcaSelect = document.getElementById("marcaSelect");
@@ -1453,7 +1554,17 @@
         stepService: "Oil",
         stepSchedule: "Schedule",
         stepConfirm: "Confirm",
-        bookingNote: "Complete the details below and review the estimate before sending your appointment request."
+        bookingNote: "Complete the details below and review the estimate before sending your appointment request.",
+        heroTitle: "Mobile oil service with a clear estimate before you book.",
+        heroText: "Select your vehicle, review the oil service estimate, and request a mobile appointment without waiting on a phone call.",
+        bookOil: "Book oil change",
+        trackAppointment: "Track appointment",
+        pathOil: "Oil change",
+        pathOilText: "Vehicle-based oil capacity, filter and estimate.",
+        pathBrake: "Brakes and fluids",
+        pathBrakeText: "Labor pricing for pads, rotors and flush services.",
+        pathTracking: "Service history",
+        pathTrackingText: "Check appointment status and past services by ID."
       },
       es: {
         subtitle: "Cambio de aceite y mantenimiento movil en tu ubicacion",
@@ -1544,7 +1655,17 @@
         stepService: "Aceite",
         stepSchedule: "Horario",
         stepConfirm: "Confirmar",
-        bookingNote: "Completa los datos y revisa el estimado antes de enviar tu solicitud de cita."
+        bookingNote: "Completa los datos y revisa el estimado antes de enviar tu solicitud de cita.",
+        heroTitle: "Servicio movil de aceite con estimado claro antes de reservar.",
+        heroText: "Selecciona tu vehiculo, revisa el estimado del cambio de aceite y solicita la cita movil sin esperar una llamada.",
+        bookOil: "Reservar aceite",
+        trackAppointment: "Ver mi cita",
+        pathOil: "Cambio de aceite",
+        pathOilText: "Capacidad, filtro y estimado segun el vehiculo.",
+        pathBrake: "Frenos y fluidos",
+        pathBrakeText: "Precios de mano de obra para pads, rotores y fluidos.",
+        pathTracking: "Historial de servicios",
+        pathTrackingText: "Consulta estado e historial con el ID de cita."
       }
     };
     let currentLang = getPreferredLanguage();

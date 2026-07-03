@@ -38,7 +38,7 @@
     .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:start;}
     .panel{background:rgba(18,18,28,.96);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:16px;box-shadow:0 18px 40px rgba(0,0,0,.42);}
     .panel h2{font-size:18px;margin-bottom:14px;color:#fff;}
-    .filters{display:grid;grid-template-columns:1.4fr .75fr .75fr auto;gap:10px;margin-bottom:14px;}
+    .filters{display:grid;grid-template-columns:1.3fr .7fr .7fr .8fr auto;gap:10px;margin-bottom:14px;}
     .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
     .stat{padding:12px;border-radius:14px;background:#151722;border:1px solid rgba(255,255,255,.06);}
     .stat strong{display:block;font-size:20px;color:#fff;}
@@ -235,6 +235,18 @@
           <h3 data-i18n="discountUsageTitle">Discount usage</h3>
           <div id="dashboardDiscountBreakdown"></div>
         </div>
+        <div class="dashboard-box">
+          <h3 data-i18n="todayScheduleTitle">Today schedule</h3>
+          <div id="dashboardTodaySchedule"></div>
+        </div>
+        <div class="dashboard-box">
+          <h3 data-i18n="filtersToBuyTab">Filters to buy</h3>
+          <div id="dashboardFiltersToBuy"></div>
+        </div>
+      </div>
+      <div class="vehicle-filter-box" style="margin:12px 0 0;">
+        <strong data-i18n="squareFutureTitle">Square payments: future option</strong>
+        <span data-i18n="squareFutureHelp">Payments and deposits are inactive. This panel is ready to connect Square later.</span>
       </div>
     </section>
 
@@ -244,6 +256,15 @@
         <div class="filters">
           <div class="field"><i class="fa-solid fa-magnifying-glass"></i><input id="searchInput" placeholder="Search by ID, name, phone, email" inputmode="search" data-i18n-placeholder="searchPlaceholder"></div>
           <div class="field"><i class="fa-solid fa-calendar"></i><input type="date" id="filterDate"></div>
+          <div class="field">
+            <i class="fa-solid fa-briefcase"></i>
+            <select id="filterService">
+              <option value="" data-i18n="allServices">All services</option>
+              <option value="oil" data-i18n="oilService">Oil Service</option>
+              <option value="brake" data-i18n="brakeFlush">Brake Service</option>
+              <option value="flush" data-i18n="serviceFlush">Flush Service</option>
+            </select>
+          </div>
           <div class="field">
             <i class="fa-solid fa-filter"></i>
             <select id="filterStatus">
@@ -271,7 +292,7 @@
           <button class="tab-btn" type="button" data-admin-form="brake"><i class="fa-solid fa-screwdriver-wrench"></i> <span data-i18n="brakeTab">Brakes / Flush</span></button>
           <button class="tab-btn" type="button" data-admin-form="discounts"><i class="fa-solid fa-percent"></i> <span data-i18n="discountTab">Discounts</span></button>
           <button class="tab-btn" type="button" data-admin-form="blocks"><i class="fa-solid fa-lock"></i> <span data-i18n="blocksTab">Blocks</span></button>
-          <button class="tab-btn" type="button" data-admin-form="inventory"><i class="fa-solid fa-boxes-stacked"></i> <span data-i18n="inventoryTab">Inventory</span></button>
+          <button class="tab-btn" type="button" data-admin-form="inventory"><i class="fa-solid fa-cart-shopping"></i> <span data-i18n="filtersToBuyTab">Filters to buy</span></button>
         </div>
         <form id="adminForm" class="service-form">
           <input type="hidden" name="idioma" id="adminLangField">
@@ -386,18 +407,17 @@
         </section>
 
         <section id="adminInventorySection" class="service-form hidden">
-          <form id="inventoryForm">
-            <div class="form-grid">
-              <div class="field"><i class="fa-solid fa-filter"></i><input name="filter" id="inventoryFilter" placeholder="Filter code" required data-i18n-placeholder="inventoryFilter"></div>
-              <div class="field"><i class="fa-solid fa-box"></i><input name="quantity" id="inventoryQuantity" type="number" min="0" step="1" placeholder="Quantity" required data-i18n-placeholder="inventoryQuantity"></div>
-              <div class="field"><i class="fa-solid fa-triangle-exclamation"></i><input name="minimum" id="inventoryMinimum" type="number" min="0" step="1" placeholder="Minimum" data-i18n-placeholder="inventoryMinimum"></div>
-              <div class="field"><i class="fa-solid fa-location-dot"></i><input name="location" id="inventoryLocation" placeholder="Location" data-i18n-placeholder="inventoryLocation"></div>
-              <div class="field full"><i class="fa-solid fa-note-sticky"></i><input name="notes" id="inventoryNotes" placeholder="Notes" data-i18n-placeholder="inventoryNotes"></div>
-            </div>
-            <button class="btn primary" type="submit" id="saveInventoryBtn" style="width:100%;" data-i18n="saveInventory">Save Filter</button>
-            <button class="btn" type="button" id="resetInventoryBtn" style="width:100%;margin-top:8px;" data-i18n="newInventory">New Filter</button>
-            <div class="message" id="inventoryMessage"></div>
-          </form>
+          <div class="vehicle-filter-box">
+            <strong data-i18n="filtersToBuyTitle">Filters to buy by order</strong>
+            <span data-i18n="filtersToBuyHelp">This list is generated from pending and confirmed oil appointments. No inventory quantities are required.</span>
+          </div>
+          <div class="actions" style="margin-bottom:10px;">
+            <button class="btn primary" type="button" id="copyFilterBuyListBtn"><i class="fa-solid fa-copy"></i> <span data-i18n="copyBuyList">Copy buy list</span></button>
+          </div>
+          <form id="inventoryForm" hidden></form>
+          <button id="saveInventoryBtn" type="button" hidden></button>
+          <button id="resetInventoryBtn" type="button" hidden></button>
+          <div class="message" id="inventoryMessage"></div>
           <div class="inventory-admin-list" id="inventoryList"></div>
         </section>
       </section>
@@ -414,7 +434,7 @@
     }
     window.GNZ_APPS_SCRIPT_ENDPOINT = gnzEndpointFromUrl || gnzDefaultEndpoint;
   </script>
-  <script src="assets/js/apps-script-bridge.js?v=20260701"></script>
+  <script src="assets/js/apps-script-bridge.js?v=20260703"></script>
   <script>
     let adminToken = "";
     let vehiculos = [];
@@ -444,6 +464,7 @@
         listView: "List",
         calendarView: "Calendar",
         searchPlaceholder: "Search by ID, name, phone, email",
+        allServices: "All services",
         allStatuses: "All statuses",
         statusPending: "Pending",
         statusConfirmed: "Confirmed",
@@ -455,17 +476,19 @@
         discountTab: "Discounts",
         blocksTab: "Blocks",
         inventoryTab: "Inventory",
+        filtersToBuyTab: "Filters to buy",
         scheduleOil: "Schedule Oil Appointment",
         scheduleBrake: "Schedule Brake / Flush Appointment",
         manageDiscounts: "Manage Discounts",
         manageBlocks: "Schedule Blocks",
-        manageInventory: "Filter Inventory",
+        manageInventory: "Filters to buy",
         dashSales: "Completed sales",
         dashCompleted: "Completed jobs",
         dashAverage: "Average ticket",
         dashDiscounted: "Discounted jobs",
         salesByService: "Sales by service",
         discountUsageTitle: "Discount usage",
+        todayScheduleTitle: "Today schedule",
         editAppointment: "Edit Appointment",
         fullName: "Full name",
         phone: "Phone",
@@ -567,6 +590,16 @@
         inventoryOut: "Buy filter",
         inventoryMissing: "Not in inventory",
         inventoryUnknown: "No filter listed",
+        filtersToBuyTitle: "Filters to buy by order",
+        filtersToBuyHelp: "This list is generated from pending and confirmed oil appointments. No inventory quantities are required.",
+        copyBuyList: "Copy buy list",
+        noFiltersToBuy: "No oil filters to buy for pending or confirmed appointments.",
+        buyForOrders: "Buy for orders",
+        buyForOrder: "Buy for this order",
+        filtersToBuyCount: "Filters needed:",
+        buyListCopied: "Buy list copied.",
+        squareFutureTitle: "Square payments: future option",
+        squareFutureHelp: "Payments and deposits are inactive. This panel is ready to connect Square later.",
         copy: "Copy",
         copied: "Copied",
         completedRevenue: "Completed revenue",
@@ -619,6 +652,7 @@
         listView: "Lista",
         calendarView: "Calendario",
         searchPlaceholder: "Buscar por ID, nombre, telefono o correo",
+        allServices: "Todos los servicios",
         allStatuses: "Todos los estados",
         statusPending: "Pendiente",
         statusConfirmed: "Confirmada",
@@ -630,17 +664,19 @@
         discountTab: "Descuentos",
         blocksTab: "Bloqueos",
         inventoryTab: "Inventario",
+        filtersToBuyTab: "Filtros por comprar",
         scheduleOil: "Programar cita de aceite",
         scheduleBrake: "Programar cita de frenos / fluidos",
         manageDiscounts: "Administrar descuentos",
         manageBlocks: "Bloqueo de horarios",
-        manageInventory: "Inventario de filtros",
+        manageInventory: "Filtros por comprar",
         dashSales: "Ventas completadas",
         dashCompleted: "Trabajos completados",
         dashAverage: "Ticket promedio",
         dashDiscounted: "Trabajos con descuento",
         salesByService: "Ventas por servicio",
         discountUsageTitle: "Uso de descuentos",
+        todayScheduleTitle: "Agenda de hoy",
         editAppointment: "Editar cita",
         fullName: "Nombre completo",
         phone: "Telefono",
@@ -742,6 +778,16 @@
         inventoryOut: "Comprar filtro",
         inventoryMissing: "No esta en inventario",
         inventoryUnknown: "Sin filtro listado",
+        filtersToBuyTitle: "Filtros por comprar segun orden",
+        filtersToBuyHelp: "Esta lista se genera con citas de aceite pendientes y confirmadas. No necesitas llenar cantidades de inventario.",
+        copyBuyList: "Copiar lista",
+        noFiltersToBuy: "No hay filtros de aceite por comprar para citas pendientes o confirmadas.",
+        buyForOrders: "Comprar para ordenes",
+        buyForOrder: "Comprar para esta orden",
+        filtersToBuyCount: "Filtros necesarios:",
+        buyListCopied: "Lista de compra copiada.",
+        squareFutureTitle: "Pagos Square: opcion futura",
+        squareFutureHelp: "Pagos y depositos estan inactivos. Este panel queda listo para conectar Square despues.",
         copy: "Copiar",
         copied: "Copiado",
         completedRevenue: "Ingresos completados",
@@ -922,6 +968,7 @@
     const inventoryMessage = document.getElementById("inventoryMessage");
     const saveInventoryBtn = document.getElementById("saveInventoryBtn");
     const resetInventoryBtn = document.getElementById("resetInventoryBtn");
+    const copyFilterBuyListBtn = document.getElementById("copyFilterBuyListBtn");
 
     document.querySelectorAll("[data-lang]").forEach(btn => {
       btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
@@ -934,6 +981,7 @@
     document.getElementById("searchBtn").addEventListener("click", cargarReservas);
     document.getElementById("filterStatus").addEventListener("change", cargarReservas);
     document.getElementById("filterDate").addEventListener("change", cargarReservas);
+    document.getElementById("filterService").addEventListener("change", cargarReservas);
     cancelEditBtn.addEventListener("click", resetFormMode);
     cancelBrakeEditBtn.addEventListener("click", resetBrakeFormMode);
     document.querySelectorAll("[data-admin-form]").forEach(btn => {
@@ -952,8 +1000,9 @@
     resetDiscountBtn.addEventListener("click", resetDiscountForm);
     blockForm.addEventListener("submit", guardarBloqueo);
     resetBlockBtn.addEventListener("click", resetBlockForm);
-    inventoryForm.addEventListener("submit", guardarInventario);
-    resetInventoryBtn.addEventListener("click", resetInventoryForm);
+    if (inventoryForm) inventoryForm.addEventListener("submit", guardarInventario);
+    if (resetInventoryBtn) resetInventoryBtn.addEventListener("click", resetInventoryForm);
+    if (copyFilterBuyListBtn) copyFilterBuyListBtn.addEventListener("click", copyFilterPurchaseList);
     document.getElementById("searchInput").addEventListener("input", () => {
       clearTimeout(typingTimer);
       typingTimer = setTimeout(cargarReservas, 350);
@@ -974,7 +1023,7 @@
           cargarReservas();
           cargarDescuentos();
           cargarBloqueos();
-          cargarInventario();
+          renderFilterPurchaseList();
         })
         .withFailureHandler(err => {
           loginMessage.textContent = err.message || t("loginFailed");
@@ -1017,7 +1066,7 @@
         if (editingId) resetFormMode();
         if (editingBrakeId) resetBrakeFormMode();
         setFormTitle();
-        cargarInventario();
+        renderFilterPurchaseList();
       }
     }
 
@@ -1528,116 +1577,92 @@
     };
 
     function cargarInventario() {
-      if (!adminToken || !inventoryList) return;
-      inventoryList.innerHTML = `<div class="empty">${t("loadingInventory")}</div>`;
-      google.script.run
-        .withSuccessHandler(res => {
-          if (!res || !res.success) {
-            inventoryList.innerHTML = `<div class="empty">${escapeHtml((res && res.error) || t("inventorySaveFail"))}</div>`;
-            return;
-          }
-          inventoryCache = res.inventory || [];
-          renderInventario(inventoryCache);
-          if (reservasCache.length) renderAppointmentView();
-        })
-        .withFailureHandler(err => {
-          inventoryList.innerHTML = `<div class="empty">${escapeHtml(err.message || t("inventorySaveFail"))}</div>`;
-        })
-        .adminListarInventarioFiltros(adminToken);
+      renderFilterPurchaseList();
     }
 
-    function renderInventario(items) {
+    function buildFilterPurchaseList() {
+      const grouped = {};
+      reservasCache
+        .filter(r => (r.tipoServicio || "oil") === "oil")
+        .filter(r => r.estado === "Pendiente" || r.estado === "Confirmada")
+        .filter(r => r.tipoFiltro || r.tipoFiltroAlternativo)
+        .forEach(r => {
+          const key = String(r.tipoFiltro || t("notAvailable")).trim().toUpperCase();
+          if (!grouped[key]) {
+            grouped[key] = {
+              filter: r.tipoFiltro || t("notAvailable"),
+              alternative: r.tipoFiltroAlternativo || "",
+              count: 0,
+              orders: []
+            };
+          }
+          grouped[key].count += 1;
+          grouped[key].orders.push(r);
+        });
+      return Object.keys(grouped).sort().map(key => grouped[key]);
+    }
+
+    function renderFilterPurchaseList() {
       if (!inventoryList) return;
-      if (!items || !items.length) {
-        inventoryList.innerHTML = `<div class="empty">${t("noInventory")}</div>`;
+      const items = buildFilterPurchaseList();
+      inventoryCache = items;
+      if (!items.length) {
+        inventoryList.innerHTML = `<div class="empty">${t("noFiltersToBuy")}</div>`;
+        if (inventoryMessage) inventoryMessage.textContent = "";
         return;
       }
 
-      inventoryList.innerHTML = items.map(item => {
-        const status = item.quantity <= 0 ? "out" : item.lowStock ? "low" : "stock";
-        const label = status === "stock" ? t("inventoryStock") : status === "low" ? t("inventoryLow") : t("inventoryOut");
-        return `
-          <article class="inventory-admin-card">
-            <strong>${escapeHtml(item.filter)}</strong>
-            <span class="inventory-status ${escapeAttr(status)}">${escapeHtml(label)} | ${escapeHtml(item.quantity)} / ${escapeHtml(item.minimum || 0)}</span>
-            <p>${escapeHtml(item.location || t("notAvailable"))}</p>
-            <p>${escapeHtml(item.notes || "")}</p>
-            <div class="actions" style="margin-top:10px;">
-              <button class="btn" type="button" onclick="editarInventario('${escapeAttr(item.filter)}')">${t("edit")}</button>
-              <button class="btn danger" type="button" onclick="eliminarInventario('${escapeAttr(item.filter)}')">${t("cancel")}</button>
-            </div>
-          </article>
-        `;
-      }).join("");
+      if (inventoryMessage) {
+        const total = items.reduce((sum, item) => sum + item.count, 0);
+        inventoryMessage.textContent = `${t("filtersToBuyCount")} ${total}`;
+      }
+
+      inventoryList.innerHTML = items.map(item => `
+        <article class="inventory-admin-card">
+          <strong>${escapeHtml(item.filter)}</strong>
+          <span class="inventory-status out">${escapeHtml(t("buyForOrders"))} | ${escapeHtml(item.count)}</span>
+          <p>${escapeHtml(t("alternateFilter"))}: ${escapeHtml(item.alternative || t("notAvailable"))}</p>
+          <p>${item.orders.map(order => `${escapeHtml(order.id)} - ${escapeHtml(order.nombre || "")} - ${escapeHtml(order.fecha || "")} ${escapeHtml(order.hora || "")}`).join("<br>")}</p>
+        </article>
+      `).join("");
+    }
+
+    function copyFilterPurchaseList() {
+      const items = buildFilterPurchaseList();
+      if (!items.length) {
+        if (inventoryMessage) inventoryMessage.textContent = t("noFiltersToBuy");
+        return;
+      }
+      const lines = items.map(item => {
+        const orders = item.orders.map(order => `${order.id} ${order.nombre || ""} ${order.fecha || ""} ${order.hora || ""}`.trim()).join("; ");
+        return `${item.count} x ${item.filter}${item.alternative ? " / Alt: " + item.alternative : ""} | ${orders}`;
+      });
+      window.copyText(lines.join("\n"));
+      if (inventoryMessage) inventoryMessage.textContent = t("buyListCopied");
+    }
+
+    function renderInventario() {
+      renderFilterPurchaseList();
     }
 
     function guardarInventario(e) {
-      e.preventDefault();
-      inventoryMessage.textContent = t("saving");
-      saveInventoryBtn.disabled = true;
-
-      const payload = Object.fromEntries(new FormData(inventoryForm).entries());
-      google.script.run
-        .withSuccessHandler(res => {
-          saveInventoryBtn.disabled = false;
-          if (!res || !res.success) {
-            inventoryMessage.textContent = (res && res.error) || t("inventorySaveFail");
-            return;
-          }
-          inventoryMessage.textContent = `${t("inventorySaved")} ${res.item.filter}`;
-          resetInventoryForm(false);
-          cargarInventario();
-          cargarReservas();
-        })
-        .withFailureHandler(err => {
-          saveInventoryBtn.disabled = false;
-          inventoryMessage.textContent = err.message || t("inventorySaveFail");
-        })
-        .adminGuardarInventarioFiltro(adminToken, payload);
+      if (e) e.preventDefault();
+      renderFilterPurchaseList();
     }
 
     function resetInventoryForm(clearMessage) {
-      inventoryForm.reset();
-      document.getElementById("inventoryFilter").readOnly = false;
-      saveInventoryBtn.disabled = false;
-      if (clearMessage !== false) inventoryMessage.textContent = "";
+      if (clearMessage !== false && inventoryMessage) inventoryMessage.textContent = "";
     }
 
-    window.editarInventario = function(filter) {
-      const item = inventoryCache.find(entry => entry.filter === filter);
-      if (!item) return;
-      document.getElementById("inventoryFilter").value = item.filter || "";
-      document.getElementById("inventoryFilter").readOnly = true;
-      document.getElementById("inventoryQuantity").value = item.quantity || 0;
-      document.getElementById("inventoryMinimum").value = item.minimum || 0;
-      document.getElementById("inventoryLocation").value = item.location || "";
-      document.getElementById("inventoryNotes").value = item.notes || "";
-      inventoryMessage.textContent = "";
-      inventoryForm.scrollIntoView({ behavior: "smooth", block: "start" });
-    };
-
-    window.eliminarInventario = function(filter) {
-      if (!confirm(t("deleteInventoryConfirm"))) return;
-      google.script.run
-        .withSuccessHandler(res => {
-          if (!res || !res.success) {
-            alert((res && res.error) || t("inventoryDeleteFail"));
-            return;
-          }
-          inventoryMessage.textContent = `${t("inventoryDeleted")} ${res.filter}`;
-          resetInventoryForm(false);
-          cargarInventario();
-          cargarReservas();
-        })
-        .withFailureHandler(err => alert(err.message || t("inventoryDeleteFail")))
-        .adminEliminarInventarioFiltro(adminToken, filter);
-    };
+    window.editarInventario = function() {};
+    window.eliminarInventario = function() {};
 
     function cargarReservas() {
       const filtros = {
         query: document.getElementById("searchInput").value,
         fecha: document.getElementById("filterDate").value,
         estado: document.getElementById("filterStatus").value,
+        servicio: document.getElementById("filterService").value,
         limit: 300
       };
 
@@ -1651,6 +1676,7 @@
           renderStats(res.resumen || {});
           reservasCache = res.reservas || [];
           renderDashboard();
+          renderFilterPurchaseList();
           renderAppointmentView();
         })
         .withFailureHandler(err => {
@@ -1705,6 +1731,30 @@
           </div>
         `).join("")
         : `<div class="metric-row"><span>${t("noDiscountUsage")}</span><strong>0</strong></div>`;
+
+      const today = new Date().toISOString().slice(0, 10);
+      const todayItems = reservasCache
+        .filter(r => r.fecha === today && r.estado !== "Cancelada")
+        .sort((a, b) => String(a.hora || "").localeCompare(String(b.hora || "")))
+        .slice(0, 6);
+      document.getElementById("dashboardTodaySchedule").innerHTML = todayItems.length
+        ? todayItems.map(r => `
+          <div class="metric-row">
+            <span>${escapeHtml(r.hora || "")} ${escapeHtml(r.nombre || "")}</span>
+            <strong>${escapeHtml(r.servicioResumen || "")}</strong>
+          </div>
+        `).join("")
+        : `<div class="metric-row"><span>${t("noAppointments")}</span><strong>0</strong></div>`;
+
+      const filtersToBuy = buildFilterPurchaseList().slice(0, 6);
+      document.getElementById("dashboardFiltersToBuy").innerHTML = filtersToBuy.length
+        ? filtersToBuy.map(item => `
+          <div class="metric-row">
+            <span>${escapeHtml(item.filter)}${item.alternative ? " / " + escapeHtml(item.alternative) : ""}</span>
+            <strong>${escapeHtml(item.count)}</strong>
+          </div>
+        `).join("")
+        : `<div class="metric-row"><span>${t("noFiltersToBuy")}</span><strong>0</strong></div>`;
     }
 
     function reservationAmount(r) {
@@ -1791,18 +1841,11 @@
           ? (r.marcaAceite || "")
           : [r.bodyStyle, r.axles && r.axles !== "N/A" ? `${r.axles} axle(s)` : ""].filter(Boolean).join(" | ");
         const vehicleValue = [`${r.marca || ""} ${r.modelo || ""} ${r.ano || ""}`.trim(), r.motor || ""].filter(Boolean).join(" | ");
-        const inventory = r.filterInventory || {};
-        const inventoryStatus = inventory.status || "unknown";
-        const inventoryLabel = inventoryStatus === "stock" ? t("inventoryStock")
-          : inventoryStatus === "low" ? t("inventoryLow")
-          : inventoryStatus === "out" ? t("inventoryOut")
-          : inventoryStatus === "missing" ? t("inventoryMissing")
-          : t("inventoryUnknown");
         const oilFilterDetails = tipo === "oil" && (r.tipoFiltro || r.tipoFiltroAlternativo)
           ? `
               <div><span>${t("oilFilterType")}</span><br>${escapeHtml(r.tipoFiltro || t("notAvailable"))}</div>
               <div><span>${t("alternateFilter")}</span><br>${escapeHtml(r.tipoFiltroAlternativo || t("notAvailable"))}</div>
-              <div><span>${t("inventoryTab")}</span><br><span class="inventory-status ${escapeAttr(inventoryStatus)}">${escapeHtml(inventoryLabel)}${inventory.quantity !== "" && inventory.quantity != null ? " | " + escapeHtml(inventory.quantity) : ""}</span></div>
+              <div><span>${t("filtersToBuyTab")}</span><br><span class="inventory-status out">${escapeHtml(t("buyForOrder"))}</span></div>
             `
           : "";
         const editButton = tipo === "oil"
