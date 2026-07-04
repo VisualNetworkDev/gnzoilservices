@@ -303,7 +303,7 @@
         [t("customer"), appointment.customerName || ""],
         [t("phone"), appointment.phone || ""],
         [t("email"), appointment.email || ""]
-      ];
+      ].filter(row => row[1]);
       const facts = [
         [t("service"), appointment.serviceSummary || appointment.serviceLabel || ""],
         [t("vehicle"), appointment.vehicle || ""],
@@ -325,9 +325,7 @@
             </div>
             <span class="status ${escapeHtml(appointment.status || "")}">${escapeHtml(appointment.status || "")}</span>
           </div>
-          <div class="customer-summary">
-            ${customerFacts.map(row => renderFact(row[0], row[1])).join("")}
-          </div>
+          ${customerFacts.length ? `<div class="customer-summary">${customerFacts.map(row => renderFact(row[0], row[1])).join("")}</div>` : ""}
           <div class="facts">
             ${facts.map(row => renderFact(row[0], row[1])).join("")}
           </div>
