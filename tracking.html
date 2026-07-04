@@ -158,8 +158,6 @@
         nextOilDate: "Next oil date",
         nextOilMileage: "Next oil mileage",
         oilInterval: "Oil interval",
-        oilTypeUsed: "Oil type used",
-        oilBrandUsed: "Oil brand used",
         maintenanceMissing: "Maintenance reminder will appear after the current mileage is added by GNZ.",
         nextStep: "Next step",
         reschedule: "Reschedule",
@@ -200,8 +198,6 @@
         nextOilDate: "Proxima fecha",
         nextOilMileage: "Proximas millas",
         oilInterval: "Intervalo",
-        oilTypeUsed: "Tipo de aceite usado",
-        oilBrandUsed: "Marca de aceite usada",
         maintenanceMissing: "El recordatorio aparecera cuando GNZ agregue las millas actuales.",
         nextStep: "Proximo paso",
         reschedule: "Reprogramar",
@@ -287,9 +283,7 @@
         [t("currentMileage"), formatMiles(next.currentMileage)],
         [t("nextOilMileage"), formatMiles(next.nextMileage)],
         [t("nextOilDate"), next.nextDate || "N/A"],
-        [t("oilInterval"), formatInterval(next.intervalMiles, next.intervalMonths)],
-        [t("oilTypeUsed"), next.oilType || "N/A"],
-        [t("oilBrandUsed"), next.oilBrand || "N/A"]
+        [t("oilInterval"), formatInterval(next.intervalMiles, next.intervalMonths)]
       ];
 
       return `
