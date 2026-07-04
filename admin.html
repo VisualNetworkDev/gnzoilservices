@@ -303,14 +303,14 @@
           <input type="hidden" name="idioma" id="adminLangField">
           <div class="form-grid">
             <div class="field"><i class="fa-solid fa-user"></i><input name="nombre" id="nombre" placeholder="Full name" autocomplete="name" required data-i18n-placeholder="fullName"></div>
-            <div class="field"><i class="fa-solid fa-phone"></i><input name="telefono" id="telefono" placeholder="Phone" inputmode="tel" autocomplete="tel" required data-i18n-placeholder="phone"></div>
+            <div class="field"><i class="fa-solid fa-phone"></i><input name="telefono" id="telefono" placeholder="Phone" inputmode="tel" autocomplete="tel" maxlength="18" required data-i18n-placeholder="phone"></div>
             <div class="field full"><i class="fa-solid fa-envelope"></i><input name="correo" id="correo" type="email" placeholder="Email" autocomplete="email" required data-i18n-placeholder="email"></div>
             <div class="field"><i class="fa-solid fa-car"></i><select name="marca" id="marcaSelect" required><option value="" data-i18n="selectMake">Select Make</option></select></div>
             <div class="field"><i class="fa-solid fa-car-side"></i><select name="modelo" id="modeloSelect" required><option value="" data-i18n="selectModel">Select Model</option></select></div>
             <div class="field"><i class="fa-solid fa-calendar-days"></i><select name="ano" id="anoSelect" required><option value="" data-i18n="selectYear">Select Year</option></select></div>
             <div class="field" id="motorGroup" style="display:none;"><i class="fa-solid fa-gears"></i><select name="motor" id="motorSelect"></select></div>
             <div class="field full"><i class="fa-solid fa-oil-can"></i><select name="marcaAceite" id="marcaAceite" required><option value="" data-i18n="selectOil">Select Engine Oil</option></select></div>
-            <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="direccion" id="direccion" placeholder="Service address" autocomplete="street-address" required data-i18n-placeholder="serviceAddress"></div>
+            <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="direccion" id="direccion" placeholder="Service address" autocomplete="street-address" minlength="12" required data-i18n-placeholder="serviceAddress"></div>
             <div class="field"><i class="fa-solid fa-calendar-day"></i><input type="date" name="fecha" id="fecha" required></div>
             <div class="field"><i class="fa-solid fa-clock"></i><input type="time" name="hora" id="hora" required></div>
             <div class="field full"><i class="fa-solid fa-list-check"></i><select name="estado" id="estado"><option value="Confirmada" data-i18n="statusConfirmed">Confirmed</option><option value="Pendiente" data-i18n="statusPending">Pending</option><option value="Cancelada" data-i18n="statusCanceled">Canceled</option><option value="Completada" data-i18n="statusCompleted">Completed</option></select></div>
@@ -329,7 +329,7 @@
           <input type="hidden" name="Language" id="adminBrakeLangField">
           <div class="form-grid">
             <div class="field"><i class="fa-solid fa-user"></i><input name="Full Name" id="brakeFullName" placeholder="Full name" autocomplete="name" required data-i18n-placeholder="fullName"></div>
-            <div class="field"><i class="fa-solid fa-phone"></i><input name="Phone" id="brakePhone" placeholder="Phone" inputmode="tel" autocomplete="tel" required data-i18n-placeholder="phone"></div>
+            <div class="field"><i class="fa-solid fa-phone"></i><input name="Phone" id="brakePhone" placeholder="Phone" inputmode="tel" autocomplete="tel" maxlength="18" required data-i18n-placeholder="phone"></div>
             <div class="field full"><i class="fa-solid fa-envelope"></i><input name="Email" id="brakeEmail" type="email" placeholder="Email" autocomplete="email" required data-i18n-placeholder="email"></div>
             <div class="field"><i class="fa-solid fa-screwdriver-wrench"></i><select name="Service" id="adminBrakeService" required>
               <option value="" data-i18n="selectService">Select Service</option>
@@ -355,7 +355,7 @@
             <div class="field"><i class="fa-solid fa-calendar-days"></i><input name="Year" id="brakeYear" placeholder="Year" inputmode="numeric" required data-i18n-placeholder="year"></div>
             <div class="field"><i class="fa-solid fa-car"></i><input name="Make" id="brakeMake" placeholder="Make" required data-i18n-placeholder="make"></div>
             <div class="field"><i class="fa-solid fa-car-rear"></i><input name="Model" id="brakeModel" placeholder="Model" required data-i18n-placeholder="model"></div>
-            <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="Address" id="brakeAddress" placeholder="Service address" autocomplete="street-address" required data-i18n-placeholder="serviceAddress"></div>
+            <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="Address" id="brakeAddress" placeholder="Service address" autocomplete="street-address" minlength="12" required data-i18n-placeholder="serviceAddress"></div>
             <div class="field"><i class="fa-solid fa-calendar-day"></i><input type="date" name="Date" id="brakeDate" required></div>
             <div class="field"><i class="fa-solid fa-clock"></i><input type="time" name="Time" id="brakeTime" required></div>
             <div class="field full"><i class="fa-solid fa-list-check"></i><select name="Estado" id="brakeEstado"><option value="Confirmada" data-i18n="statusConfirmed">Confirmed</option><option value="Pendiente" data-i18n="statusPending">Pending</option><option value="Cancelada" data-i18n="statusCanceled">Canceled</option><option value="Completada" data-i18n="statusCompleted">Completed</option></select></div>
@@ -537,6 +537,9 @@
         completeOilMissing: "Current mileage is required to complete this oil service.",
         completeOilSaved: "Oil service completed:",
         serviceAddress: "Service address",
+        invalidPhone: "Enter a valid 10-digit phone number.",
+        invalidEmail: "Enter a valid email address.",
+        invalidAddress: "Enter a complete service address with street number, street name, city/state or ZIP code.",
         notes: "Notes",
         estimatedPrice: "Estimated price",
         notAvailable: "N/A",
@@ -738,6 +741,9 @@
         completeOilMissing: "Las millas actuales son obligatorias para completar este servicio de aceite.",
         completeOilSaved: "Servicio de aceite completado:",
         serviceAddress: "Direccion del servicio",
+        invalidPhone: "Ingresa un telefono valido de 10 digitos.",
+        invalidEmail: "Ingresa un correo valido.",
+        invalidAddress: "Ingresa una direccion completa con numero, calle, ciudad/estado o ZIP code.",
         notes: "Notas",
         estimatedPrice: "Precio estimado",
         notAvailable: "N/D",
@@ -1054,6 +1060,12 @@
     if (inventoryForm) inventoryForm.addEventListener("submit", guardarInventario);
     if (resetInventoryBtn) resetInventoryBtn.addEventListener("click", resetInventoryForm);
     if (copyFilterBuyListBtn) copyFilterBuyListBtn.addEventListener("click", copyFilterPurchaseList);
+    document.getElementById("telefono").addEventListener("blur", event => {
+      event.target.value = formatPhoneNumber(event.target.value) || event.target.value.trim();
+    });
+    document.getElementById("brakePhone").addEventListener("blur", event => {
+      event.target.value = formatPhoneNumber(event.target.value) || event.target.value.trim();
+    });
     document.getElementById("searchInput").addEventListener("input", () => {
       clearTimeout(typingTimer);
       typingTimer = setTimeout(cargarReservas, 350);
@@ -1317,10 +1329,21 @@
 
     document.getElementById("adminForm").addEventListener("submit", e => {
       e.preventDefault();
+      const contactDetails = validateContactFields(
+        document.getElementById("telefono"),
+        document.getElementById("correo"),
+        document.getElementById("direccion"),
+        formMessage
+      );
+      if (!contactDetails) return;
+
       formMessage.textContent = editingId ? t("updating") : t("saving");
       saveBtn.disabled = true;
 
       const data = Object.fromEntries(new FormData(e.target).entries());
+      data.telefono = contactDetails.phone;
+      data.correo = contactDetails.email;
+      data.direccion = contactDetails.address;
       data.idioma = currentLang;
       data.aceptoAcuerdo = document.getElementById("aceptoAcuerdo").checked ? "SI" : "ADMIN";
       data.notificarCliente = document.getElementById("notificarCliente").checked ? "SI" : "NO";
@@ -1350,6 +1373,13 @@
 
     adminBrakeForm.addEventListener("submit", e => {
       e.preventDefault();
+      const contactDetails = validateContactFields(
+        document.getElementById("brakePhone"),
+        document.getElementById("brakeEmail"),
+        document.getElementById("brakeAddress"),
+        brakeFormMessage
+      );
+      if (!contactDetails) return;
 
       const quote = getAdminBrakeQuote();
       if (!quote) {
@@ -1361,6 +1391,9 @@
       saveBrakeBtn.disabled = true;
 
       const payload = Object.fromEntries(new FormData(adminBrakeForm).entries());
+      payload.Phone = contactDetails.phone;
+      payload.Email = contactDetails.email;
+      payload.Address = contactDetails.address;
       payload.AgreementAccepted = document.getElementById("brakeAgreement").checked ? "SI" : "NO";
       payload.NotificarCliente = document.getElementById("brakeNotify").checked ? "SI" : "NO";
       payload.Language = currentLang;
@@ -2438,6 +2471,55 @@
 
       if (hour < 0 || hour > 23) return "";
       return `${String(hour).padStart(2, "0")}:${minute}`;
+    }
+
+    function formatPhoneNumber(value) {
+      let digits = String(value || "").replace(/\D/g, "");
+      if (digits.length === 11 && digits.charAt(0) === "1") digits = digits.slice(1);
+      if (digits.length !== 10) return "";
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(String(value || "").trim());
+    }
+
+    function isLikelyAddress(value) {
+      const text = String(value || "").trim().replace(/\s+/g, " ");
+      if (text.length < 12) return false;
+      const hasStreetNumber = /\b\d{1,6}\b/.test(text);
+      const hasStreetName = /[A-Za-z]{2,}/.test(text);
+      const hasZip = /\b\d{5}(?:-\d{4})?\b/.test(text);
+      const hasState = /\b(A[LKZR]|C[AOT]|D[CE]|F[LM]|G[AU]|H[I]|I[ADLN]|K[SY]|L[A]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AWR]|R[I]|S[CD]|T[NX]|UT|V[AIT]|W[AIVY])\b/i.test(text);
+      const hasCityPart = text.split(",").map(part => part.trim()).filter(Boolean).length >= 2;
+      return hasStreetNumber && hasStreetName && (hasZip || hasState || hasCityPart);
+    }
+
+    function validateContactFields(phoneInput, emailInput, addressInput, messageBox) {
+      const phone = formatPhoneNumber(phoneInput.value);
+      const email = emailInput.value.trim().toLowerCase();
+      const address = addressInput.value.trim().replace(/\s+/g, " ");
+
+      if (!phone) {
+        messageBox.textContent = t("invalidPhone");
+        phoneInput.focus();
+        return null;
+      }
+      if (!isValidEmail(email)) {
+        messageBox.textContent = t("invalidEmail");
+        emailInput.focus();
+        return null;
+      }
+      if (!isLikelyAddress(address)) {
+        messageBox.textContent = t("invalidAddress");
+        addressInput.focus();
+        return null;
+      }
+
+      phoneInput.value = phone;
+      emailInput.value = email;
+      addressInput.value = address;
+      return { phone, email, address };
     }
 
     function showFormError(err) {

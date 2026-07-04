@@ -791,7 +791,7 @@
       <div class="form-group">
         <label data-i18n="labelPhone">Phone</label>
         <i class="fa-solid fa-phone"></i>
-        <input type="tel" name="Phone" inputmode="tel" autocomplete="tel" required>
+        <input type="tel" name="Phone" inputmode="tel" autocomplete="tel" maxlength="18" required>
       </div>
 
       <div class="form-group full">
@@ -862,7 +862,7 @@
       <div class="form-group full">
         <label data-i18n="labelAddress">Service Address</label>
         <i class="fa-solid fa-location-dot"></i>
-        <input type="text" name="Address" autocomplete="street-address" required>
+        <input type="text" name="Address" autocomplete="street-address" minlength="12" required>
       </div>
 
       <div class="form-group">
@@ -1084,6 +1084,9 @@ const translations = {
     attention: "Attention",
     agreementToast: "Agreement accepted. You can now send your reservation.",
     minTimeNotice: "Appointments must be scheduled at least 24 hours in advance.",
+    invalidPhoneNotice: "Enter a valid 10-digit phone number.",
+    invalidEmailNotice: "Enter a valid email address.",
+    invalidAddressNotice: "Enter a complete service address with street number, street name, city/state or ZIP code.",
     completeNotice: "Please complete the service, body style and axle/flush options.",
     priceNotice: "The selected service could not be priced. Please check the form.",
     appointmentFailed: "The appointment could not be sent.",
@@ -1185,6 +1188,9 @@ const translations = {
     attention: "Atencion",
     agreementToast: "Acuerdo aceptado. Ya puedes enviar tu reserva.",
     minTimeNotice: "Las citas deben programarse con al menos 24 horas de anticipacion.",
+    invalidPhoneNotice: "Ingresa un telefono valido de 10 digitos.",
+    invalidEmailNotice: "Ingresa un correo valido.",
+    invalidAddressNotice: "Ingresa una direccion completa con numero, calle, ciudad/estado o ZIP code.",
     completeNotice: "Completa el servicio, tipo de vehiculo y opciones de ejes/fluido.",
     priceNotice: "No se pudo calcular el precio del servicio seleccionado. Revisa el formulario.",
     appointmentFailed: "No se pudo enviar la cita.",
@@ -1326,6 +1332,58 @@ function formatMoney(value) {
   return Number(value || 0).toFixed(2);
 }
 
+function formatPhoneNumber(value) {
+  let digits = String(value || "").replace(/\D/g, "");
+  if (digits.length === 11 && digits.charAt(0) === "1") digits = digits.slice(1);
+  if (digits.length !== 10) return "";
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(String(value || "").trim());
+}
+
+function isLikelyAddress(value) {
+  const text = String(value || "").trim().replace(/\s+/g, " ");
+  if (text.length < 12) return false;
+  const hasStreetNumber = /\b\d{1,6}\b/.test(text);
+  const hasStreetName = /[A-Za-z]{2,}/.test(text);
+  const hasZip = /\b\d{5}(?:-\d{4})?\b/.test(text);
+  const hasState = /\b(A[LKZR]|C[AOT]|D[CE]|F[LM]|G[AU]|H[I]|I[ADLN]|K[SY]|L[A]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AWR]|R[I]|S[CD]|T[NX]|UT|V[AIT]|W[AIVY])\b/i.test(text);
+  const hasCityPart = text.split(",").map(part => part.trim()).filter(Boolean).length >= 2;
+  return hasStreetNumber && hasStreetName && (hasZip || hasState || hasCityPart);
+}
+
+function validateContactFields() {
+  const phoneInput = brakeForm.querySelector('input[name="Phone"]');
+  const emailInput = brakeForm.querySelector('input[name="Email"]');
+  const addressInput = brakeForm.querySelector('input[name="Address"]');
+  const phone = formatPhoneNumber(phoneInput.value);
+  const email = emailInput.value.trim().toLowerCase();
+  const address = addressInput.value.trim().replace(/\s+/g, " ");
+
+  if (!phone) {
+    showNotice(t("invalidPhoneNotice"));
+    phoneInput.focus();
+    return false;
+  }
+  if (!isValidEmail(email)) {
+    showNotice(t("invalidEmailNotice"));
+    emailInput.focus();
+    return false;
+  }
+  if (!isLikelyAddress(address)) {
+    showNotice(t("invalidAddressNotice"));
+    addressInput.focus();
+    return false;
+  }
+
+  phoneInput.value = phone;
+  emailInput.value = email;
+  addressInput.value = address;
+  return true;
+}
+
 function formatPercent(rate) {
   const percent = Number(rate || 0) * 100;
   return (Math.round(percent) === percent ? String(percent) : percent.toFixed(2).replace(/0+$/, "").replace(/\.$/, "")) + "%";
@@ -1450,6 +1508,9 @@ serviceSelect.addEventListener("change", function() {
 
 brakeForm.addEventListener("input", updatePriceEstimate);
 brakeForm.addEventListener("change", updatePriceEstimate);
+brakeForm.querySelector('input[name="Phone"]').addEventListener("blur", event => {
+  event.target.value = formatPhoneNumber(event.target.value) || event.target.value.trim();
+});
 
 document.getElementById("openPrices").onclick = () => openModal("priceModal");
 document.getElementById("closePrices").onclick = () => closeModal("priceModal");
@@ -1468,6 +1529,7 @@ document.getElementById("acceptAgreement").onclick = () => {
 
 document.getElementById("previewBtn").onclick = () => {
   if (!brakeForm.reportValidity()) return;
+  if (!validateContactFields()) return;
 
   if (!isAtLeast24Hours()) {
     showNotice(t("minTimeNotice"));

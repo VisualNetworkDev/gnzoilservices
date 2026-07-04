@@ -1264,7 +1264,7 @@
       </div>
       <div class="form-group">
         <i class="fas fa-phone"></i>
-        <input type="tel" name="telefono" id="telefono" placeholder=" " required>
+        <input type="tel" name="telefono" id="telefono" placeholder=" " inputmode="tel" autocomplete="tel" maxlength="18" required>
         <label data-i18n="labelPhone">Phone</label>
       </div>
       <div class="form-group">
@@ -1307,7 +1307,7 @@
       </div>
       <div class="form-group">
         <i class="fas fa-map-marker-alt"></i>
-        <input type="text" name="direccion" id="direccion" placeholder=" " required>
+        <input type="text" name="direccion" id="direccion" placeholder=" " autocomplete="street-address" minlength="12" required>
         <label data-i18n="labelAddress">Service Address</label>
       </div>
       <div class="form-group">
@@ -1521,6 +1521,10 @@
         continue: "Continue",
         reservationTimeTitle: "Reservation Time Required",
         reservationTimeMessage: "Reservations must be scheduled at least 24 hours in advance. Please choose a later date or time.",
+        invalidContactTitle: "Check Contact Details",
+        invalidPhoneMessage: "Enter a valid 10-digit phone number.",
+        invalidEmailMessage: "Enter a valid email address.",
+        invalidAddressMessage: "Enter a complete service address with street number, street name, city/state or ZIP code.",
         sendingMessage: "Sending reservation...",
         sentMessage: "Reservation sent successfully",
         reservationNotSentTitle: "Reservation Not Sent",
@@ -1622,6 +1626,10 @@
         continue: "Continuar",
         reservationTimeTitle: "Horario requerido",
         reservationTimeMessage: "Las reservas deben programarse con al menos 24 horas de anticipacion. Elige una fecha u hora posterior.",
+        invalidContactTitle: "Revisa los datos de contacto",
+        invalidPhoneMessage: "Ingresa un telefono valido de 10 digitos.",
+        invalidEmailMessage: "Ingresa un correo valido.",
+        invalidAddressMessage: "Ingresa una direccion completa con numero, calle, ciudad/estado o ZIP code.",
         sendingMessage: "Enviando reserva...",
         sentMessage: "Reserva enviada con exito",
         reservationNotSentTitle: "Reserva no enviada",
@@ -1750,6 +1758,9 @@
 
     formCita.addEventListener("input", updateBookingProgress);
     formCita.addEventListener("change", updateBookingProgress);
+    document.getElementById("telefono").addEventListener("blur", event => {
+      event.target.value = formatPhoneNumber(event.target.value) || event.target.value.trim();
+    });
 
     function escapeHtml(value) {
       return String(value == null ? "" : value)
@@ -1762,6 +1773,58 @@
 
     function escapeAttr(value) {
       return String(value == null ? "" : value).replace(/\\/g, "\\\\").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    function formatPhoneNumber(value) {
+      let digits = String(value || "").replace(/\D/g, "");
+      if (digits.length === 11 && digits.charAt(0) === "1") digits = digits.slice(1);
+      if (digits.length !== 10) return "";
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(String(value || "").trim());
+    }
+
+    function isLikelyAddress(value) {
+      const text = String(value || "").trim().replace(/\s+/g, " ");
+      if (text.length < 12) return false;
+      const hasStreetNumber = /\b\d{1,6}\b/.test(text);
+      const hasStreetName = /[A-Za-z]{2,}/.test(text);
+      const hasZip = /\b\d{5}(?:-\d{4})?\b/.test(text);
+      const hasState = /\b(A[LKZR]|C[AOT]|D[CE]|F[LM]|G[AU]|H[I]|I[ADLN]|K[SY]|L[A]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AWR]|R[I]|S[CD]|T[NX]|UT|V[AIT]|W[AIVY])\b/i.test(text);
+      const hasCityPart = text.split(",").map(part => part.trim()).filter(Boolean).length >= 2;
+      return hasStreetNumber && hasStreetName && (hasZip || hasState || hasCityPart);
+    }
+
+    function validateContactDetails() {
+      const phoneInput = document.getElementById("telefono");
+      const emailInput = document.getElementById("correo");
+      const addressInput = document.getElementById("direccion");
+      const phone = formatPhoneNumber(phoneInput.value);
+      const email = emailInput.value.trim().toLowerCase();
+      const address = addressInput.value.trim().replace(/\s+/g, " ");
+
+      if (!phone) {
+        mostrarAlertaGNZ(t("invalidContactTitle"), t("invalidPhoneMessage"), "warning", "OK");
+        phoneInput.focus();
+        return null;
+      }
+      if (!isValidEmail(email)) {
+        mostrarAlertaGNZ(t("invalidContactTitle"), t("invalidEmailMessage"), "warning", "OK");
+        emailInput.focus();
+        return null;
+      }
+      if (!isLikelyAddress(address)) {
+        mostrarAlertaGNZ(t("invalidContactTitle"), t("invalidAddressMessage"), "warning", "OK");
+        addressInput.focus();
+        return null;
+      }
+
+      phoneInput.value = phone;
+      emailInput.value = email;
+      addressInput.value = address;
+      return { phone, email, address };
     }
 
     function formatPercent(rate) {
@@ -2375,12 +2438,18 @@
         return;
       }
 
+      const contactDetails = validateContactDetails();
+      if (!contactDetails) return;
+
       if (!sincronizarAcuerdoAceptado()) {
         abrirAcuerdo();
         return;
       }
 
       const formData = Object.fromEntries(new FormData(e.target).entries());
+      formData.telefono = contactDetails.phone;
+      formData.correo = contactDetails.email;
+      formData.direccion = contactDetails.address;
       const fecha = document.getElementById("fecha").value;
       const hora = document.getElementById("hora").value;
       const fechaHora = new Date(fecha + " " + hora);
