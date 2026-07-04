@@ -108,6 +108,11 @@
     .inventory-status.low{background:#fef3c7;color:#92400e;}
     .inventory-status.out,.inventory-status.missing{background:#fee2e2;color:#991b1b;}
     .inventory-status.unknown{background:#e5e7eb;color:#374151;}
+    .modal-overlay{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,13,16,.56);backdrop-filter:blur(6px);}
+    .modal-card{width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:18px;background:#fffaf1;border:1px solid var(--gnz-line);box-shadow:0 28px 80px rgba(28,20,8,.35);padding:18px;color:var(--gnz-ink);}
+    .modal-card h2{font-size:20px;color:var(--gnz-teal);margin-bottom:6px;}
+    .modal-card p{color:#52656b;font-size:14px;line-height:1.45;margin-bottom:14px;}
+    .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
     .hidden{display:none!important;}
     .empty{text-align:center;color:#8f9ac5;padding:24px;}
     @media(max-width:980px){.grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
@@ -305,11 +310,6 @@
             <div class="field"><i class="fa-solid fa-calendar-days"></i><select name="ano" id="anoSelect" required><option value="" data-i18n="selectYear">Select Year</option></select></div>
             <div class="field" id="motorGroup" style="display:none;"><i class="fa-solid fa-gears"></i><select name="motor" id="motorSelect"></select></div>
             <div class="field full"><i class="fa-solid fa-oil-can"></i><select name="marcaAceite" id="marcaAceite" required><option value="" data-i18n="selectOil">Select Engine Oil</option></select></div>
-            <div class="field"><i class="fa-solid fa-gauge-high"></i><input name="millasActuales" id="millasActuales" type="number" min="0" step="1" inputmode="numeric" placeholder="Current mileage" data-i18n-placeholder="currentMileage"></div>
-            <div class="field"><i class="fa-solid fa-road"></i><input name="intervaloMillasAceite" id="intervaloMillasAceite" type="number" min="1" step="1" inputmode="numeric" value="7000" placeholder="Oil interval miles" data-i18n-placeholder="oilIntervalMiles"></div>
-            <div class="field"><i class="fa-solid fa-calendar-plus"></i><input name="intervaloMesesAceite" id="intervaloMesesAceite" type="number" min="1" step="1" inputmode="numeric" value="3" placeholder="Oil interval months" data-i18n-placeholder="oilIntervalMonths"></div>
-            <div class="field"><i class="fa-solid fa-flask"></i><input name="tipoAceiteUsado" id="tipoAceiteUsado" placeholder="Oil type used" data-i18n-placeholder="oilTypeUsed"></div>
-            <div class="field"><i class="fa-solid fa-tag"></i><input name="marcaAceiteUsada" id="marcaAceiteUsada" placeholder="Oil brand used" data-i18n-placeholder="oilBrandUsed"></div>
             <div class="field full"><i class="fa-solid fa-location-dot"></i><input name="direccion" id="direccion" placeholder="Service address" autocomplete="street-address" required data-i18n-placeholder="serviceAddress"></div>
             <div class="field"><i class="fa-solid fa-calendar-day"></i><input type="date" name="fecha" id="fecha" required></div>
             <div class="field"><i class="fa-solid fa-clock"></i><input type="time" name="hora" id="hora" required></div>
@@ -429,6 +429,28 @@
     </div>
   </div>
 
+  <div id="completeOilModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="completeOilTitle">
+    <div class="modal-card">
+      <h2 id="completeOilTitle" data-i18n="completeOilTitle">Complete oil service</h2>
+      <p id="completeOilSummary" data-i18n="completeOilHelp">Add the final mileage and oil details after the service is done.</p>
+      <form id="completeOilForm">
+        <input type="hidden" id="completeOilId">
+        <div class="form-grid">
+          <div class="field"><i class="fa-solid fa-gauge-high"></i><input id="completeCurrentMileage" type="number" min="1" step="1" inputmode="numeric" placeholder="Current mileage" required data-i18n-placeholder="currentMileage"></div>
+          <div class="field"><i class="fa-solid fa-road"></i><input id="completeOilIntervalMiles" type="number" min="1" step="1" inputmode="numeric" value="7000" placeholder="Oil interval miles" required data-i18n-placeholder="oilIntervalMiles"></div>
+          <div class="field"><i class="fa-solid fa-calendar-plus"></i><input id="completeOilIntervalMonths" type="number" min="1" step="1" inputmode="numeric" value="3" placeholder="Oil interval months" required data-i18n-placeholder="oilIntervalMonths"></div>
+          <div class="field"><i class="fa-solid fa-flask"></i><input id="completeOilTypeUsed" placeholder="Oil type used" data-i18n-placeholder="oilTypeUsed"></div>
+          <div class="field full"><i class="fa-solid fa-tag"></i><input id="completeOilBrandUsed" placeholder="Oil brand used" data-i18n-placeholder="oilBrandUsed"></div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn primary" type="submit" id="completeOilSaveBtn" data-i18n="saveCompleteService">Complete service</button>
+          <button class="btn" type="button" id="completeOilCancelBtn" data-i18n="cancelEdit">Cancel</button>
+        </div>
+        <div class="message" id="completeOilMessage"></div>
+      </form>
+    </div>
+  </div>
+
   <script>
     const gnzEndpointFromUrl = new URLSearchParams(window.location.search).get("endpoint");
     const gnzDefaultEndpoint = "https://script.google.com/macros/s/AKfycbzIjm2vj89cpRw5mzwYRVLAO4XPBRBSBoTFm5eing4vd0MQVWRj62hVd_Ghex0wN4pLsw/exec";
@@ -511,6 +533,13 @@
         nextOilMileage: "Next oil mileage",
         oilTypeUsed: "Oil type used",
         oilBrandUsed: "Oil brand used",
+        completeOilTitle: "Complete oil service",
+        completeOilHelp: "Add the final mileage and oil details after the service is done.",
+        completeOilSummary: "Completing:",
+        saveCompleteService: "Complete service",
+        completeOilSaving: "Completing service...",
+        completeOilMissing: "Current mileage is required to complete this oil service.",
+        completeOilSaved: "Oil service completed:",
         serviceAddress: "Service address",
         notes: "Notes",
         estimatedPrice: "Estimated price",
@@ -707,6 +736,13 @@
         nextOilMileage: "Proximas millas",
         oilTypeUsed: "Tipo de aceite usado",
         oilBrandUsed: "Marca de aceite usada",
+        completeOilTitle: "Completar servicio de aceite",
+        completeOilHelp: "Agrega las millas finales y los detalles del aceite despues de hacer el servicio.",
+        completeOilSummary: "Completando:",
+        saveCompleteService: "Completar servicio",
+        completeOilSaving: "Completando servicio...",
+        completeOilMissing: "Las millas actuales son obligatorias para completar este servicio de aceite.",
+        completeOilSaved: "Servicio de aceite completado:",
         serviceAddress: "Direccion del servicio",
         notes: "Notas",
         estimatedPrice: "Precio estimado",
@@ -1297,10 +1333,6 @@
       data.idioma = currentLang;
       data.aceptoAcuerdo = document.getElementById("aceptoAcuerdo").checked ? "SI" : "ADMIN";
       data.notificarCliente = document.getElementById("notificarCliente").checked ? "SI" : "NO";
-      data.intervaloMillasAceite = data.intervaloMillasAceite || "7000";
-      data.intervaloMesesAceite = data.intervaloMesesAceite || "3";
-      data.tipoAceiteUsado = data.tipoAceiteUsado || getRecommendedOilType();
-      data.marcaAceiteUsada = data.marcaAceiteUsada || data.marcaAceite || "";
 
       const runner = google.script.run
         .withSuccessHandler(res => {
@@ -1890,6 +1922,9 @@
         const editButton = tipo === "oil"
           ? `<button class="btn" onclick="editarReserva('${escapeAttr(r.id)}')">${t("edit")}</button>`
           : `<button class="btn" onclick="editarReservaFrenos('${escapeAttr(r.id)}')">${t("edit")}</button>`;
+        const completeButton = tipo === "oil"
+          ? `<button class="btn info" onclick="abrirCompletarAceite('${escapeAttr(r.id)}')">${t("complete")}</button>`
+          : `<button class="btn info" onclick="actualizarEstado('${escapeAttr(r.id)}','Completada')">${t("complete")}</button>`;
 
         return `
           <article class="card" data-reservation-id="${escapeAttr(r.id)}">
@@ -1922,7 +1957,7 @@
               <button class="btn success" onclick="actualizarEstado('${escapeAttr(r.id)}','Confirmada')">${t("confirm")}</button>
               <button class="btn warn" onclick="actualizarEstado('${escapeAttr(r.id)}','Pendiente')">${t("pending")}</button>
               <button class="btn danger" onclick="actualizarEstado('${escapeAttr(r.id)}','Cancelada')">${t("cancel")}</button>
-              <button class="btn info" onclick="actualizarEstado('${escapeAttr(r.id)}','Completada')">${t("complete")}</button>
+              ${completeButton}
             </div>
           </article>
         `;
@@ -1982,11 +2017,6 @@
       document.getElementById("hora").value = toInputTime(r.hora || "");
       document.getElementById("estado").value = r.estado || "Pendiente";
       document.getElementById("comentarios").value = r.comentarios || "";
-      document.getElementById("millasActuales").value = r.currentMileage || "";
-      document.getElementById("intervaloMillasAceite").value = r.oilIntervalMiles || "7000";
-      document.getElementById("intervaloMesesAceite").value = r.oilIntervalMonths || "3";
-      document.getElementById("tipoAceiteUsado").value = r.oilTypeUsed || "";
-      document.getElementById("marcaAceiteUsada").value = r.oilBrandUsed || r.marcaAceite || "";
       document.getElementById("aceptoAcuerdo").checked = String(r.aceptoAcuerdo || "").toUpperCase() === "SI";
       document.getElementById("notificarCliente").checked = false;
 
@@ -2095,6 +2125,81 @@
         .adminActualizarEstado(adminToken, id, estado);
     };
 
+    window.abrirCompletarAceite = function(id) {
+      const r = reservasCache.find(item => String(item.id) === String(id));
+      if (!r) {
+        alert(t("notFound"));
+        return;
+      }
+
+      const vehicle = [`${r.marca || ""} ${r.modelo || ""} ${r.ano || ""}`.trim(), r.motor || ""].filter(Boolean).join(" | ");
+      document.getElementById("completeOilId").value = r.id || "";
+      document.getElementById("completeOilSummary").textContent = `${t("completeOilSummary")} ${r.id || ""} | ${vehicle || t("vehicle")} | ${r.fecha || ""} ${r.hora || ""}`;
+      document.getElementById("completeCurrentMileage").value = r.currentMileage || "";
+      document.getElementById("completeOilIntervalMiles").value = r.oilIntervalMiles || "7000";
+      document.getElementById("completeOilIntervalMonths").value = r.oilIntervalMonths || "3";
+      document.getElementById("completeOilTypeUsed").value = r.oilTypeUsed || r.aceiteRecomendado || "";
+      document.getElementById("completeOilBrandUsed").value = r.oilBrandUsed || r.marcaAceite || "";
+      document.getElementById("completeOilMessage").textContent = "";
+      document.getElementById("completeOilSaveBtn").disabled = false;
+      document.getElementById("completeOilModal").classList.remove("hidden");
+      setTimeout(() => document.getElementById("completeCurrentMileage").focus(), 50);
+    };
+
+    function cerrarCompletarAceite() {
+      document.getElementById("completeOilModal").classList.add("hidden");
+      document.getElementById("completeOilForm").reset();
+      document.getElementById("completeOilIntervalMiles").value = "7000";
+      document.getElementById("completeOilIntervalMonths").value = "3";
+      document.getElementById("completeOilMessage").textContent = "";
+    }
+
+    document.getElementById("completeOilCancelBtn").addEventListener("click", cerrarCompletarAceite);
+    document.getElementById("completeOilModal").addEventListener("click", event => {
+      if (event.target.id === "completeOilModal") cerrarCompletarAceite();
+    });
+
+    document.getElementById("completeOilForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const id = document.getElementById("completeOilId").value;
+      const currentMileage = document.getElementById("completeCurrentMileage").value.trim();
+      const message = document.getElementById("completeOilMessage");
+      const save = document.getElementById("completeOilSaveBtn");
+
+      if (!currentMileage) {
+        message.textContent = t("completeOilMissing");
+        return;
+      }
+
+      const payload = {
+        millasActuales: currentMileage,
+        intervaloMillasAceite: document.getElementById("completeOilIntervalMiles").value.trim() || "7000",
+        intervaloMesesAceite: document.getElementById("completeOilIntervalMonths").value.trim() || "3",
+        tipoAceiteUsado: document.getElementById("completeOilTypeUsed").value.trim(),
+        marcaAceiteUsada: document.getElementById("completeOilBrandUsed").value.trim()
+      };
+
+      save.disabled = true;
+      message.textContent = t("completeOilSaving");
+
+      google.script.run
+        .withSuccessHandler(res => {
+          save.disabled = false;
+          if (!res || !res.success) {
+            message.textContent = (res && res.error) || t("statusFail");
+            return;
+          }
+          message.textContent = `${t("completeOilSaved")} ${res.id}`;
+          cerrarCompletarAceite();
+          cargarReservas();
+        })
+        .withFailureHandler(err => {
+          save.disabled = false;
+          message.textContent = err.message || t("statusError");
+        })
+        .adminActualizarEstado(adminToken, id, "Completada", payload);
+    });
+
     function resetFormMode() {
       editingId = "";
       setFormTitle();
@@ -2105,8 +2210,6 @@
       document.getElementById("adminLangField").value = currentLang;
       document.getElementById("aceptoAcuerdo").checked = true;
       document.getElementById("notificarCliente").checked = true;
-      document.getElementById("intervaloMillasAceite").value = "7000";
-      document.getElementById("intervaloMesesAceite").value = "3";
       formMessage.textContent = "";
       resetMotor();
       resetOil();

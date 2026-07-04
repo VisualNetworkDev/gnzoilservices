@@ -59,6 +59,8 @@
     .actions a{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:var(--teal);color:#fffaf1;text-decoration:none;padding:9px 12px;font-size:12px;font-weight:900;}
     .history{display:grid;gap:9px;}
     .history-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border-radius:13px;background:#fffdf8;border:1px solid rgba(6,63,76,.12);padding:11px;}
+    button.history-item{width:100%;text-align:left;cursor:pointer;font:inherit;color:inherit;}
+    button.history-item:hover{border-color:rgba(165,30,34,.35);box-shadow:0 10px 24px rgba(28,20,8,.10);}
     .history-icon{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(165,30,34,.10);color:var(--red);}
     .history-item strong{display:block;color:var(--teal);}
     .history-item span{display:block;color:#647276;font-size:12px;margin-top:2px;}
@@ -82,15 +84,16 @@
         </nav>
       </div>
       <h1 data-i18n="heroTitle">Appointment status, service history and oil change reminder.</h1>
-      <p data-i18n="heroText">Use your appointment ID with the phone or email from the reservation.</p>
+      <p data-i18n="heroText">Use your full name with the phone or email from the reservation.</p>
     </section>
 
     <section class="grid">
       <div class="panel">
         <h2 data-i18n="lookupTitle">Find appointment</h2>
-        <p data-i18n="lookupText">Use the ID from your confirmation receipt. For privacy, the contact must match the reservation.</p>
+        <p data-i18n="lookupText">For privacy, the name and contact must match the reservation.</p>
         <form id="trackingForm">
-          <div class="field"><i class="fa-solid fa-hashtag"></i><input id="appointmentId" name="appointmentId" placeholder="Appointment ID" autocomplete="off" required data-i18n-placeholder="appointmentId"></div>
+          <input id="appointmentId" name="appointmentId" type="hidden" autocomplete="off">
+          <div class="field"><i class="fa-solid fa-user"></i><input id="customerName" name="customerName" placeholder="Full name" autocomplete="name" required data-i18n-placeholder="fullName"></div>
           <div class="field"><i class="fa-solid fa-phone"></i><input id="contact" name="contact" placeholder="Phone or email" autocomplete="email tel" required data-i18n-placeholder="contact"></div>
           <button class="primary" type="submit" id="lookupBtn" data-i18n="lookupButton">Check status</button>
         </form>
@@ -127,10 +130,10 @@
         oilLink: "Oil Change",
         brakeLink: "Brakes / Flush",
         heroTitle: "Appointment status, service history and oil change reminder.",
-        heroText: "Use your appointment ID with the phone or email from the reservation.",
+        heroText: "Use your full name with the phone or email from the reservation.",
         lookupTitle: "Find appointment",
-        lookupText: "Use the ID from your confirmation receipt. For privacy, the contact must match the reservation.",
-        appointmentId: "Appointment ID",
+        lookupText: "For privacy, the name and contact must match the reservation.",
+        fullName: "Full name",
         contact: "Phone or email",
         lookupButton: "Check status",
         loading: "Checking...",
@@ -169,10 +172,10 @@
         oilLink: "Cambio de aceite",
         brakeLink: "Frenos / Fluidos",
         heroTitle: "Estado de cita, historial y proximo cambio de aceite.",
-        heroText: "Usa el ID de la cita con el telefono o correo de la reservacion.",
+        heroText: "Usa tu nombre completo con el telefono o correo de la reservacion.",
         lookupTitle: "Buscar cita",
-        lookupText: "Usa el ID del recibo de confirmacion. Por privacidad, el contacto debe coincidir con la reserva.",
-        appointmentId: "ID de cita",
+        lookupText: "Por privacidad, el nombre y el contacto deben coincidir con la reservacion.",
+        fullName: "Nombre completo",
         contact: "Telefono o correo",
         lookupButton: "Ver estado",
         loading: "Consultando...",
@@ -215,6 +218,8 @@
     const lookupBtn = document.getElementById("lookupBtn");
     const resultBox = document.getElementById("resultBox");
     const historyBox = document.getElementById("historyBox");
+    let currentHistory = [];
+    let currentReturningCustomer = false;
 
     function t(key) {
       return (translations[currentLang] && translations[currentLang][key]) || translations.en[key] || key;
@@ -339,25 +344,35 @@
     function renderHistory(items) {
       const history = Array.isArray(items) ? items : [];
       if (!history.length) {
+        currentHistory = [];
         historyBox.innerHTML = `<div class="empty">${t("noHistory")}</div>`;
         return;
       }
-      historyBox.innerHTML = history.map(item => `
-        <article class="history-item">
+      currentHistory = history;
+      historyBox.innerHTML = history.map((item, index) => `
+        <button class="history-item" type="button" onclick="openHistoryAppointment(${index})">
           <div class="history-icon"><i class="fa-solid fa-wrench"></i></div>
           <div>
             <strong>${escapeHtml(item.serviceSummary || item.serviceLabel || "")}</strong>
             <span>${escapeHtml(item.vehicle || "N/A")} | ${escapeHtml(item.date || "")} ${escapeHtml(item.time || "")}${item.nextOilDate ? " | " + escapeHtml(t("nextOilDate")) + ": " + escapeHtml(item.nextOilDate) : ""}</span>
           </div>
           <span class="status ${escapeHtml(item.status || "")}">${escapeHtml(item.status || "")}</span>
-        </article>
+        </button>
       `).join("");
     }
+
+    window.openHistoryAppointment = function(index) {
+      const item = currentHistory[Number(index)];
+      if (!item) return;
+      renderAppointment(item, currentReturningCustomer);
+      resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
 
     form.addEventListener("submit", event => {
       event.preventDefault();
       const payload = {
         id: document.getElementById("appointmentId").value.trim(),
+        name: document.getElementById("customerName").value.trim(),
         contact: document.getElementById("contact").value.trim()
       };
       lookupBtn.disabled = true;
@@ -373,7 +388,8 @@
             historyBox.innerHTML = `<div class="empty">${t("historyEmpty")}</div>`;
             return;
           }
-          renderAppointment(response.appointment, response.returningCustomer);
+          currentReturningCustomer = Boolean(response.returningCustomer);
+          renderAppointment(response.appointment, currentReturningCustomer);
           renderHistory(response.history || []);
         })
         .withFailureHandler(error => {
@@ -387,6 +403,7 @@
 
     const params = new URLSearchParams(window.location.search);
     if (params.get("id")) document.getElementById("appointmentId").value = params.get("id");
+    if (params.get("name")) document.getElementById("customerName").value = params.get("name");
     if (params.get("contact")) document.getElementById("contact").value = params.get("contact");
     applyLanguage();
   </script>
