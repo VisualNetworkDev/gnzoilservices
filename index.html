@@ -341,6 +341,42 @@
       font-size:13px;
       line-height:1.45;
     }
+    .price-advisory{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:11px;
+      align-items:flex-start;
+      margin:0 0 16px;
+      padding:13px 14px;
+      border-radius:14px;
+      background:linear-gradient(135deg,rgba(6,63,76,.94),rgba(10,88,105,.94));
+      color:#fffaf1;
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 14px 30px rgba(28,20,8,.14);
+    }
+    .price-advisory i{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,250,241,.12);
+      color:#f1d7a2;
+      margin-top:1px;
+    }
+    .price-advisory strong{
+      display:block;
+      font-size:13px;
+      color:#fff;
+      margin-bottom:2px;
+    }
+    .price-advisory span{
+      display:block;
+      font-size:12px;
+      line-height:1.45;
+      color:#f4dfbd;
+    }
 
     h2{
       text-align:center;
@@ -1218,7 +1254,7 @@
       </a>
       <a class="service-path" href="tracking.html">
         <i class="fas fa-clock-rotate-left"></i>
-        <div><strong data-i18n="pathTracking">Service history</strong><span data-i18n="pathTrackingText">Check appointment status and past services by ID.</span></div>
+        <div><strong data-i18n="pathTracking">Service history</strong><span data-i18n="pathTrackingText">Check appointment status, receipts and service history.</span></div>
       </a>
     </section>
 
@@ -1246,6 +1282,14 @@
 
     <div class="professional-note" data-i18n="bookingNote">
       Complete the details below and review the estimate before sending your appointment request.
+    </div>
+
+    <div class="price-advisory" role="note">
+      <i class="fas fa-circle-info" aria-hidden="true"></i>
+      <div>
+        <strong data-i18n="priceAdvisoryTitle">Oil price notice</strong>
+        <span data-i18n="priceAdvisoryText">Estimates can vary with current oil market cost, selected brand, filter and vehicle capacity.</span>
+      </div>
     </div>
 
     <section class="discounts-panel" id="discountsPanel" hidden>
@@ -1573,6 +1617,8 @@
         stepSchedule: "Schedule",
         stepConfirm: "Confirm",
         bookingNote: "Review the estimate, then confirm your oil service request.",
+        priceAdvisoryTitle: "Oil price notice",
+        priceAdvisoryText: "Estimates can vary with current oil market cost, selected brand, filter and vehicle capacity.",
         heroTitle: "Mobile oil changes with the right filter and a clear estimate.",
         heroText: "Select your vehicle, confirm the oil option, and request service at your location.",
         bookOil: "Book oil change",
@@ -1678,6 +1724,8 @@
         stepSchedule: "Horario",
         stepConfirm: "Confirmar",
         bookingNote: "Revisa el estimado y confirma tu solicitud de aceite.",
+        priceAdvisoryTitle: "Aviso sobre precios de aceite",
+        priceAdvisoryText: "El estimado puede variar segun el costo actual del mercado, la marca seleccionada, el filtro y la capacidad del vehiculo.",
         heroTitle: "Cambio de aceite movil con el filtro correcto y estimado claro.",
         heroText: "Selecciona tu vehiculo, confirma el aceite y solicita servicio en tu ubicacion.",
         bookOil: "Reservar aceite",
@@ -2174,7 +2222,7 @@
             <li>El cliente debe proporcionar informacion veraz sobre el vehiculo y la ubicacion del servicio.</li>
             <li>Se requiere agendar la cita con al menos 24 horas de anticipacion.</li>
             <li>El tecnico puede reprogramar la cita en caso de condiciones climaticas adversas, emergencias o situaciones fuera de su control.</li>
-            <li>Los precios pueden variar segun el tipo de aceite, filtro, capacidad del vehiculo y servicios adicionales.</li>
+            <li>Los precios pueden variar segun el costo actual del mercado del aceite, la marca seleccionada, el filtro, la capacidad del vehiculo y servicios adicionales.</li>
             <li>El cliente debe garantizar acceso adecuado y seguro al vehiculo al momento del servicio.</li>
             <li>Los pagos deben completarse al finalizar el servicio, salvo acuerdo previo.</li>
             <li>La aceptacion digital de este acuerdo confirma que el cliente leyo y acepto estos terminos.</li>
@@ -2192,7 +2240,7 @@
             <li>The client must provide accurate vehicle and service location information.</li>
             <li>Appointments must be scheduled at least 24 hours in advance.</li>
             <li>The technician may reschedule due to weather, emergencies, or circumstances outside their control.</li>
-            <li>Prices may vary depending on oil type, filter, vehicle capacity, and additional services.</li>
+            <li>Prices may vary depending on current oil market cost, selected oil brand, filter, vehicle capacity, and additional services.</li>
             <li>The client must ensure safe and proper access to the vehicle at the time of service.</li>
             <li>Payment is due upon service completion unless otherwise agreed in advance.</li>
             <li>Digital acceptance of this agreement confirms that the client has read and accepted these terms.</li>
@@ -2210,7 +2258,7 @@
             <li>O cliente deve fornecer informacoes corretas do veiculo e do local do servico.</li>
             <li>As reservas devem ser feitas com pelo menos 24 horas de antecedencia.</li>
             <li>O tecnico pode reagendar por clima, emergencias ou situacoes fora de seu controle.</li>
-            <li>Os precos podem variar conforme o tipo de oleo, filtro, capacidade do veiculo e servicos adicionais.</li>
+            <li>Os precos podem variar conforme o custo atual do mercado do oleo, a marca selecionada, filtro, capacidade do veiculo e servicos adicionais.</li>
             <li>O cliente deve garantir acesso adequado e seguro ao veiculo.</li>
             <li>O pagamento deve ser feito apos o servico, salvo acordo previo.</li>
             <li>A aceitacao digital confirma que o cliente leu e aceitou estes termos.</li>
