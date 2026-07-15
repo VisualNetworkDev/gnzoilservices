@@ -1,13 +1,13 @@
 ﻿{
-    "version":  "1.0.1",
-    "title":  "GNZ Admin Pro 1.0.1",
+    "version":  "1.0.2",
+    "title":  "GNZ Admin Pro 1.0.2",
     "publishedAt":  "2026-07-15",
     "required":  false,
     "installerUrl":  "https://visualnetworkdev.github.io/gnzoilservices/updates/gnz-admin-pro/GNZ-Admin-Pro-Flutter-Setup.exe",
     "notes":  [
-                  "Sistema de actualizaciones desde GitHub integrado en la app.",
-                  "Auditoria mas clara: contactos historicos separados del conteo principal.",
-                  "Loading y notificaciones redisenadas con estilo mas profesional.",
+                  "Vehiculos duplicados ahora muestran grupos claros con filas y detalles completos.",
+                  "Correccion visual para evitar lineas vacias con solo # en auditoria.",
+                  "Version del instalador alineada con la app.",
                   "Correcciones internas de estabilidad y conexion al backend."
               ]
 }
