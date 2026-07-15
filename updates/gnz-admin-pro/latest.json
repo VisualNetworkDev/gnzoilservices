@@ -1,13 +1,13 @@
 ﻿{
-    "version":  "1.0.4",
-    "title":  "GNZ Admin Pro 1.0.4",
+    "version":  "1.0.5",
+    "title":  "GNZ Admin Pro 1.0.5",
     "publishedAt":  "2026-07-15",
     "required":  false,
     "installerUrl":  "https://visualnetworkdev.github.io/gnzoilservices/updates/gnz-admin-pro/GNZ-Admin-Pro-Flutter-Setup.exe",
     "notes":  [
-                  "El bloque de actualizacion queda oculto cuando la app esta al dia.",
-                  "La opcion de instalar solo aparece si GitHub tiene una version nueva.",
-                  "Se elimino el boton manual Buscar update de la vista normal.",
+                  "El instalador ya no pide seleccionar carpeta.",
+                  "Las actualizaciones desde la app se instalan en modo silencioso.",
+                  "El setup cierra la app antes de reemplazar archivos para evitar errores de archivos repetidos o bloqueados.",
                   "Correcciones internas de estabilidad y conexion al backend."
               ]
 }
